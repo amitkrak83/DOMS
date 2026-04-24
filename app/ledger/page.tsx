@@ -1,7 +1,10 @@
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { LedgerList } from '@/components/ledger/ledger-list'
+import { SidebarMenu } from '@/components/sidebar-menu'
 
 async function getLedger() {
+  const supabase = await createClient()
+
   const { data: orders } = await supabase
     .from('orders')
     .select('id, customer_name, total_amount, status, created_at')
@@ -48,7 +51,8 @@ export default async function LedgerPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-16 flex items-center">
+      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-16 flex items-center gap-3">
+        <SidebarMenu />
         <h1 className="text-xl font-bold text-gray-900">Khata</h1>
       </div>
 

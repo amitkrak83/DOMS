@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Trash2, Pencil, ArrowLeft, ArrowRight, ShoppingCart } from 'lucide-react'
 import { toast } from 'sonner'
+import { CustomerSearch, type SelectedCustomer } from '@/components/orders/customer-search'
 
 export type Variant = {
   id: string
@@ -41,7 +42,9 @@ type Props = {
 export function NewOrderForm({ products, initialCustomerName = '', initialItems = [], editOrderId }: Props) {
   const router = useRouter()
   const [step, setStep] = useState<1 | 2 | 3>(editOrderId ? 2 : 1)
-  const [customerName, setCustomerName] = useState(initialCustomerName)
+  const [selectedCustomer, setSelectedCustomer] = useState<SelectedCustomer | null>(
+    initialCustomerName ? { name: initialCustomerName, mobile: '', address: '' } : null
+  )
   const [items, setItems] = useState<OrderItem[]>(initialItems)
   const [selectedProductId, setSelectedProductId] = useState('')
   const [selectedVariantId, setSelectedVariantId] = useState('')
@@ -134,9 +137,21 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
       toast.success('Order updated!')
       router.push(`/orders/${editOrderId}`)
     } else {
+      // Create customer if new
+      let customerId = selectedCustomer?.id
+      if (!customerId && selectedCustomer?.name.trim()) {
+        const { data: nc, error: custErr } = await supabase
+          .from('customers')
+          .insert({ name: selectedCustomer.name.trim(), mobile: selectedCustomer.mobile || null, address: selectedCustomer.address || null })
+          .select('id')
+          .single()
+        if (custErr || !nc) { toast.error('Failed to save customer'); setSaving(false); return }
+        customerId = nc.id
+      }
+
       const { data: order, error: orderErr } = await supabase
         .from('orders')
-        .insert({ customer_name: customerName.trim(), status: 'pending', total_amount: summary.total_amount })
+        .insert({ customer_name: selectedCustomer!.name.trim(), customer_id: customerId, status: 'pending', total_amount: summary.total_amount })
         .select('id')
         .single()
 
@@ -173,17 +188,10 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
         </div>
         <div className="px-4 py-5 space-y-4">
           <div className="space-y-2">
-            <Label className="font-bold text-gray-700">Customer Name</Label>
-            <Input
-              placeholder="Enter customer name..."
-              value={customerName}
-              onChange={e => setCustomerName(e.target.value)}
-              autoFocus
-              className="text-base h-12"
-              onKeyDown={e => { if (e.key === 'Enter' && customerName.trim()) setStep(2) }}
-            />
+            <Label className="font-bold text-gray-700">Customer</Label>
+            <CustomerSearch value={selectedCustomer} onChange={setSelectedCustomer} />
           </div>
-          <Button className="w-full gap-2 h-12 text-base font-bold bg-blue-600 hover:bg-blue-700" disabled={!customerName.trim()} onClick={() => setStep(2)}>
+          <Button className="w-full gap-2 h-12 text-base font-bold bg-blue-600 hover:bg-blue-700" disabled={!selectedCustomer?.name.trim()} onClick={() => setStep(2)}>
             Next — Add Items <ArrowRight size={18} />
           </Button>
         </div>
@@ -199,7 +207,7 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
           <button onClick={() => editOrderId ? router.back() : setStep(1)} className="text-gray-500"><ArrowLeft size={20} /></button>
           <div>
             <h1 className="text-xl font-bold text-gray-900">{editOrderId ? 'Edit Items' : 'Add Items'}</h1>
-            <p className="text-xs text-gray-400">{editOrderId ? 'Editing' : 'Step 2 of 3'} — {customerName}</p>
+            <p className="text-xs text-gray-400">{editOrderId ? 'Editing' : 'Step 2 of 3'} — {selectedCustomer?.name ?? ''}</p>
           </div>
         </div>
 
@@ -378,7 +386,7 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
         <button onClick={() => setStep(2)} className="text-gray-500"><ArrowLeft size={20} /></button>
         <div>
           <h1 className="text-xl font-bold text-gray-900">Order Summary</h1>
-          <p className="text-xs text-gray-400">{editOrderId ? 'Review changes' : 'Step 3 of 3'} — {customerName}</p>
+          <p className="text-xs text-gray-400">{editOrderId ? 'Review changes' : 'Step 3 of 3'} — {selectedCustomer?.name ?? ''}</p>
         </div>
       </div>
 

@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { NewOrderForm, type Product, type OrderItem } from '@/components/orders/new-order-form'
 
 async function getEditData(id: string) {
+  const supabase = await createClient()
   const [productsRes, orderRes, itemsRes] = await Promise.all([
     supabase
       .from('products')

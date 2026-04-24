@@ -54,32 +54,34 @@ export function AddVariantDialog({ productId, productName }: Props) {
         Variant
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-        <DialogHeader><DialogTitle>Add Variant — {productName}</DialogTitle></DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <Label>Variant Name</Label>
-            <Input placeholder="e.g. 500ml" value={form.variant_name} onChange={e => set('variant_name', e.target.value)} autoFocus />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label>Bottles per Case</Label>
-              <Input type="number" min="1" value={form.bottles_per_case} onChange={e => set('bottles_per_case', e.target.value)} />
+        <DialogContent className="bg-white border border-gray-100 shadow-xl ring-0 p-0 gap-0">
+          <DialogHeader className="px-5 pt-5 pb-4 border-b border-gray-100">
+            <DialogTitle className="text-base font-bold text-gray-900">Add Variant — {productName}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="px-5 py-4 space-y-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Variant Name</Label>
+              <Input placeholder="e.g. 500ml" value={form.variant_name} onChange={e => set('variant_name', e.target.value)} className="h-11 text-base" />
             </div>
-            <div className="space-y-1">
-              <Label>Price per Case (₹)</Label>
-              <Input type="number" min="0" step="0.01" placeholder="480" value={form.price_per_case} onChange={e => set('price_per_case', e.target.value)} />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Bottles / Case</Label>
+                <Input type="number" min="1" value={form.bottles_per_case} onChange={e => set('bottles_per_case', e.target.value)} className="h-11" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Price / Case (₹)</Label>
+                <Input type="number" min="0" step="0.01" placeholder="480" value={form.price_per_case} onChange={e => set('price_per_case', e.target.value)} className="h-11" />
+              </div>
             </div>
-          </div>
-          <div className="space-y-1">
-            <Label>Free Bottles per Paid Case (Scheme)</Label>
-            <Input type="number" min="0" value={form.free_bottles_per_case} onChange={e => set('free_bottles_per_case', e.target.value)} />
-            <p className="text-xs text-gray-400">Enter 0 if no scheme</p>
-          </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Adding...' : 'Add Variant'}
-          </Button>
-        </form>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Free Bottles / Case (Scheme)</Label>
+              <Input type="number" min="0" value={form.free_bottles_per_case} onChange={e => set('free_bottles_per_case', e.target.value)} className="h-11" />
+              <p className="text-xs text-gray-400">Enter 0 if no scheme</p>
+            </div>
+            <Button type="submit" className="w-full h-11 font-bold bg-blue-600 hover:bg-blue-700" disabled={loading}>
+              {loading ? 'Adding...' : 'Add Variant'}
+            </Button>
+          </form>
         </DialogContent>
       </Dialog>
     </>

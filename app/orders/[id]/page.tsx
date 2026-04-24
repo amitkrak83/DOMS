@@ -1,13 +1,15 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { formatQuantity, aggregateOrderSummary } from '@/lib/calculations'
-import { ArrowLeft, Banknote, BookOpen, Pencil } from 'lucide-react'
+import { Banknote, BookOpen, Pencil } from 'lucide-react'
 import { BackButton } from '@/components/ui/back-button'
 import { DeliverSection } from '@/components/orders/deliver-section'
 import { UndeliverButton } from '@/components/orders/undeliver-button'
+import { DeleteOrderButton } from '@/components/orders/delete-order-button'
 
 async function getOrder(id: string) {
+  const supabase = await createClient()
   const { data: order } = await supabase
     .from('orders')
     .select('id, customer_name, status, total_amount, created_at')
@@ -64,26 +66,27 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between">
+      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <BackButton />
           <h1 className="text-lg font-bold text-gray-900">Order Details</h1>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          {order.status === 'pending' && (
-            <Link href={`/orders/${order.id}/edit`}>
-              <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 active:scale-95 transition-transform">
-                <Pencil size={12} />
-                Edit
-              </span>
-            </Link>
-          )}
-          <span className={`text-xs font-bold px-3 py-1.5 rounded-lg ${
-            order.status === 'pending' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
-          }`}>
-            {order.status === 'pending' ? 'Pending' : 'Delivered'}
-          </span>
-        </div>
+        <span className={`text-xs font-bold px-3 py-1.5 rounded-lg ${
+          order.status === 'pending' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
+        }`}>
+          {order.status === 'pending' ? 'Pending' : 'Delivered'}
+        </span>
+      </div>
+
+      {/* Action buttons below header */}
+      <div className="bg-white border-b border-gray-100 px-4 py-3 grid gap-2" style={{ gridTemplateColumns: order.status === 'pending' ? '1fr 1fr' : '1fr' }}>
+        {order.status === 'pending' && (
+          <Link href={`/orders/${order.id}/edit`} className="flex items-center justify-center gap-1.5 h-10 text-sm font-bold rounded-xl bg-blue-50 text-blue-600 border border-blue-100 active:scale-95 transition-transform">
+            <Pencil size={14} />
+            Edit Order
+          </Link>
+        )}
+        <DeleteOrderButton orderId={order.id} />
       </div>
 
       <div className="px-4 py-4 space-y-4">

@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Clock, CheckCircle2, Search, Pencil } from 'lucide-react'
+import { Clock, CheckCircle2, Search } from 'lucide-react'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
 
 type Order = {
@@ -129,15 +128,6 @@ function OrderCard({ order }: { order: Order }) {
             {order.status === 'pending' ? 'Pending' : 'Delivered'}
           </span>
         </div>
-        {order.status === 'pending' && (
-          <Link
-            href={`/orders/${order.id}/edit`}
-            onClick={(e) => e.stopPropagation()}
-            className="p-2 bg-blue-50 text-blue-600 rounded-lg border border-blue-100 active:scale-90 transition-transform"
-          >
-            <Pencil size={16} />
-          </Link>
-        )}
       </div>
     </div>
   )

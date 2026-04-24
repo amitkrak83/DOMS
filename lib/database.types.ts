@@ -3,6 +3,30 @@ export type Json = string | number | boolean | null | { [key: string]: Json } | 
 export type Database = {
   public: {
     Tables: {
+      customers: {
+        Row: {
+          id: string
+          name: string
+          mobile: string | null
+          address: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          mobile?: string | null
+          address?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          mobile?: string | null
+          address?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           id: string
@@ -63,6 +87,7 @@ export type Database = {
         Row: {
           id: string
           customer_name: string
+          customer_id: string | null
           status: string
           total_amount: number
           created_at: string
@@ -70,6 +95,7 @@ export type Database = {
         Insert: {
           id?: string
           customer_name: string
+          customer_id?: string | null
           status?: string
           total_amount: number
           created_at?: string
@@ -77,11 +103,20 @@ export type Database = {
         Update: {
           id?: string
           customer_name?: string
+          customer_id?: string | null
           status?: string
           total_amount?: number
           created_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       order_items: {
         Row: {

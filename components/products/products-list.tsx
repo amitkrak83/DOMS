@@ -5,6 +5,7 @@ import { Search } from 'lucide-react'
 import { AddVariantDialog } from './add-variant-dialog'
 import { EditVariantDialog } from './edit-variant-dialog'
 import { DeleteVariantButton } from './delete-variant-button'
+import { DeleteProductButton } from './delete-product-button'
 
 type Product = {
   id: string
@@ -53,7 +54,10 @@ export function ProductsList({ initialProducts }: { initialProducts: Product[] }
         {filteredProducts.map((product) => (
           <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="px-4 py-3 flex items-center justify-between border-b border-gray-100 bg-gray-50/50">
-              <p className="font-bold text-gray-900">{product.name}</p>
+              <div className="flex items-center gap-2">
+                <p className="font-bold text-gray-900">{product.name}</p>
+                <DeleteProductButton productId={product.id} productName={product.name} />
+              </div>
               <AddVariantDialog productId={product.id} productName={product.name} />
             </div>
 

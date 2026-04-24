@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, ShoppingCart, Package, BookOpen } from 'lucide-react'
+import { LogoutButton } from '@/components/auth/logout-button'
 
 const links = [
   { href: '/dashboard', label: 'Home', icon: LayoutDashboard },
@@ -13,6 +14,7 @@ const links = [
 
 export function BottomNav() {
   const pathname = usePathname()
+  if (pathname === '/login') return null
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 z-50">
@@ -35,6 +37,7 @@ export function BottomNav() {
             </Link>
           )
         })}
+        <LogoutButton />
       </div>
     </nav>
   )

@@ -1,8 +1,10 @@
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { Plus, Clock, CheckCircle2 } from 'lucide-react'
+import { SidebarMenu } from '@/components/sidebar-menu'
 
 async function getDashboardData(filter?: string) {
+  const supabase = await createClient()
   // Midnight IST — works regardless of server timezone
   const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
   const today = new Date(`${todayStr}T00:00:00+05:30`)
@@ -131,7 +133,8 @@ export default async function DashboardPage({
 
       {/* Sticky header + stats */}
       <div className="sticky top-0 z-30 bg-gray-50">
-        <div className="bg-white border-b border-gray-200 px-4 pt-5 pb-4">
+        <div className="bg-white border-b border-gray-200 px-4 h-16 flex items-center gap-3">
+          <SidebarMenu />
           <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
         </div>
 

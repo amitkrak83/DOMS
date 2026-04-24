@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/sonner'
 const notoSans = Noto_Sans({ variable: '--font-noto-sans', subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
 export const metadata: Metadata = {
-  title: 'DOMS - Distributor Order Management',
+  title: 'DOMS',
   description: 'Distributor Order Management System',
 }
 

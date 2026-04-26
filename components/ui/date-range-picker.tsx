@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { Calendar, X, ChevronLeft, ChevronRight } from 'lucide-react'
 
 type Props = {
@@ -77,17 +77,24 @@ export function DateRangePicker({ from, to, onChange }: Props) {
     ? `${display(from)} → ${display(to)}`
     : from ? `From ${display(from)}` : 'Filter by date'
 
-  // build calendar grid
-  const totalDays = daysInMonth(viewYear, viewMonth)
-  const startDay = firstDayOfMonth(viewYear, viewMonth)
-  const cells: (string | null)[] = Array(startDay).fill(null)
-  for (let d = 1; d <= totalDays; d++) {
-    const mm = String(viewMonth + 1).padStart(2, '0')
-    const dd = String(d).padStart(2, '0')
-    cells.push(`${viewYear}-${mm}-${dd}`)
-  }
-  // pad to complete last row
-  while (cells.length % 7 !== 0) cells.push(null)
+  // build calendar grid — only recomputes when month/year changes
+  const cells = useMemo(() => {
+    const totalDays = daysInMonth(viewYear, viewMonth)
+    const startDay = firstDayOfMonth(viewYear, viewMonth)
+    const result: (string | null)[] = Array(startDay).fill(null)
+    for (let d = 1; d <= totalDays; d++) {
+      const mm = String(viewMonth + 1).padStart(2, '0')
+      const dd = String(d).padStart(2, '0')
+      result.push(`${viewYear}-${mm}-${dd}`)
+    }
+    while (result.length % 7 !== 0) result.push(null)
+    return result
+  }, [viewYear, viewMonth])
+
+  const monthName = useMemo(
+    () => new Date(viewYear, viewMonth, 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }),
+    [viewYear, viewMonth]
+  )
 
   // effective "to" for hover preview
   const effectiveTo = from && !to ? (hovered && hovered >= from ? hovered : null) : to
@@ -102,8 +109,6 @@ export function DateRangePicker({ from, to, onChange }: Props) {
     if (lo && hi && ymd > lo && ymd < hi) return 'mid'
     return 'none'
   }
-
-  const monthName = new Date(viewYear, viewMonth, 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
 
   return (
     <div ref={ref} className="relative">

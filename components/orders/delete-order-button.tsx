@@ -27,7 +27,7 @@ export function DeleteOrderButton({ orderId }: { orderId: string }) {
       className="w-full h-10 flex items-center justify-center gap-1.5 text-red-500 font-bold text-sm rounded-xl border border-red-200 hover:bg-red-50 active:scale-95 transition-transform disabled:opacity-40"
     >
       <Trash2 size={14} />
-      {loading ? 'Deleting...' : 'Delete Order'}
+      {loading ? '...' : 'Delete'}
     </button>
   )
 }

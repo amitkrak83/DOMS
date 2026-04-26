@@ -1,18 +1,15 @@
 import { createClient } from '@/lib/supabase-server'
 import { LedgerList } from '@/components/ledger/ledger-list'
-import { SidebarMenu } from '@/components/sidebar-menu'
+import { PageHeader } from '@/components/page-header'
+import { RealtimeSync } from '@/components/realtime-sync'
 
 async function getLedger() {
   const supabase = await createClient()
 
-  const { data: orders } = await supabase
-    .from('orders')
-    .select('id, customer_name, total_amount, status, created_at')
-    .order('customer_name')
-
-  const { data: payments } = await supabase
-    .from('payments')
-    .select('order_id, amount, payment_type')
+  const [{ data: orders }, { data: payments }] = await Promise.all([
+    supabase.from('orders').select('id, customer_id, customer_name, total_amount, status, created_at').order('customer_name'),
+    supabase.from('payments').select('order_id, amount'),
+  ])
 
   if (!orders) return []
 
@@ -21,16 +18,19 @@ async function getLedger() {
     return acc
   }, {} as Record<string, number>)
 
+  // Key by customer_id when available, fall back to name-prefix for orderless entries
   const customerMap: Record<string, {
+    customer_id: string | null
     customer_name: string
     orders: { id: string; total_amount: number; paid: number; status: string; created_at: string }[]
   }> = {}
 
   for (const o of orders) {
-    if (!customerMap[o.customer_name]) {
-      customerMap[o.customer_name] = { customer_name: o.customer_name, orders: [] }
+    const key = o.customer_id ?? `name:${o.customer_name}`
+    if (!customerMap[key]) {
+      customerMap[key] = { customer_id: o.customer_id, customer_name: o.customer_name, orders: [] }
     }
-    customerMap[o.customer_name].orders.push({
+    customerMap[key].orders.push({
       id: o.id,
       total_amount: Number(o.total_amount),
       paid: paymentsByOrder[o.id] ?? 0,
@@ -51,9 +51,9 @@ export default async function LedgerPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-16 flex items-center gap-3">
-        <SidebarMenu />
-        <h1 className="text-xl font-bold text-gray-900">Khata</h1>
+      <RealtimeSync tables={['orders', 'payments']} />
+      <div className="sticky top-0 z-30 bg-white">
+        <PageHeader title="Khata" />
       </div>
 
       <LedgerList initialLedger={ledger} />

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { AddProductDialog } from '@/components/products/add-product-dialog'
 import { ProductsList } from '@/components/products/products-list'
-import { SidebarMenu } from '@/components/sidebar-menu'
+import { PageHeader } from '@/components/page-header'
 
 async function getProducts() {
   const supabase = await createClient()
@@ -17,9 +17,8 @@ export default async function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-16 flex items-center gap-3">
-        <SidebarMenu />
-        <h1 className="text-xl font-bold text-gray-900">Products</h1>
+      <div className="sticky top-0 z-30 bg-white">
+        <PageHeader title="Products" />
       </div>
 
       <ProductsList initialProducts={products} />

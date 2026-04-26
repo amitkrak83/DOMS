@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { calculateScheme, formatQuantity, aggregateOrderSummary } from '@/lib/calculations'
@@ -30,6 +30,7 @@ export type OrderItem = {
   product: Product
   variant: Variant
   cases: number
+  itemId?: string  // DB id; present only when loaded from an existing order
 }
 
 type Props = {
@@ -90,50 +91,50 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
     if (editingIndex === index) resetForm()
   }
 
-  const computedItems = items.map(item => {
+  const computedItems = useMemo(() => items.map(item => {
     const scheme = calculateScheme(item.cases, item.variant)
     const schemeCases = Math.floor(scheme.free_bottles / item.variant.bottles_per_case)
     const schemeBottles = scheme.free_bottles % item.variant.bottles_per_case
     return { ...item, scheme, schemeCases, schemeBottles }
-  })
+  }), [items])
 
-  const summary = aggregateOrderSummary(
-    computedItems.map(i => ({
-      cases: i.cases,
-      free_bottles: i.scheme.free_bottles,
-      total_bottles: i.scheme.total_bottles,
-      amount: i.scheme.amount,
-      bottles_per_case: i.variant.bottles_per_case,
-    }))
-  )
+  const summary = useMemo(() => aggregateOrderSummary(
+    computedItems.map(i => ({ cases: i.cases, amount: i.scheme.amount }))
+  ), [computedItems])
 
   async function confirmOrder() {
     setSaving(true)
 
     if (editOrderId) {
-      const { error: orderErr } = await supabase
-        .from('orders')
-        .update({ total_amount: summary.total_amount })
-        .eq('id', editOrderId)
+      // Safe upsert: update existing rows by ID, insert extras, delete removed ones.
+      // Never deletes before insert succeeds — preserves data on partial failure.
+      const existingIds = initialItems.map(i => i.itemId).filter((id): id is string => !!id)
+      const updateCount = Math.min(existingIds.length, computedItems.length)
 
-      if (orderErr) { toast.error('Failed to update order'); setSaving(false); return }
-
-      const { error: deleteErr } = await supabase.from('order_items').delete().eq('order_id', editOrderId)
-      if (deleteErr) { toast.error('Failed to clear old items'); setSaving(false); return }
-
-      const itemsToInsert = computedItems.map(i => ({
-        order_id: editOrderId,
+      const itemData = (i: typeof computedItems[number]) => ({
         variant_id: i.variant.id,
         cases: i.cases,
         free_bottles: i.scheme.free_bottles,
         total_bottles: i.scheme.total_bottles,
         amount: i.scheme.amount,
         price_per_case_snapshot: i.variant.price_per_case,
-      }))
+      })
 
-      const { error: itemsErr } = await supabase.from('order_items').insert(itemsToInsert)
+      const updateOps = Array.from({ length: updateCount }, (_, idx) =>
+        supabase.from('order_items').update(itemData(computedItems[idx])).eq('id', existingIds[idx])
+      )
+      const toInsert = computedItems.slice(updateCount).map(i => ({ order_id: editOrderId, ...itemData(i) }))
+      const toDeleteIds = existingIds.slice(computedItems.length)
+
+      const allResults = await Promise.all([
+        supabase.from('orders').update({ total_amount: summary.total_amount }).eq('id', editOrderId),
+        ...updateOps,
+        ...(toInsert.length > 0 ? [supabase.from('order_items').insert(toInsert)] : []),
+        ...(toDeleteIds.length > 0 ? [supabase.from('order_items').delete().in('id', toDeleteIds)] : []),
+      ])
+
       setSaving(false)
-      if (itemsErr) { toast.error('Failed to save items'); return }
+      if (allResults.some(r => r.error)) { toast.error('Failed to update order'); return }
       toast.success('Order updated!')
       router.push(`/orders/${editOrderId}`)
     } else {
@@ -430,10 +431,6 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Total Paid Cases</span>
             <span className="font-bold text-gray-900">{summary.total_paid_cases} Case</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Total Scheme</span>
-            <span className="font-bold text-green-600">{summary.scheme_display}</span>
           </div>
           <div className="border-t border-blue-200 pt-2 flex justify-between text-sm">
             <span className="font-bold text-gray-900">Grand Total</span>

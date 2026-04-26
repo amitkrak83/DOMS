@@ -1,92 +1,73 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import { Plus, Clock, CheckCircle2 } from 'lucide-react'
-import { SidebarMenu } from '@/components/sidebar-menu'
+import { PageHeader } from '@/components/page-header'
+import { RealtimeSync } from '@/components/realtime-sync'
 
 async function getDashboardData(filter?: string) {
   const supabase = await createClient()
   // Midnight IST — works regardless of server timezone
   const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
   const today = new Date(`${todayStr}T00:00:00+05:30`)
+  const todayISO = today.toISOString()
 
-  // For udhar filter, get relevant order IDs from payments table
-  let udharOrderIds: string[] | null = null
-  if (filter === 'udhar') {
-    const { data } = await supabase
-      .from('payments')
-      .select('order_id')
-      .eq('payment_type', 'credit')
-    udharOrderIds = (data ?? []).map((p: { order_id: string }) => p.order_id)
-  }
+  type OrderRow = { id: string; customer_name: string; status: string; total_amount: number; created_at: string }
+  let ordersData: OrderRow[] = []
 
-  // Build orders query based on filter
-  let ordersData: { id: string; customer_name: string; status: string; total_amount: number; created_at: string }[] = []
+  if (filter === 'collection' || filter === 'udhar') {
+    // Pre-query (cashIds / udharIds) runs in parallel with stats
+    const [preResult, cashTodayRes, udharRes, pendingRes, deliveredTodayRes] = await Promise.all([
+      filter === 'collection'
+        ? supabase.from('payments').select('order_id').in('payment_type', ['cash', 'online']).gte('created_at', todayISO)
+        : supabase.from('payments').select('order_id').eq('payment_type', 'credit'),
+      supabase.from('payments').select('amount').in('payment_type', ['cash', 'online']).gte('created_at', todayISO),
+      supabase.from('payments').select('amount').eq('payment_type', 'credit'),
+      supabase.from('orders').select('id').eq('status', 'pending'),
+      supabase.from('orders').select('id').eq('status', 'delivered').gte('created_at', todayISO),
+    ])
 
-  if (filter === 'udhar') {
-    if ((udharOrderIds ?? []).length > 0) {
-      const { data } = await supabase
+    const ids = (preResult.data ?? []).map((p: { order_id: string }) => p.order_id)
+    if (ids.length > 0) {
+      let q = supabase
         .from('orders')
         .select('id, customer_name, status, total_amount, created_at')
-        .in('id', udharOrderIds!)
+        .in('id', ids)
         .order('created_at', { ascending: false })
-      ordersData = (data ?? []) as typeof ordersData
-    }
-  } else {
-    let q = supabase
-      .from('orders')
-      .select('id, customer_name, status, total_amount, created_at')
-      .order('created_at', { ascending: false })
-
-    if (filter === 'pending') {
-      q = q.eq('status', 'pending')
-    } else if (filter === 'delivered_today') {
-      q = q.eq('status', 'delivered').gte('created_at', today.toISOString())
-    } else if (filter === 'collection') {
-      // Only orders created today that had cash payment today
-      const { data: cashData } = await supabase
-        .from('payments')
-        .select('order_id')
-        .eq('payment_type', 'cash')
-        .gte('created_at', today.toISOString())
-      const cashOrderIds = (cashData ?? []).map((p: { order_id: string }) => p.order_id)
-      if (cashOrderIds.length > 0) {
-        q = q.in('id', cashOrderIds).gte('created_at', today.toISOString())
-      } else {
-        ordersData = []
-        q = q.limit(0)
-      }
-    } else {
-      q = q.limit(6)
+      if (filter === 'collection') q = q.gte('created_at', todayISO)
+      const { data } = await q
+      ordersData = (data ?? []) as OrderRow[]
     }
 
-    const { data } = await q
-    ordersData = (data ?? []) as typeof ordersData
+    const todayCollection = ((cashTodayRes.data ?? []) as { amount: number }[]).reduce((sum, p) => sum + Number(p.amount), 0)
+    const udharTotal = ((udharRes.data ?? []) as { amount: number }[]).reduce((sum, p) => sum + Number(p.amount), 0)
+    return {
+      recentOrders: ordersData,
+      todayDeliveries: deliveredTodayRes.data?.length ?? 0,
+      todayCollection,
+      udharTotal,
+      pendingCount: pendingRes.data?.length ?? 0,
+    }
   }
 
-  // Stats: cash payments today only
-  const cashTodayRes = await supabase
-    .from('payments')
-    .select('amount')
-    .eq('payment_type', 'cash')
-    .gte('created_at', today.toISOString())
-
-  // Stats: all-time udhar (credit payments)
-  const udharRes = await supabase
-    .from('payments')
-    .select('amount')
-    .eq('payment_type', 'credit')
-
-  const pendingRes = await supabase
+  // Simple filters — all queries run in parallel
+  let ordersQ = supabase
     .from('orders')
-    .select('id')
-    .eq('status', 'pending')
+    .select('id, customer_name, status, total_amount, created_at')
+    .order('created_at', { ascending: false })
 
-  const deliveredTodayRes = await supabase
-    .from('orders')
-    .select('id')
-    .eq('status', 'delivered')
-    .gte('created_at', today.toISOString())
+  if (filter === 'pending') ordersQ = ordersQ.eq('status', 'pending')
+  else if (filter === 'delivered_today') ordersQ = ordersQ.eq('status', 'delivered').gte('created_at', todayISO)
+  else ordersQ = ordersQ.limit(6)
 
+  const [ordersResult, cashTodayRes, udharRes, pendingRes, deliveredTodayRes] = await Promise.all([
+    ordersQ,
+    supabase.from('payments').select('amount').in('payment_type', ['cash', 'online']).gte('created_at', todayISO),
+    supabase.from('payments').select('amount').eq('payment_type', 'credit'),
+    supabase.from('orders').select('id').eq('status', 'pending'),
+    supabase.from('orders').select('id').eq('status', 'delivered').gte('created_at', todayISO),
+  ])
+
+  ordersData = (ordersResult.data ?? []) as OrderRow[]
   const todayCollection = ((cashTodayRes.data ?? []) as { amount: number }[]).reduce((sum, p) => sum + Number(p.amount), 0)
   const udharTotal = ((udharRes.data ?? []) as { amount: number }[]).reduce((sum, p) => sum + Number(p.amount), 0)
 
@@ -130,13 +111,11 @@ export default async function DashboardPage({
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
+      <RealtimeSync tables={['orders', 'payments']} />
 
       {/* Sticky header + stats */}
       <div className="sticky top-0 z-30 bg-gray-50">
-        <div className="bg-white border-b border-gray-200 px-4 h-16 flex items-center gap-3">
-          <SidebarMenu />
-          <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-        </div>
+        <PageHeader title="Dashboard" />
 
         <div className="px-4 pt-4 pb-3">
           <div className="grid grid-cols-2 gap-3">
@@ -201,7 +180,9 @@ export default async function DashboardPage({
                 <div>
                   <p className="text-gray-900 font-bold text-sm leading-tight">{order.customer_name}</p>
                   <p className="text-gray-400 text-xs mt-0.5">
-                    {new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    {new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })}
+                    {' '}
+                    {new Date(order.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}
                   </p>
                 </div>
               </div>

@@ -43,7 +43,7 @@ export function SidebarMenu() {
 
             <nav className="flex-1 overflow-y-auto py-2">
               {links.map(({ href, label, icon: Icon }) => {
-                const active = pathname.startsWith(href)
+                const active = pathname === href || pathname.startsWith(href + '/')
                 return (
                   <Link
                     key={href}

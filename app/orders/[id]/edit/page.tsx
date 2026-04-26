@@ -16,7 +16,7 @@ async function getEditData(id: string) {
       .single(),
     supabase
       .from('order_items')
-      .select('cases, variant_id')
+      .select('id, cases, variant_id')
       .eq('order_id', id),
   ])
 
@@ -24,14 +24,14 @@ async function getEditData(id: string) {
   if (!order || order.status !== 'pending') return null
 
   const products = (productsRes.data ?? []) as Product[]
-  const dbItems = (itemsRes.data ?? []) as { cases: number; variant_id: string }[]
+  const dbItems = (itemsRes.data ?? []) as { id: string; cases: number; variant_id: string }[]
 
   const initialItems: OrderItem[] = []
   for (const dbItem of dbItems) {
     for (const product of products) {
       const variant = product.product_variants.find(v => v.id === dbItem.variant_id)
       if (variant) {
-        initialItems.push({ product, variant, cases: dbItem.cases })
+        initialItems.push({ product, variant, cases: dbItem.cases, itemId: dbItem.id })
         break
       }
     }

@@ -17,10 +17,11 @@ export function LogoutButton() {
     <button
       onClick={handleLogout}
       suppressHydrationWarning
-      className="flex flex-col items-center py-2.5 gap-1 flex-1 text-gray-500 transition-colors"
+      className="flex items-center gap-1.5 px-3 py-2 text-gray-400 hover:text-red-500 active:scale-90 transition-all text-sm font-medium"
+      aria-label="Logout"
     >
-      <LogOut size={22} strokeWidth={2} />
-      <span className="text-xs font-semibold">Logout</span>
+      <LogOut size={18} strokeWidth={2} />
+      <span>Logout</span>
     </button>
   )
 }

@@ -4,7 +4,10 @@ import { useState } from 'react'
 import { Search } from 'lucide-react'
 import Link from 'next/link'
 
+const IST = 'Asia/Kolkata'
+
 type LedgerItem = {
+  customer_id: string | null
   customer_name: string
   total: number
   paid: number
@@ -21,7 +24,7 @@ type LedgerItem = {
 export function LedgerList({ initialLedger }: { initialLedger: LedgerItem[] }) {
   const [search, setSearch] = useState('')
 
-  const filteredLedger = initialLedger.filter(c => 
+  const filteredLedger = initialLedger.filter(c =>
     c.customer_name.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -30,7 +33,7 @@ export function LedgerList({ initialLedger }: { initialLedger: LedgerItem[] }) {
   return (
     <div>
       {/* Search Bar */}
-      <div className="sticky top-[63px] z-20 bg-white px-4 pb-3 shadow-sm border-b border-gray-100 !mt-0">
+      <div className="sticky top-16 z-20 bg-white px-4 pt-3 pb-3 shadow-sm border-b border-gray-100">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
@@ -58,7 +61,10 @@ export function LedgerList({ initialLedger }: { initialLedger: LedgerItem[] }) {
         )}
 
         {filteredLedger.map(customer => (
-          <div key={customer.customer_name} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div
+            key={customer.customer_id ?? `name:${customer.customer_name}`}
+            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+          >
             <div className="px-4 py-3 flex items-center justify-between border-b border-gray-100 bg-gray-50/50">
               <p className="font-bold text-gray-900">{customer.customer_name}</p>
               {customer.outstanding > 0 ? (
@@ -82,7 +88,7 @@ export function LedgerList({ initialLedger }: { initialLedger: LedgerItem[] }) {
                 <Link key={o.id} href={`/orders/${o.id}`}>
                   <div className="flex items-center justify-between px-4 py-3 active:bg-gray-50 transition-colors">
                     <p className="text-sm text-gray-500">
-                      {new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                      {new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: IST })}
                     </p>
                     <p className="text-sm font-bold text-gray-900">₹{o.total_amount.toLocaleString('en-IN')}</p>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${

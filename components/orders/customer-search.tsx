@@ -51,7 +51,7 @@ export function CustomerSearch({ value, onChange }: Props) {
         .ilike('name', `%${query}%`)
         .limit(6)
       setResults(data ?? [])
-    }, 250)
+    }, 500)
     return () => clearTimeout(timer)
   }, [query])
 

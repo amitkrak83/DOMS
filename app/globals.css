@@ -128,3 +128,46 @@
     @apply font-sans;
   }
 }
+
+/* ── Sonner toast — card style matching dashboard stat cards ── */
+@keyframes toast-slide-right {
+  from { opacity: 0; transform: translateX(calc(100% + 1.5rem)); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/*
+ * Use .doms-toaster + li element selector (specificity 021) so this beats
+ * Sonner's own [data-sonner-toast][data-styled] rules (specificity 020)
+ * even when both carry !important.
+ */
+.doms-toaster li[data-sonner-toast] {
+  animation: toast-slide-right 0.28s cubic-bezier(0.21, 1.02, 0.73, 1) both !important;
+}
+
+/* Scope all rules under .doms-toaster (specificity 020) to beat Sonner's own
+   [data-sonner-toast][data-styled] rules (specificity 020 injected later). */
+.doms-toaster [data-sonner-toast] {
+  border-radius: 0.75rem !important;
+  border: none !important;
+}
+.doms-toaster [data-sonner-toast][data-type="success"] {
+  background: linear-gradient(to right, #f0fdf4, #ffffff) !important;
+  box-shadow: inset 4px 0 0 #22c55e, 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+.doms-toaster [data-sonner-toast][data-type="error"] {
+  background: linear-gradient(to right, #fef2f2, #ffffff) !important;
+  box-shadow: inset 4px 0 0 #ef4444, 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+.doms-toaster [data-sonner-toast][data-type="warning"] {
+  background: linear-gradient(to right, #fff7ed, #ffffff) !important;
+  box-shadow: inset 4px 0 0 #f97316, 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+.doms-toaster [data-sonner-toast][data-type="info"] {
+  background: linear-gradient(to right, #eff6ff, #ffffff) !important;
+  box-shadow: inset 4px 0 0 #3b82f6, 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+.doms-toaster [data-sonner-toast]:not([data-type]),
+.doms-toaster [data-sonner-toast][data-type="default"] {
+  background: #ffffff !important;
+  box-shadow: inset 4px 0 0 #cbd5e1, 0 4px 16px rgba(0,0,0,0.08) !important;
+}

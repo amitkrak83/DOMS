@@ -29,7 +29,7 @@ export function UndeliverButton({ orderId }: { orderId: string }) {
     if (payErr) { toast.error('Failed to remove payment'); return }
 
     toast.success('Order moved back to pending')
-    router.refresh()
+    router.push('/orders')
   }
 
   return (

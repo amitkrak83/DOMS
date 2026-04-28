@@ -41,7 +41,7 @@ export function CustomersList({ initialCustomers }: { initialCustomers: Customer
 
   return (
     <div>
-      <div className="sticky top-[64px] z-20 bg-white px-4 pb-3 shadow-sm border-b border-gray-100">
+      <div className="sticky top-16 z-20 bg-white px-4 pt-3 pb-3 shadow-sm border-b border-gray-100">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
@@ -77,8 +77,8 @@ export function CustomersList({ initialCustomers }: { initialCustomers: Customer
                     </span>
                   )}
                   {customer.address && (
-                    <span className="text-xs text-gray-400 flex items-center gap-1 truncate max-w-[140px]">
-                      <MapPin size={10} /> {customer.address}
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <MapPin size={10} className="shrink-0" /> <span className="truncate">{customer.address}</span>
                     </span>
                   )}
                 </div>

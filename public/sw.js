@@ -27,7 +27,8 @@ self.addEventListener('fetch', event => {
   if (url.pathname.startsWith('/_next/static')) {
     event.respondWith(
       caches.match(request).then(hit => hit ?? fetch(request).then(res => {
-        caches.open(CACHE).then(c => c.put(request, res.clone()))
+        const cloned = res.clone()
+        caches.open(CACHE).then(c => c.put(request, cloned))
         return res
       }))
     )
@@ -38,7 +39,10 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(request)
       .then(res => {
-        if (res.ok) caches.open(CACHE).then(c => c.put(request, res.clone()))
+        if (res.ok) {
+          const cloned = res.clone()
+          caches.open(CACHE).then(c => c.put(request, cloned))
+        }
         return res
       })
       .catch(() => caches.match(request))

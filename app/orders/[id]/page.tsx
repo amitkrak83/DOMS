@@ -95,9 +95,6 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         {/* Customer Details */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3">
           <div className="grid grid-cols-[100px_1fr] gap-y-2 text-sm">
-            <span className="text-gray-500 font-medium">Order ID</span>
-            <span className="text-gray-900 font-bold">{displayOrderId}</span>
-
             <span className="text-gray-500 font-medium">Customer</span>
             <span className="text-gray-900 font-bold">{order.customer_name}</span>
 
@@ -194,8 +191,6 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
         )}
 
-        {/* Footer line inside share area */}
-        <p className="text-center text-[10px] text-gray-400 pt-2">DOMS · Distributor Order Management</p>
       </div>
 
       {/* Actions outside share content */}

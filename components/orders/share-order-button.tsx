@@ -19,33 +19,26 @@ export function ShareOrderButton({ displayOrderId }: ShareOrderButtonProps) {
     try {
       const { toBlob } = await import('html-to-image')
 
-      // Temporarily expand element so full content is captured (not just viewport)
-      const prevOverflow = element.style.overflow
-      element.style.overflow = 'visible'
-
       const blob = await toBlob(element, {
-        pixelRatio: 2,
+        pixelRatio: window.devicePixelRatio || 2,
+        cacheBust: true,
         style: { borderRadius: '0' },
         filter: (node) => {
-          // exclude any sticky headers that may be cut weirdly
           if (node instanceof HTMLElement && node.classList.contains('sticky')) return false
           return true
         },
       })
 
-      element.style.overflow = prevOverflow
-
       if (!blob) throw new Error('empty blob')
 
       const file = new File([blob], `${displayOrderId}.png`, { type: 'image/png' })
 
-      // Native share with file (Android Chrome + iOS Safari 15+)
       if (typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file], title: `Order ${displayOrderId}` })
         return
       }
 
-      // Desktop / unsupported browser → download
+      // Fallback: download
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -54,7 +47,7 @@ export function ShareOrderButton({ displayOrderId }: ShareOrderButtonProps) {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      toast.success('Image saved — share it via WhatsApp or any app')
+      toast.success('Image saved — share via WhatsApp or any app')
     } catch (err) {
       if (err instanceof Error && err.name !== 'AbortError') {
         toast.error('Could not capture image. Try again.')

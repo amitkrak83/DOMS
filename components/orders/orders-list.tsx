@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useMemo, memo } from 'react'
+import { useState, useMemo, memo, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Clock, CheckCircle2, Search, ChevronDown } from 'lucide-react'
+import { Clock, CheckCircle2, Search } from 'lucide-react'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
 import { supabase } from '@/lib/supabase'
 
@@ -16,74 +16,93 @@ type Order = {
 
 type Props = {
   initialOrders: Order[]
-  windowStart: string  // ISO — start of the initial 2-day window (yesterday midnight IST)
+  hasMore: boolean
 }
 
 const IST = 'Asia/Kolkata'
+const PAGE_SIZE = 10
 
-export function OrdersList({ initialOrders, windowStart: initialWindowStart }: Props) {
+const TABS = [
+  { id: 'all',       label: 'All'       },
+  { id: 'pending',   label: 'Pending'   },
+  { id: 'delivered', label: 'Delivered' },
+] as const
+
+export function OrdersList({ initialOrders, hasMore: initialHasMore }: Props) {
   const [loadedOrders, setLoadedOrders] = useState<Order[]>([])
-  const [windowStart, setWindowStart] = useState(initialWindowStart)
+  const [hasMore, setHasMore] = useState(initialHasMore)
   const [loadingMore, setLoadingMore] = useState(false)
-  const [noMore, setNoMore] = useState(false)
   const [activeTab, setActiveTab] = useState<'all' | 'pending' | 'delivered'>('all')
   const [search, setSearch] = useState('')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  const sentinelRef = useRef<HTMLDivElement>(null)
+  // Synchronous guard — prevents double-fetch when IO fires before state update propagates
+  const fetchingRef = useRef(false)
 
-  // Merge server orders (realtime-refreshed) with client-loaded older orders, no duplicates
+  // Merge server-rendered orders with client-loaded older ones (no duplicates)
   const allOrders = useMemo(() => {
     const seen = new Set(initialOrders.map(o => o.id))
-    const extra = loadedOrders.filter(o => !seen.has(o.id))
-    return [...initialOrders, ...extra]
+    return [...initialOrders, ...loadedOrders.filter(o => !seen.has(o.id))]
   }, [initialOrders, loadedOrders])
 
-  async function loadMore() {
-    if (noMore || loadingMore) return
-    setLoadingMore(true)
+  // Cursor = created_at of last loaded order
+  const cursor = allOrders.at(-1)?.created_at
 
-    const newWindowEnd = windowStart
-    const newWindowStart = new Date(new Date(windowStart).getTime() - 2 * 24 * 60 * 60 * 1000).toISOString()
+  // Always-fresh ref so the IntersectionObserver callback never goes stale
+  const fetchRef = useRef<() => void>(() => {})
+  fetchRef.current = async () => {
+    if (!cursor || !hasMore || fetchingRef.current) return
+    fetchingRef.current = true
+    setLoadingMore(true)
 
     const { data } = await supabase
       .from('orders')
       .select('id, customer_name, status, total_amount, created_at')
-      .gte('created_at', newWindowStart)
-      .lt('created_at', newWindowEnd)
+      .lt('created_at', cursor)
       .order('created_at', { ascending: false })
+      .limit(PAGE_SIZE + 1)
 
-    const more = data ?? []
-    setLoadedOrders(prev => [...prev, ...more])
-    setWindowStart(newWindowStart)
-    setNoMore(more.length === 0)
+    const rows = data ?? []
+    const gotMore = rows.length > PAGE_SIZE
+    setLoadedOrders(prev => [...prev, ...(gotMore ? rows.slice(0, PAGE_SIZE) : rows)])
+    setHasMore(gotMore)
+    fetchingRef.current = false
     setLoadingMore(false)
   }
+
+  // Attach / detach IntersectionObserver whenever hasMore changes
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el || !hasMore) return
+
+    const observer = new IntersectionObserver(
+      (entries) => { if (entries[0].isIntersecting) fetchRef.current() },
+      { rootMargin: '300px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [hasMore])
 
   const filteredOrders = useMemo(() => allOrders.filter(order => {
     const matchesTab =
       activeTab === 'all' ||
-      (activeTab === 'pending' && order.status === 'pending') ||
+      (activeTab === 'pending'   && order.status === 'pending') ||
       (activeTab === 'delivered' && order.status === 'delivered')
 
     const matchesSearch = order.customer_name.toLowerCase().includes(search.toLowerCase())
 
-    // Use IST date for day-boundary comparison
     const orderDate = new Date(order.created_at).toLocaleDateString('en-CA', { timeZone: IST })
     const matchesFrom = !fromDate || orderDate >= fromDate
-    const matchesTo = !toDate || orderDate <= toDate
+    const matchesTo   = !toDate   || orderDate <= toDate
 
     return matchesTab && matchesSearch && matchesFrom && matchesTo
   }), [allOrders, activeTab, search, fromDate, toDate])
 
-  const tabs = useMemo(() => [
-    { id: 'all',       label: 'All',       count: allOrders.length },
-    { id: 'pending',   label: 'Pending',   count: allOrders.filter(o => o.status === 'pending').length },
-    { id: 'delivered', label: 'Delivered', count: allOrders.filter(o => o.status === 'delivered').length },
-  ] as const, [allOrders])
 
   return (
     <div>
-      {/* Search and Filters */}
+      {/* Sticky filters */}
       <div className="sticky top-16 z-20 bg-white px-4 pt-3 pb-3 space-y-3 shadow-sm border-b border-gray-100">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -103,7 +122,7 @@ export function OrdersList({ initialOrders, windowStart: initialWindowStart }: P
         />
 
         <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
-          {tabs.map(tab => (
+          {TABS.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -114,40 +133,32 @@ export function OrdersList({ initialOrders, windowStart: initialWindowStart }: P
               }`}
             >
               {tab.label}
-              <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] ${
-                activeTab === tab.id ? 'bg-blue-100' : 'bg-gray-200 text-gray-600'
-              }`}>
-                {tab.count}
-              </span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* List */}
+      {/* Order cards */}
       <div className="px-4 space-y-2.5 pt-4">
-        {filteredOrders.length === 0 && !loadingMore ? (
+        {filteredOrders.length === 0 && !loadingMore && (
           <div className="bg-white rounded-xl p-8 text-center border border-gray-100">
             <p className="text-gray-500 text-sm">No orders found</p>
           </div>
-        ) : (
-          filteredOrders.map(order => <OrderCard key={order.id} order={order} />)
         )}
 
-        {/* Load More */}
-        {!noMore && (
-          <button
-            onClick={loadMore}
-            disabled={loadingMore}
-            className="w-full h-12 flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 text-sm font-bold text-gray-400 hover:border-blue-300 hover:text-blue-500 transition-colors disabled:opacity-50 mt-2"
-          >
-            <ChevronDown size={16} />
-            {loadingMore ? 'Loading…' : 'Load More (older orders)'}
-          </button>
+        {filteredOrders.map(order => <OrderCard key={order.id} order={order} />)}
+
+        {/* Infinite scroll sentinel — invisible, sits below the list */}
+        <div ref={sentinelRef} className="h-1" />
+
+        {loadingMore && (
+          <div className="flex items-center justify-center py-6">
+            <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          </div>
         )}
 
-        {noMore && loadedOrders.length > 0 && (
-          <p className="text-center text-xs text-gray-400 py-2">All orders loaded</p>
+        {!hasMore && allOrders.length > PAGE_SIZE && (
+          <p className="text-center text-xs text-gray-400 py-4">All orders loaded</p>
         )}
       </div>
     </div>
@@ -177,15 +188,13 @@ const OrderCard = memo(function OrderCard({ order }: { order: Order }) {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <div className="text-right">
-          <p className="text-gray-900 font-extrabold text-sm">₹{Number(order.total_amount).toLocaleString('en-IN')}</p>
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md mt-1 inline-block ${
-            order.status === 'pending' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
-          }`}>
-            {order.status === 'pending' ? 'Pending' : 'Delivered'}
-          </span>
-        </div>
+      <div className="text-right">
+        <p className="text-gray-900 font-extrabold text-sm">₹{Number(order.total_amount).toLocaleString('en-IN')}</p>
+        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md mt-1 inline-block ${
+          order.status === 'pending' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
+        }`}>
+          {order.status === 'pending' ? 'Pending' : 'Delivered'}
+        </span>
       </div>
     </div>
   )

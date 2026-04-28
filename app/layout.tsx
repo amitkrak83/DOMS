@@ -4,6 +4,7 @@ import './globals.css'
 import { BottomNav } from '@/components/bottom-nav'
 import { Toaster } from '@/components/ui/sonner'
 import { SwRegister } from '@/components/sw-register'
+import { NavigationProgress } from '@/components/navigation-progress'
 
 const notoSans = Noto_Sans({ variable: '--font-noto-sans', subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
@@ -33,8 +34,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="pb-20 max-w-2xl mx-auto">
           {children}
         </main>
+        <NavigationProgress />
         <BottomNav />
-        <Toaster />
+        <Toaster position="top-right" />
         <SwRegister />
       </body>
     </html>

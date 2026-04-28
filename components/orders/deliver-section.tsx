@@ -110,8 +110,8 @@ export function DeliverSection({ orderId, totalAmount }: { orderId: string; tota
     }
 
     setLoading(false)
-    toast.success('✅ Order Delivered successfully')
-    router.refresh()
+    toast.success('Order delivered')
+    router.push('/orders')
   }
 
   const qrAmount = parseFloat(amountReceived) || totalAmount

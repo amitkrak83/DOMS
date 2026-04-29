@@ -3,17 +3,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, LayoutDashboard, ShoppingCart, Package, BookOpen, Users } from 'lucide-react'
+import { Menu, X, LayoutDashboard, ShoppingCart, Package, BookOpen, Users, ShieldCheck } from 'lucide-react'
 
 const links = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/orders', label: 'Orders', icon: ShoppingCart },
-  { href: '/products', label: 'Products', icon: Package },
-  { href: '/ledger', label: 'Khata', icon: BookOpen },
-  { href: '/customers', label: 'Customers', icon: Users },
+  { href: '/orders',    label: 'Orders',     icon: ShoppingCart    },
+  { href: '/products',  label: 'Products',   icon: Package         },
+  { href: '/ledger',    label: 'Khata',      icon: BookOpen        },
+  { href: '/customers', label: 'Customers',  icon: Users           },
 ]
 
-export function SidebarMenu() {
+export function SidebarMenu({ isAdmin = false }: { isAdmin?: boolean }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
@@ -60,6 +60,22 @@ export function SidebarMenu() {
                   </Link>
                 )
               })}
+              {isAdmin && (
+                <div className="mt-2 border-t border-gray-100">
+                  <Link
+                    href="/admin"
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center gap-3.5 px-5 py-4 font-bold text-sm transition-colors ${
+                      pathname.startsWith('/admin')
+                        ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <ShieldCheck size={18} />
+                    Admin Panel
+                  </Link>
+                </div>
+              )}
             </nav>
 
             <div className="px-5 py-4 border-t border-gray-100">

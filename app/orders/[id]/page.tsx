@@ -11,25 +11,25 @@ import { ShareOrderButton } from '@/components/orders/share-order-button'
 
 async function getOrder(id: string) {
   const supabase = await createClient()
-  const { data: order } = await supabase
-    .from('orders')
-    .select('id, customer_name, customer_id, status, total_amount, created_at, customers(mobile, address)')
-    .eq('id', id)
-    .single()
+
+  const [{ data: order }, { data: items }, { data: payments }, { data: settings }] = await Promise.all([
+    supabase.from('orders').select('id, customer_name, customer_id, status, total_amount, created_at, customers(mobile, address)').eq('id', id).single(),
+    supabase.from('order_items').select('id, cases, free_bottles, total_bottles, amount, price_per_case_snapshot, product_variants(id, variant_name, bottles_per_case, free_bottles_per_case, products(name))').eq('order_id', id),
+    supabase.from('payments').select('id, payment_type, amount, created_at').eq('order_id', id),
+    supabase.from('app_settings').select('key, value'),
+  ])
 
   if (!order) return null
 
-  const { data: items } = await supabase
-    .from('order_items')
-    .select('id, cases, free_bottles, total_bottles, amount, price_per_case_snapshot, product_variants(id, variant_name, bottles_per_case, free_bottles_per_case, products(name))')
-    .eq('order_id', id)
+  const settingsMap = Object.fromEntries((settings ?? []).map(s => [s.key, s.value]))
 
-  const { data: payments } = await supabase
-    .from('payments')
-    .select('id, payment_type, amount, created_at')
-    .eq('order_id', id)
-
-  return { order, items: items ?? [], payments: payments ?? [] }
+  return {
+    order,
+    items: items ?? [],
+    payments: payments ?? [],
+    upiId: settingsMap['upi_id'] ?? process.env.NEXT_PUBLIC_UPI_ID ?? '',
+    merchantName: settingsMap['merchant_name'] ?? process.env.NEXT_PUBLIC_MERCHANT_NAME ?? '',
+  }
 }
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -37,7 +37,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const result = await getOrder(id)
   if (!result) notFound()
 
-  const { order, items, payments } = result
+  const { order, items, payments, upiId, merchantName } = result
 
   const customerInfo = (order as any).customers as { mobile: string | null; address: string | null } | null
 
@@ -196,7 +196,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       {/* Actions outside share content */}
       <div className="px-4 space-y-4">
         {order.status === 'pending' && (
-          <DeliverSection orderId={order.id} totalAmount={Number(order.total_amount)} />
+          <DeliverSection orderId={order.id} totalAmount={Number(order.total_amount)} upiId={upiId} merchantName={merchantName} />
         )}
         {order.status === 'delivered' && (
           <UndeliverButton orderId={order.id} />

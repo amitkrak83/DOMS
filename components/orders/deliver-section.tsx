@@ -8,11 +8,8 @@ import { Banknote, BookOpen, CheckCircle, Smartphone, X, QrCode } from 'lucide-r
 import { toast } from 'sonner'
 import { QRCodeSVG } from 'qrcode.react'
 
-const UPI_ID = process.env.NEXT_PUBLIC_UPI_ID ?? '9918802425@okbizicici'
-const MERCHANT_NAME = process.env.NEXT_PUBLIC_MERCHANT_NAME ?? 'Verma Rice Mill'
-
-function QRModal({ amount, onClose }: { amount: number; onClose: () => void }) {
-  const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amount}&cu=INR`
+function QRModal({ amount, upiId, merchantName, onClose }: { amount: number; upiId: string; merchantName: string; onClose: () => void }) {
+  const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR`
 
   return createPortal(
     <div
@@ -48,8 +45,8 @@ function QRModal({ amount, onClose }: { amount: number; onClose: () => void }) {
 
         {/* Merchant info */}
         <div className="text-center space-y-0.5">
-          <p className="text-sm font-bold text-gray-800">{MERCHANT_NAME}</p>
-          <p className="text-xs text-gray-400">UPI: {UPI_ID}</p>
+          <p className="text-sm font-bold text-gray-800">{merchantName}</p>
+          <p className="text-xs text-gray-400">UPI: {upiId}</p>
         </div>
 
         {/* App logos (text) */}
@@ -69,7 +66,12 @@ function QRModal({ amount, onClose }: { amount: number; onClose: () => void }) {
   )
 }
 
-export function DeliverSection({ orderId, totalAmount }: { orderId: string; totalAmount: number }) {
+export function DeliverSection({ orderId, totalAmount, upiId, merchantName }: {
+  orderId: string
+  totalAmount: number
+  upiId: string
+  merchantName: string
+}) {
   const [paymentType, setPaymentType] = useState<'cash' | 'credit' | 'online' | null>(null)
   const [amountReceived, setAmountReceived] = useState(totalAmount.toString())
   const [showQR, setShowQR] = useState(false)
@@ -118,7 +120,7 @@ export function DeliverSection({ orderId, totalAmount }: { orderId: string; tota
 
   return (
     <>
-      {showQR && <QRModal amount={qrAmount} onClose={() => setShowQR(false)} />}
+      {showQR && <QRModal amount={qrAmount} upiId={upiId} merchantName={merchantName} onClose={() => setShowQR(false)} />}
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-4">
         <p className="font-bold text-gray-900 text-sm">Payment Mode</p>

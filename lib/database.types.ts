@@ -166,6 +166,24 @@ export type Database = {
           }
         ]
       }
+      allowed_emails: {
+        Row:    { email: string; added_at: string; added_by: string | null }
+        Insert: { email: string; added_at?: string; added_by?: string | null }
+        Update: { email?: string; added_at?: string; added_by?: string | null }
+        Relationships: []
+      }
+      profiles: {
+        Row:    { id: string; email: string; is_admin: boolean; created_at: string }
+        Insert: { id: string; email: string; is_admin?: boolean; created_at?: string }
+        Update: { id?: string; email?: string; is_admin?: boolean; created_at?: string }
+        Relationships: []
+      }
+      app_settings: {
+        Row:    { key: string; value: string; updated_at: string }
+        Insert: { key: string; value: string; updated_at?: string }
+        Update: { key?: string; value?: string; updated_at?: string }
+        Relationships: []
+      }
       payments: {
         Row: {
           id: string

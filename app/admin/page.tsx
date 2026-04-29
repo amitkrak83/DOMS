@@ -4,6 +4,7 @@ import { BackButton } from '@/components/ui/back-button'
 import { UsersPanel } from '@/components/admin/users-panel'
 import { AllowedEmailsPanel } from '@/components/admin/allowed-emails-panel'
 import { SettingsPanel } from '@/components/admin/settings-panel'
+import { RequestsPanel } from '@/components/admin/requests-panel'
 import { AdminTabs } from '@/components/admin/admin-tabs'
 
 export default async function AdminPage({
@@ -21,10 +22,11 @@ export default async function AdminPage({
   if (!profile?.is_admin) redirect('/dashboard')
   const superAdminEmail = process.env.SUPER_ADMIN_EMAIL ?? ''
 
-  const [{ data: profiles }, { data: allowedEmails }, { data: settings }] = await Promise.all([
+  const [{ data: profiles }, { data: allowedEmails }, { data: settings }, { data: accessRequests }] = await Promise.all([
     supabase.from('profiles').select('id, email, is_admin, created_at').order('created_at', { ascending: false }),
     supabase.from('allowed_emails').select('email, added_at').order('added_at', { ascending: false }),
     supabase.from('app_settings').select('key, value'),
+    supabase.from('access_requests').select('id, email, requested_at, status').order('requested_at', { ascending: false }),
   ])
 
   const activeEmails = new Set((profiles ?? []).map(p => p.email))
@@ -43,6 +45,9 @@ export default async function AdminPage({
       <AdminTabs activeTab={tab} />
 
       <div className="px-4 py-4">
+        {tab === 'requests' && (
+          <RequestsPanel initialRequests={accessRequests ?? []} />
+        )}
         {tab === 'users' && (
           <UsersPanel initialProfiles={profiles ?? []} superAdminEmail={superAdminEmail} />
         )}

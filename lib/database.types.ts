@@ -184,6 +184,12 @@ export type Database = {
         Update: { key?: string; value?: string; updated_at?: string }
         Relationships: []
       }
+      access_requests: {
+        Row:    { id: string; email: string; requested_at: string; status: string }
+        Insert: { id?: string; email: string; requested_at?: string; status?: string }
+        Update: { id?: string; email?: string; requested_at?: string; status?: string }
+        Relationships: []
+      }
       payments: {
         Row: {
           id: string

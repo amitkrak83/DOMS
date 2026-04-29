@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShieldX } from 'lucide-react'
+import { RequestAccessButton } from './request-access-button'
 
 export default async function NoAccessPage({
   searchParams,
@@ -33,12 +34,7 @@ export default async function NoAccessPage({
               Please contact <span className="font-bold text-gray-700">Amit</span> to enable your account.
             </p>
           </div>
-          <a
-            href={`mailto:${process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL}?subject=DOMS Access Request&body=Please enable access for: ${email ?? ''}`}
-            className="block w-full h-11 bg-blue-600 text-white font-bold text-sm rounded-xl flex items-center justify-center active:scale-95 transition-transform"
-          >
-            Request Access from Amit
-          </a>
+          <RequestAccessButton email={email ?? ''} />
         </div>
 
         <Link href="/login" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">

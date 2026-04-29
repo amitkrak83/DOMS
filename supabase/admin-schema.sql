@@ -22,7 +22,15 @@ CREATE TABLE IF NOT EXISTS profiles (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 3. App settings (key-value store for runtime config)
+-- 3. Access requests (users requesting access from no-access page)
+CREATE TABLE IF NOT EXISTS access_requests (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email        TEXT NOT NULL UNIQUE,
+  requested_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  status       TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected'))
+);
+
+-- 4. App settings (key-value store for runtime config)
 CREATE TABLE IF NOT EXISTS app_settings (
   key        TEXT PRIMARY KEY,
   value      TEXT NOT NULL,
@@ -64,6 +72,9 @@ GRANT INSERT, DELETE ON allowed_emails TO authenticated;
 
 GRANT SELECT, UPDATE ON app_settings TO authenticated;
 GRANT SELECT ON app_settings TO anon;
+
+GRANT INSERT ON access_requests TO anon, authenticated;
+GRANT SELECT, UPDATE ON access_requests TO authenticated;
 
 -- ============================================================
 -- RLS
@@ -113,4 +124,20 @@ CREATE POLICY "settings_select" ON app_settings
   FOR SELECT USING (auth.role() = 'authenticated');
 
 CREATE POLICY "settings_update" ON app_settings
+  FOR UPDATE USING (is_admin());
+
+-- access_requests: anyone can insert; only admins can read/update
+ALTER TABLE access_requests ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "requests_insert" ON access_requests;
+DROP POLICY IF EXISTS "requests_select" ON access_requests;
+DROP POLICY IF EXISTS "requests_update" ON access_requests;
+
+CREATE POLICY "requests_insert" ON access_requests
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "requests_select" ON access_requests
+  FOR SELECT USING (is_admin());
+
+CREATE POLICY "requests_update" ON access_requests
   FOR UPDATE USING (is_admin());

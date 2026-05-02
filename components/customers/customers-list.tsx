@@ -12,7 +12,6 @@ export type Customer = {
   name: string
   mobile: string | null
   address: string | null
-  created_at: string
 }
 
 export function CustomersList({ initialCustomers }: { initialCustomers: Customer[] }) {

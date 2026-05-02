@@ -77,11 +77,6 @@ export async function OrderActivity({ orderId }: { orderId: string }) {
     db.from('audit_log').select('id, table_name, operation, old_data, new_data, user_email, user_name, created_at').eq('table_name', 'payments').contains('old_data', { order_id: orderId }),
   ])
 
-  console.log('[OrderActivity] orderId:', orderId)
-  console.log('[OrderActivity] r1 data:', r1.data?.length, 'error:', r1.error)
-  console.log('[OrderActivity] r2 data:', r2.data?.length, 'error:', r2.error)
-  console.log('[OrderActivity] r3 data:', r3.data?.length, 'error:', r3.error)
-
   const { data: orderLogs } = r1
   const { data: newPayLogs } = r2
   const { data: oldPayLogs } = r3

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
-import { BackButton } from '@/components/ui/back-button'
+import { PageHeader } from '@/components/page-header'
 import { UsersPanel } from '@/components/admin/users-panel'
 import { AllowedEmailsPanel } from '@/components/admin/allowed-emails-panel'
 import { SettingsPanel } from '@/components/admin/settings-panel'
@@ -24,12 +24,13 @@ export default async function AdminPage({
   const superAdminEmail = process.env.SUPER_ADMIN_EMAIL ?? ''
 
   const db = supabase as any
-  const [{ data: profiles }, { data: allowedEmails }, { data: settings }, { data: accessRequests }, { data: auditLogs }] = await Promise.all([
+  const [{ data: profiles }, { data: allowedEmails }, { data: settings }, { data: accessRequests }, { data: auditLogs }, { data: notifPrefs }] = await Promise.all([
     supabase.from('profiles').select('id, email, is_admin, created_at').order('created_at', { ascending: false }),
     supabase.from('allowed_emails').select('email, added_at').order('added_at', { ascending: false }),
     supabase.from('app_settings').select('key, value'),
     supabase.from('access_requests').select('id, email, requested_at, status').order('requested_at', { ascending: false }),
     db.from('audit_log').select('id, table_name, operation, old_data, new_data, user_email, user_name, created_at').order('created_at', { ascending: false }).limit(200),
+    db.from('notification_preferences').select('user_id, new_order, payment_recorded, order_delivered'),
   ])
 
   const activeEmails = new Set((profiles ?? []).map(p => p.email))
@@ -37,13 +38,9 @@ export default async function AdminPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-14 flex items-center gap-3">
-        <BackButton />
-        <h1 className="text-lg font-bold text-gray-900 flex-1">Admin Panel</h1>
-        <span className="text-xs font-bold px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full">
-          Super Admin
-        </span>
-      </div>
+      <PageHeader title="Admin Panel" back>
+        <span className="text-xs font-bold px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full">Super Admin</span>
+      </PageHeader>
 
       <AdminTabs activeTab={tab} />
 
@@ -52,7 +49,11 @@ export default async function AdminPage({
           <RequestsPanel initialRequests={accessRequests ?? []} />
         )}
         {tab === 'users' && (
-          <UsersPanel initialProfiles={profiles ?? []} superAdminEmail={superAdminEmail} />
+          <UsersPanel
+            initialProfiles={profiles ?? []}
+            superAdminEmail={superAdminEmail}
+            initialNotifPrefs={Object.fromEntries((notifPrefs ?? []).map((p: any) => [p.user_id, p]))}
+          />
         )}
         {tab === 'access' && (
           <AllowedEmailsPanel

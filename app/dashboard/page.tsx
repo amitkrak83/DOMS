@@ -113,10 +113,10 @@ export default async function DashboardPage({
     <div className="min-h-screen bg-gray-50 pb-24">
       <RealtimeSync tables={['orders', 'payments']} />
 
-      {/* Sticky header + stats */}
-      <div className="sticky top-0 z-30 bg-gray-50">
-        <PageHeader title="Dashboard" />
+      <PageHeader title="Dashboard" />
 
+      {/* Sticky stats */}
+      <div className="sticky top-16 z-20 bg-gray-50">
         <div className="px-4 pt-4 pb-3">
           <div className="grid grid-cols-2 gap-3">
             {stats.map(({ label, value, color, filterKey, format }) => {

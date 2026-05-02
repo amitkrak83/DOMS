@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase'
 import { Banknote, CheckCircle, Smartphone, X, QrCode } from 'lucide-react'
 import { toast } from 'sonner'
 import { QRCodeSVG } from 'qrcode.react'
+import { sendNotification } from '@/lib/notify'
 
 function QRModal({ amount, upiId, merchantName, onClose }: { amount: number; upiId: string; merchantName: string; onClose: () => void }) {
   const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR`
@@ -82,6 +83,7 @@ export function DeliverSection({ orderId, totalAmount, upiId, merchantName, alre
     setCollectLoading(false)
     if (error) { toast.error('Failed to record payment'); return }
     toast.success('Payment recorded')
+    sendNotification('payment_recorded', '💰 Payment Received', `₹${paid.toLocaleString('en-IN')} ${paymentType} payment recorded`)
     setPaymentType(null)
     setAmountReceived('')
     router.refresh()
@@ -110,6 +112,7 @@ export function DeliverSection({ orderId, totalAmount, upiId, merchantName, alre
 
     setDeliverLoading(false)
     toast.success('Order delivered')
+    sendNotification('order_delivered', '✅ Order Delivered', `Order marked as delivered`)
     router.refresh()
   }
 

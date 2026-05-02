@@ -3,9 +3,7 @@ import { PageHeader } from '@/components/page-header'
 export default function ProductsLoading() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 animate-pulse">
-      <div className="sticky top-0 z-30 bg-white">
-        <PageHeader title="Products" />
-      </div>
+      <PageHeader title="Products" />
 
       <div className="px-4 pt-4 space-y-3">
         {Array.from({ length: 4 }).map((_, i) => (

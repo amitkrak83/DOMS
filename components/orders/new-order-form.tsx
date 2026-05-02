@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { sendNotification } from '@/lib/notify'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { calculateScheme, formatQuantity, aggregateOrderSummary } from '@/lib/calculations'
@@ -172,6 +173,7 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
       setSaving(false)
       if (itemsErr) { toast.error('Failed to save items'); return }
       toast.success('Order created!')
+      sendNotification('new_order', '🛒 New Order', `Order placed for ${selectedCustomer!.name.trim()}`)
       router.push(`/orders/${order.id}`)
     }
   }
@@ -180,7 +182,7 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
   if (step === 1) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="bg-white border-b border-gray-200 px-4 pt-5 pb-4 flex items-center gap-3">
+        <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 pt-5 pb-4 flex items-center gap-3">
           <button onClick={() => router.back()} className="text-gray-500"><ArrowLeft size={20} /></button>
           <div>
             <h1 className="text-xl font-bold text-gray-900">New Order</h1>
@@ -204,7 +206,7 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
   if (step === 2) {
     return (
       <div className="min-h-screen bg-gray-50 pb-36">
-        <div className="bg-white border-b border-gray-200 px-4 pt-5 pb-4 flex items-center gap-3">
+        <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 pt-5 pb-4 flex items-center gap-3">
           <button onClick={() => editOrderId ? router.back() : setStep(1)} className="text-gray-500"><ArrowLeft size={20} /></button>
           <div>
             <h1 className="text-xl font-bold text-gray-900">{editOrderId ? 'Edit Items' : 'Add Items'}</h1>
@@ -383,7 +385,7 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
   // ── Step 3: Summary ────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50 pb-36">
-      <div className="bg-white border-b border-gray-200 px-4 pt-5 pb-4 flex items-center gap-3">
+      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 pt-5 pb-4 flex items-center gap-3">
         <button onClick={() => setStep(2)} className="text-gray-500"><ArrowLeft size={20} /></button>
         <div>
           <h1 className="text-xl font-bold text-gray-900">Order Summary</h1>

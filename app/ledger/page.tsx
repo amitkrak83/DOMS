@@ -54,9 +54,7 @@ export default async function LedgerPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       <RealtimeSync tables={['orders', 'payments']} />
-      <div className="sticky top-0 z-30 bg-white">
-        <PageHeader title="Khata" />
-      </div>
+      <PageHeader title="Khata" />
 
       <LedgerList initialLedger={ledger} />
     </div>

@@ -21,9 +21,7 @@ function SkeletonCard() {
 export default function OrdersLoading() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 animate-pulse">
-      <div className="sticky top-0 z-30 bg-white">
-        <PageHeader title="Orders" />
-      </div>
+      <PageHeader title="Orders" />
 
       {/* Filter bar skeleton */}
       <div className="bg-white px-4 pt-3 pb-3 space-y-3 border-b border-gray-100 shadow-sm">

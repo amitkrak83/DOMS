@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Banknote, Smartphone } from 'lucide-react'
 import { toast } from 'sonner'
+import { sendNotification } from '@/lib/notify'
 
 export function RecordPaymentSection({ orderId, outstanding }: { orderId: string; outstanding: number }) {
   const [paymentType, setPaymentType] = useState<'cash' | 'online' | null>(null)
@@ -26,6 +27,7 @@ export function RecordPaymentSection({ orderId, outstanding }: { orderId: string
     setLoading(false)
     if (error) { toast.error('Failed to record payment'); return }
     toast.success('Payment recorded')
+    sendNotification('payment_recorded', '💰 Payment Received', `₹${paid.toLocaleString('en-IN')} ${paymentType} payment recorded`)
     router.refresh()
   }
 

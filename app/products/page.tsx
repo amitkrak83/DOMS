@@ -16,9 +16,7 @@ export default async function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      <div className="sticky top-0 z-30 bg-white">
-        <PageHeader title="Products" />
-      </div>
+      <PageHeader title="Products" />
 
       <ProductsList initialProducts={products} />
     </div>

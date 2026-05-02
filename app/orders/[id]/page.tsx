@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import { formatQuantity, aggregateOrderSummary } from '@/lib/calculations'
 import { Pencil } from 'lucide-react'
-import { BackButton } from '@/components/ui/back-button'
+import { PageHeader } from '@/components/page-header'
 import { DeliverSection } from '@/components/orders/deliver-section'
 import { RecordPaymentSection } from '@/components/orders/record-payment-section'
 import { PaymentsList } from '@/components/orders/payments-list'
@@ -68,18 +68,13 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <BackButton />
-          <h1 className="text-lg font-bold text-gray-900">Order Details</h1>
-        </div>
+      <PageHeader title="Order Details" back>
         <span className={`text-xs font-bold px-3 py-1.5 rounded-lg ${
           order.status === 'pending' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
         }`}>
           {order.status === 'pending' ? 'Pending' : 'Delivered'}
         </span>
-      </div>
+      </PageHeader>
 
       {/* Action buttons */}
       <div className="bg-white border-b border-gray-100 px-4 py-3 grid gap-2" style={{ gridTemplateColumns: `repeat(${colCount}, 1fr)` }}>
@@ -168,9 +163,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         </div>
 
         {/* Payment info */}
-        {payments.length > 0 && (
-          <PaymentsList payments={payments.map(p => ({ ...p, amount: Number(p.amount) }))} outstanding={outstanding} />
-        )}
+        <PaymentsList payments={payments.map(p => ({ ...p, amount: Number(p.amount) }))} outstanding={outstanding} />
 
       </div>
 

@@ -3,9 +3,7 @@ import { PageHeader } from '@/components/page-header'
 export default function LedgerLoading() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 animate-pulse">
-      <div className="sticky top-0 z-30 bg-white">
-        <PageHeader title="Khata" />
-      </div>
+      <PageHeader title="Khata" />
 
       {/* Search bar */}
       <div className="sticky top-16 z-20 bg-white px-4 pt-3 pb-3 border-b border-gray-100 shadow-sm">

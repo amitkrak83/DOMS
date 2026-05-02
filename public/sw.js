@@ -1,4 +1,4 @@
-const CACHE = 'doms-v1'
+const CACHE = 'doms-v2'
 
 self.addEventListener('install', () => self.skipWaiting())
 
@@ -46,5 +46,28 @@ self.addEventListener('fetch', event => {
         return res
       })
       .catch(() => caches.match(request))
+  )
+})
+
+self.addEventListener('push', (event) => {
+  if (!event.data) return
+  const { title, body } = event.data.json()
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/icon-192x192.png',
+      vibrate: [200, 100, 200],
+    })
+  )
+})
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then((clientList) => {
+      if (clientList.length > 0) return clientList[0].focus()
+      return clients.openWindow('/')
+    })
   )
 })

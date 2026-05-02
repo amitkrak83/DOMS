@@ -6,7 +6,7 @@ async function getCustomers() {
   const supabase = await createClient()
   const { data } = await supabase
     .from('customers')
-    .select('id, name, mobile, address, created_at')
+    .select('id, name, mobile, address')
     .order('name')
   return data ?? []
 }
@@ -16,11 +16,7 @@ export default async function CustomersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      <div className="sticky top-0 z-30 bg-white">
-        <PageHeader title="Customers">
-          <span className="text-xs font-bold text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">{customers.length}</span>
-        </PageHeader>
-      </div>
+      <PageHeader title="Customers" />
 
       <CustomersList initialCustomers={customers} />
     </div>

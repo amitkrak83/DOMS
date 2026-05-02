@@ -28,9 +28,7 @@ export default async function OrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       <RealtimeSync tables={['orders']} />
-      <div className="sticky top-0 z-30 bg-white">
-        <PageHeader title="Orders" />
-      </div>
+      <PageHeader title="Orders" />
 
       <OrdersList initialOrders={orders} hasMore={hasMore} />
     </div>

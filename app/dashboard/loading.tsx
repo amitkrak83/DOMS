@@ -3,9 +3,9 @@ import { PageHeader } from '@/components/page-header'
 export default function DashboardLoading() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 animate-pulse">
-      <div className="sticky top-0 z-30 bg-gray-50">
-        <PageHeader title="Dashboard" />
+      <PageHeader title="Dashboard" />
 
+      <div className="sticky top-16 z-20 bg-gray-50">
         {/* Stat cards */}
         <div className="px-4 pt-4 pb-3 grid grid-cols-2 gap-3">
           {['orange', 'green', 'blue', 'red'].map(c => (

@@ -4,7 +4,7 @@ export default function OrderDetailLoading() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 animate-pulse">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between">
+      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <BackButton />
           <div className="h-5 w-28 bg-gray-200 rounded-md" />

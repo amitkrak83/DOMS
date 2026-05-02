@@ -83,10 +83,10 @@ export function LedgerList({ initialLedger }: { initialLedger: LedgerItem[] }) {
               <span>Paid: <span className="font-bold text-gray-700">₹{customer.paid.toLocaleString('en-IN')}</span></span>
             </div>
 
-            <div className="divide-y divide-gray-50">
+            <div>
               {customer.orders.map(o => (
                 <Link key={o.id} href={`/orders/${o.id}`}>
-                  <div className="flex items-center justify-between px-4 py-3 active:bg-gray-50 transition-colors">
+                  <div className="flex items-center justify-between px-4 py-3 active:bg-gray-50 transition-colors border-t border-gray-200">
                     <p className="text-sm text-gray-500">
                       {new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: IST })}
                     </p>

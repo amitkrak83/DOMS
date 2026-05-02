@@ -9,8 +9,8 @@ const links = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/orders',    label: 'Orders',     icon: ShoppingCart    },
   { href: '/products',  label: 'Products',   icon: Package         },
-  { href: '/ledger',    label: 'Khata',      icon: BookOpen        },
   { href: '/customers', label: 'Customers',  icon: Users           },
+  { href: '/ledger',    label: 'Khata',      icon: BookOpen        },
 ]
 
 export function SidebarMenu({ isAdmin = false }: { isAdmin?: boolean }) {

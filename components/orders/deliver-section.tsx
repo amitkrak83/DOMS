@@ -113,7 +113,7 @@ export function DeliverSection({ orderId, totalAmount, upiId, merchantName }: {
 
     setLoading(false)
     toast.success('Order delivered')
-    router.push('/orders')
+    router.refresh()
   }
 
   const qrAmount = parseFloat(amountReceived) || totalAmount
@@ -166,6 +166,8 @@ export function DeliverSection({ orderId, totalAmount, upiId, merchantName }: {
             <div className="relative">
               <input
                 type="number"
+                inputMode="numeric"
+                min="0"
                 value={amountReceived}
                 onChange={(e) => setAmountReceived(e.target.value)}
                 className="w-full h-11 px-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none font-bold text-gray-900"

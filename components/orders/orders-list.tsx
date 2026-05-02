@@ -2,7 +2,8 @@
 
 import { useState, useMemo, memo, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Clock, CheckCircle2, Search, Check, Trash2 } from 'lucide-react'
+import Link from 'next/link'
+import { Clock, CheckCircle2, Search, Check, Trash2, Plus } from 'lucide-react'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
@@ -208,9 +209,16 @@ export function OrdersList({ initialOrders, hasMore: initialHasMore }: Props) {
         )}
       </div>
 
+      {!isSelecting && (
+        <Link href="/orders/new" className="fixed bottom-20 right-4 z-40 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg active:scale-95 transition-transform">
+          <Plus size={18} strokeWidth={2.5} />
+          New Order
+        </Link>
+      )}
+
       {/* Bulk action bar */}
       {isSelecting && (
-        <div className="fixed bottom-20 left-0 right-0 z-40 px-4 pointer-events-none">
+        <div className="fixed bottom-20 left-0 right-0 z-50 px-4 pointer-events-none">
           <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 px-4 py-3 flex items-center justify-between pointer-events-auto">
             <div className="flex items-center gap-3">
               <span className="text-sm font-bold text-gray-900">{selectedIds.size} selected</span>

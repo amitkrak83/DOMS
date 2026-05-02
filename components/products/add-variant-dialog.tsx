@@ -17,7 +17,7 @@ interface Props {
 
 export function AddVariantDialog({ productId, productName }: Props) {
   const [open, setOpen] = useState(false)
-  const [form, setForm] = useState({ variant_name: '', bottles_per_case: '24', price_per_case: '', free_bottles_per_case: '0' })
+  const [form, setForm] = useState({ variant_name: '', bottles_per_case: '', price_per_case: '', free_bottles_per_case: '0' })
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
@@ -28,18 +28,21 @@ export function AddVariantDialog({ productId, productName }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.variant_name.trim() || !form.price_per_case) return
+    const bpc = parseInt(form.bottles_per_case)
+    const free = parseInt(form.free_bottles_per_case)
+    if (free > bpc) { toast.error(`Scheme bottles (${free}) cannot be more than bottles per case (${bpc})`); return }
     setLoading(true)
     const { error } = await supabase.from('product_variants').insert({
       product_id: productId,
       variant_name: form.variant_name.trim(),
       bottles_per_case: parseInt(form.bottles_per_case),
-      price_per_case: parseFloat(form.price_per_case),
+      price_per_case: Math.round(parseFloat(form.price_per_case) * 100) / 100,
       free_bottles_per_case: parseInt(form.free_bottles_per_case),
     })
     setLoading(false)
     if (error) { toast.error('Error adding variant'); return }
     toast.success(`${form.variant_name} added to ${productName}`)
-    setForm({ variant_name: '', bottles_per_case: '24', price_per_case: '', free_bottles_per_case: '0' })
+    setForm({ variant_name: '', bottles_per_case: '', price_per_case: '', free_bottles_per_case: '0' })
     setOpen(false)
     router.refresh()
   }
@@ -66,19 +69,19 @@ export function AddVariantDialog({ productId, productName }: Props) {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Bottles / Case</Label>
-                <Input type="number" min="1" value={form.bottles_per_case} onChange={e => set('bottles_per_case', e.target.value)} className="h-11" />
+                <Input type="number" inputMode="numeric" min="1" placeholder="24" value={form.bottles_per_case} onChange={e => set('bottles_per_case', e.target.value)} className="h-11" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Price / Case (₹)</Label>
-                <Input type="number" min="0" step="0.01" placeholder="480" value={form.price_per_case} onChange={e => set('price_per_case', e.target.value)} className="h-11" />
+                <Input type="number" inputMode="numeric" min="0" step="0.01" placeholder="480" value={form.price_per_case} onChange={e => set('price_per_case', e.target.value)} className="h-11" />
               </div>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Free Bottles / Case (Scheme)</Label>
-              <Input type="number" min="0" value={form.free_bottles_per_case} onChange={e => set('free_bottles_per_case', e.target.value)} className="h-11" />
-              <p className="text-xs text-gray-400">Enter 0 if no scheme</p>
+              <Input type="number" inputMode="numeric" min="0" max={Math.max(0, parseInt(form.bottles_per_case) - 1) || 0} value={form.free_bottles_per_case} onChange={e => set('free_bottles_per_case', e.target.value)} className="h-11" />
+              <p className="text-xs text-gray-400">Enter 0 if no scheme. Max: {Math.max(0, parseInt(form.bottles_per_case) - 1)} bottles</p>
             </div>
-            <Button type="submit" className="w-full h-11 font-bold bg-blue-600 hover:bg-blue-700" disabled={loading}>
+            <Button type="submit" className="w-full h-11 font-bold bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-400" disabled={loading || !form.variant_name.trim() || !form.price_per_case || !form.bottles_per_case}>
               {loading ? 'Adding...' : 'Add Variant'}
             </Button>
           </form>

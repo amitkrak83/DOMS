@@ -2,10 +2,12 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import { formatQuantity, aggregateOrderSummary } from '@/lib/calculations'
-import { Banknote, BookOpen, Pencil, Smartphone, MapPin, Phone } from 'lucide-react'
+import { Pencil, MapPin, Phone } from 'lucide-react'
 import { BackButton } from '@/components/ui/back-button'
 import { DeliverSection } from '@/components/orders/deliver-section'
 import { UndeliverButton } from '@/components/orders/undeliver-button'
+import { RecordPaymentSection } from '@/components/orders/record-payment-section'
+import { PaymentsList } from '@/components/orders/payments-list'
 import { DeleteOrderButton } from '@/components/orders/delete-order-button'
 import { ShareOrderButton } from '@/components/orders/share-order-button'
 
@@ -53,7 +55,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
     items.map(i => ({ cases: i.cases, amount: Number(i.amount) }))
   )
 
-  const totalPaid = payments.reduce((s, p) => s + Number(p.amount), 0)
+  const totalPaid = payments.filter(p => p.payment_type !== 'credit').reduce((s, p) => s + Number(p.amount), 0)
   const outstanding = Number(order.total_amount) - totalPaid
 
   const orderIdShort = order.id.slice(-5).toUpperCase()
@@ -167,28 +169,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
         {/* Payment info */}
         {payments.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-2">
-            <p className="font-bold text-gray-900 text-sm">Payment</p>
-            {payments.map(p => (
-              <div key={p.id} className="flex justify-between text-sm items-center">
-                <span className="flex items-center gap-2 text-gray-600">
-                  {p.payment_type === 'cash'
-                    ? <><Banknote size={16} className="text-green-600" /> Cash</>
-                    : p.payment_type === 'online'
-                    ? <><Smartphone size={16} className="text-blue-600" /> Online</>
-                    : <><BookOpen size={16} className="text-orange-500" /> Udhar</>
-                  }
-                </span>
-                <span className="font-bold text-gray-900">₹{Number(p.amount).toLocaleString('en-IN')}</span>
-              </div>
-            ))}
-            {outstanding > 0 && (
-              <div className="border-t border-gray-100 pt-2 flex justify-between text-sm">
-                <span className="font-bold text-red-600">Remaining</span>
-                <span className="font-bold text-red-600">₹{outstanding.toLocaleString('en-IN')}</span>
-              </div>
-            )}
-          </div>
+          <PaymentsList payments={payments.map(p => ({ ...p, amount: Number(p.amount) }))} outstanding={outstanding} />
         )}
 
       </div>
@@ -197,6 +178,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       <div className="px-4 space-y-4">
         {order.status === 'pending' && (
           <DeliverSection orderId={order.id} totalAmount={Number(order.total_amount)} upiId={upiId} merchantName={merchantName} />
+        )}
+        {order.status === 'delivered' && outstanding > 0 && (
+          <RecordPaymentSection orderId={order.id} outstanding={outstanding} />
         )}
         {order.status === 'delivered' && (
           <UndeliverButton orderId={order.id} />

@@ -30,7 +30,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${notoSans.variable} h-full`}>
-      <body className={`min-h-full bg-gray-50 antialiased ${notoSans.className}`}>
+      <body suppressHydrationWarning className={`min-h-full bg-gray-50 antialiased ${notoSans.className}`}>
         <main className="pb-20 max-w-2xl mx-auto">
           {children}
         </main>

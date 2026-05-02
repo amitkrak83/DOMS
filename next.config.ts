@@ -13,6 +13,6 @@ const nextConfig: NextConfig = {
       static: 300,
     },
   },
+  allowedDevOrigins: ['192.168.1.9'],
 }
-
 export default nextConfig

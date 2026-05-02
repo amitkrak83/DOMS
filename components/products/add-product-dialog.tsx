@@ -10,8 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
-export function AddProductDialog() {
-  const [open, setOpen] = useState(false)
+export function AddProductDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -25,20 +24,13 @@ export function AddProductDialog() {
     if (error) { toast.error('Error adding product'); return }
     toast.success(`${name} added!`)
     setName('')
-    setOpen(false)
+    onOpenChange(false)
     router.refresh()
   }
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-20 right-4 z-40 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg active:scale-95 transition-transform"
-      >
-        <Plus size={18} strokeWidth={2.5} />
-        Add Product
-      </button>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="bg-white border border-gray-100 shadow-xl ring-0 p-0 gap-0">
           <DialogHeader className="px-5 pt-5 pb-4 border-b border-gray-100">
             <DialogTitle className="text-base font-bold text-gray-900">Add New Product</DialogTitle>
@@ -48,7 +40,7 @@ export function AddProductDialog() {
               <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Product Name</Label>
               <Input placeholder="e.g. Sprite" value={name} onChange={e => setName(e.target.value)} className="h-11 text-base" />
             </div>
-            <Button type="submit" className="w-full h-11 font-bold bg-blue-600 hover:bg-blue-700" disabled={loading}>
+            <Button type="submit" className="w-full h-11 font-bold bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-400" disabled={loading || !name.trim()}>
               {loading ? 'Adding...' : 'Add Product'}
             </Button>
           </form>

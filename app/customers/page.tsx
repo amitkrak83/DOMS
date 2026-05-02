@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import { CustomersList } from '@/components/customers/customers-list'
 import { PageHeader } from '@/components/page-header'
-import { AddCustomerDialog } from '@/components/customers/add-customer-dialog'
 
 async function getCustomers() {
   const supabase = await createClient()
@@ -24,7 +23,6 @@ export default async function CustomersPage() {
       </div>
 
       <CustomersList initialCustomers={customers} />
-      <AddCustomerDialog />
     </div>
   )
 }

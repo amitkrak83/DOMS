@@ -27,6 +27,7 @@ export function EditCustomerDialog({ customer, onUpdated }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.name.trim()) return
+    if (form.mobile && form.mobile.length !== 10) { toast.error('Mobile number must be 10 digits'); return }
     setLoading(true)
     const { data, error } = await supabase
       .from('customers')
@@ -61,7 +62,7 @@ export function EditCustomerDialog({ customer, onUpdated }: Props) {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Mobile</Label>
-              <Input value={form.mobile} onChange={e => set('mobile', e.target.value)} className="h-11" placeholder="Mobile number" />
+              <Input type="tel" inputMode="numeric" pattern="[0-9]*" maxLength={10} value={form.mobile} onChange={e => set('mobile', e.target.value.replace(/\D/g, ''))} className="h-11" placeholder="Mobile number" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Address</Label>

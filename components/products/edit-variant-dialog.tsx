@@ -31,6 +31,12 @@ export function EditVariantDialog({ variant }: Props) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  const hasChanged =
+    form.variant_name.trim() !== variant.variant_name ||
+    parseInt(form.bottles_per_case) !== variant.bottles_per_case ||
+    parseFloat(form.price_per_case) !== variant.price_per_case ||
+    parseInt(form.free_bottles_per_case) !== variant.free_bottles_per_case
+
   function set(key: string, value: string) {
     setForm(f => ({ ...f, [key]: value }))
   }
@@ -38,17 +44,20 @@ export function EditVariantDialog({ variant }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.variant_name.trim() || !form.price_per_case) return
+    const bpc = parseInt(form.bottles_per_case)
+    const free = parseInt(form.free_bottles_per_case)
+    if (free > bpc) { toast.error(`Scheme bottles (${free}) cannot be more than bottles per case (${bpc})`); return }
     setLoading(true)
     const { error } = await supabase
       .from('product_variants')
       .update({
         variant_name: form.variant_name.trim(),
         bottles_per_case: parseInt(form.bottles_per_case),
-        price_per_case: parseFloat(form.price_per_case),
+        price_per_case: Math.round(parseFloat(form.price_per_case) * 100) / 100,
         free_bottles_per_case: parseInt(form.free_bottles_per_case),
       })
       .eq('id', variant.id)
-    
+
     setLoading(false)
     if (error) {
       toast.error('Error updating variant')
@@ -89,6 +98,7 @@ export function EditVariantDialog({ variant }: Props) {
                 <Label>Bottles per Case</Label>
                 <Input
                   type="number"
+                  inputMode="numeric"
                   min="1"
                   value={form.bottles_per_case}
                   onChange={e => set('bottles_per_case', e.target.value)}
@@ -98,6 +108,7 @@ export function EditVariantDialog({ variant }: Props) {
                 <Label>Price per Case (₹)</Label>
                 <Input
                   type="number"
+                  inputMode="numeric"
                   min="0"
                   step="0.01"
                   placeholder="480"
@@ -110,13 +121,15 @@ export function EditVariantDialog({ variant }: Props) {
               <Label>Free Bottles per Paid Case (Scheme)</Label>
               <Input
                 type="number"
+                inputMode="numeric"
                 min="0"
+                max={Math.max(0, parseInt(form.bottles_per_case)) || 0}
                 value={form.free_bottles_per_case}
                 onChange={e => set('free_bottles_per_case', e.target.value)}
               />
-              <p className="text-xs text-gray-400">Enter 0 if no scheme</p>
+              <p className="text-xs text-gray-400">Enter 0 if no scheme. Max: {Math.max(0, parseInt(form.bottles_per_case))} bottles</p>
             </div>
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={loading}>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-400" disabled={loading || !hasChanged || !form.variant_name.trim() || !form.price_per_case || !form.bottles_per_case}>
               {loading ? 'Updating...' : 'Update Variant'}
             </Button>
           </form>

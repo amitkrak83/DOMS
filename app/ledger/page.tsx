@@ -8,13 +8,15 @@ async function getLedger() {
 
   const [{ data: orders }, { data: payments }] = await Promise.all([
     supabase.from('orders').select('id, customer_id, customer_name, total_amount, status, created_at').order('customer_name'),
-    supabase.from('payments').select('order_id, amount'),
+    supabase.from('payments').select('order_id, amount, payment_type'),
   ])
 
   if (!orders) return []
 
   const paymentsByOrder = (payments ?? []).reduce((acc, p) => {
-    acc[p.order_id] = (acc[p.order_id] ?? 0) + Number(p.amount)
+    if (p.payment_type !== 'credit') {
+      acc[p.order_id] = (acc[p.order_id] ?? 0) + Number(p.amount)
+    }
     return acc
   }, {} as Record<string, number>)
 

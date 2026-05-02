@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, Check, Trash2 } from 'lucide-react'
+import { Search, Check, Trash2, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 import { AddVariantDialog } from './add-variant-dialog'
 import { EditVariantDialog } from './edit-variant-dialog'
 import { DeleteVariantButton } from './delete-variant-button'
 import { DeleteProductButton } from './delete-product-button'
+import { AddProductDialog } from './add-product-dialog'
 
 type Product = {
   id: string
@@ -28,6 +29,7 @@ export function ProductsList({ initialProducts }: { initialProducts: Product[] }
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set())
   const [deleting, setDeleting] = useState(false)
+  const [addOpen, setAddOpen] = useState(false)
   const router = useRouter()
 
   const filteredProducts = initialProducts.filter(p => {
@@ -126,7 +128,7 @@ export function ProductsList({ initialProducts }: { initialProducts: Product[] }
               {!isSelecting && <AddVariantDialog productId={product.id} productName={product.name} />}
             </div>
 
-            <div className="divide-y divide-gray-50">
+            <div className="divide-y divide-gray-200">
               {product.product_variants.length === 0 && (
                 <p className="text-xs text-gray-400 px-4 py-3">No variants added</p>
               )}
@@ -158,9 +160,20 @@ export function ProductsList({ initialProducts }: { initialProducts: Product[] }
         ))}
       </div>
 
+      {!isSelecting && (
+        <button
+          onClick={() => setAddOpen(true)}
+          className="fixed bottom-20 right-4 z-40 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg active:scale-95 transition-transform"
+        >
+          <Plus size={18} strokeWidth={2.5} />
+          Add Product
+        </button>
+      )}
+      <AddProductDialog open={addOpen} onOpenChange={setAddOpen} />
+
       {/* Bulk action bar */}
       {isSelecting && (
-        <div className="fixed bottom-20 left-0 right-0 z-40 px-4 pointer-events-none">
+        <div className="fixed bottom-20 left-0 right-0 z-50 px-4 pointer-events-none">
           <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 px-4 py-3 flex items-center justify-between pointer-events-auto">
             <div className="flex items-center gap-3">
               <span className="text-sm font-bold text-gray-900">{selectedIds.size} selected</span>

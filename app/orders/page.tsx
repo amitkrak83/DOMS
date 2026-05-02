@@ -1,6 +1,4 @@
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
-import { Plus } from 'lucide-react'
 import { OrdersList } from '@/components/orders/orders-list'
 import { PageHeader } from '@/components/page-header'
 import { RealtimeSync } from '@/components/realtime-sync'
@@ -35,13 +33,6 @@ export default async function OrdersPage() {
       </div>
 
       <OrdersList initialOrders={orders} hasMore={hasMore} />
-
-      <Link href="/orders/new" className="fixed bottom-20 right-4 z-40">
-        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg active:scale-95 transition-transform">
-          <Plus size={18} strokeWidth={2.5} />
-          New Order
-        </button>
-      </Link>
     </div>
   )
 }

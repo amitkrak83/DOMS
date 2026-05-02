@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Search, User, Phone, MapPin, Trash2, Check } from 'lucide-react'
+import { Search, User, Phone, MapPin, Trash2, Check, UserPlus } from 'lucide-react'
 import { toast } from 'sonner'
 import { EditCustomerDialog } from './edit-customer-dialog'
+import { AddCustomerDialog } from './add-customer-dialog'
 
 export type Customer = {
   id: string
@@ -20,6 +21,7 @@ export function CustomersList({ initialCustomers }: { initialCustomers: Customer
   const [isSelecting, setIsSelecting] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [deleting, setDeleting] = useState(false)
+  const [addOpen, setAddOpen] = useState(false)
 
   useEffect(() => { setCustomers(initialCustomers) }, [initialCustomers])
 
@@ -152,9 +154,20 @@ export function CustomersList({ initialCustomers }: { initialCustomers: Customer
         ))}
       </div>
 
+      {!isSelecting && (
+        <button
+          onClick={() => setAddOpen(true)}
+          className="fixed bottom-20 right-4 z-40 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg active:scale-95 transition-transform"
+        >
+          <UserPlus size={18} strokeWidth={2.5} />
+          Add Customer
+        </button>
+      )}
+      <AddCustomerDialog open={addOpen} onOpenChange={setAddOpen} />
+
       {/* Bulk action bar */}
       {isSelecting && (
-        <div className="fixed bottom-20 left-0 right-0 z-40 px-4 pointer-events-none">
+        <div className="fixed bottom-20 left-0 right-0 z-50 px-4 pointer-events-none">
           <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 px-4 py-3 flex items-center justify-between pointer-events-auto">
             <div className="flex items-center gap-3">
               <span className="text-sm font-bold text-gray-900">{selectedIds.size} selected</span>

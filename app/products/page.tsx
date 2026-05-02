@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase-server'
-import { AddProductDialog } from '@/components/products/add-product-dialog'
 import { ProductsList } from '@/components/products/products-list'
 import { PageHeader } from '@/components/page-header'
 
@@ -22,7 +21,6 @@ export default async function ProductsPage() {
       </div>
 
       <ProductsList initialProducts={products} />
-      <AddProductDialog />
     </div>
   )
 }

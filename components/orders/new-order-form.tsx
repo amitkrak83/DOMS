@@ -66,7 +66,7 @@ export function NewOrderForm({ products, initialCustomerName = '', initialItems 
   function addOrUpdateItem() {
     if (!selectedProduct || !selectedVariant || !casesInput) return
     const cases = parseInt(casesInput)
-    if (cases <= 0) return
+    if (isNaN(cases) || cases <= 0) return
 
     if (editingIndex !== null) {
       setItems(prev => prev.map((item, i) =>

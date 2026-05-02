@@ -104,7 +104,7 @@ export function AllowedEmailsPanel({
               <button
                 onClick={() => removeEmail(email)}
                 disabled={removing === email || email === superAdminEmail}
-                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-40 shrink-0"
+                className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-40 shrink-0"
               >
                 <Trash2 size={15} />
               </button>

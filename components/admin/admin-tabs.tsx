@@ -3,10 +3,11 @@
 import { useRouter } from 'next/navigation'
 
 const TABS = [
-  { id: 'users',    label: 'Users'    },
-  { id: 'requests', label: 'Requests' },
-  { id: 'access',   label: 'Access'   },
-  { id: 'settings', label: 'Settings' },
+  { id: 'activity', label: 'Activity'  },
+  { id: 'users',    label: 'Users'     },
+  { id: 'requests', label: 'Requests'  },
+  { id: 'access',   label: 'Access'    },
+  { id: 'settings', label: 'Settings'  },
 ] as const
 
 export function AdminTabs({ activeTab }: { activeTab: string }) {

@@ -2,12 +2,12 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import { formatQuantity, aggregateOrderSummary } from '@/lib/calculations'
-import { Pencil, MapPin, Phone } from 'lucide-react'
+import { Pencil } from 'lucide-react'
 import { BackButton } from '@/components/ui/back-button'
 import { DeliverSection } from '@/components/orders/deliver-section'
-import { UndeliverButton } from '@/components/orders/undeliver-button'
 import { RecordPaymentSection } from '@/components/orders/record-payment-section'
 import { PaymentsList } from '@/components/orders/payments-list'
+import { OrderActivity } from '@/components/orders/order-activity'
 import { DeleteOrderButton } from '@/components/orders/delete-order-button'
 import { ShareOrderButton } from '@/components/orders/share-order-button'
 
@@ -177,14 +177,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       {/* Actions outside share content */}
       <div className="px-4 space-y-4">
         {order.status === 'pending' && (
-          <DeliverSection orderId={order.id} totalAmount={Number(order.total_amount)} upiId={upiId} merchantName={merchantName} />
+          <DeliverSection orderId={order.id} totalAmount={Number(order.total_amount)} upiId={upiId} merchantName={merchantName} alreadyPaid={totalPaid} />
         )}
         {order.status === 'delivered' && outstanding > 0 && (
           <RecordPaymentSection orderId={order.id} outstanding={outstanding} />
         )}
-        {order.status === 'delivered' && (
-          <UndeliverButton orderId={order.id} />
-        )}
+
+        {/* Activity timeline — outside share content, always last */}
+        <OrderActivity orderId={order.id} />
       </div>
     </div>
   )

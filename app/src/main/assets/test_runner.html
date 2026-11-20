@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Karya Automated Test Runner</title>
+</head>
+<body style="font-family:sans-serif; background:#f1f5f9; padding:20px;">
+<h2>Karya Test Harness</h2>
+<div id="status">Testing index.html in iframe...</div>
+<iframe id="testFrame" src="index.html" style="width:420px; height:850px; border:2px solid #ccc; border-radius:16px;"></iframe>
+
+<script>
+window.testErrors = [];
+window.onerror = function(msg, url, line, col, err) {
+  window.testErrors.push("TOP: " + msg + " (" + line + ":" + col + ")");
+};
+
+var frame = document.getElementById('testFrame');
+frame.onload = function() {
+  setTimeout(async function() {
+    var report = {
+      timestamp: new Date().toISOString(),
+      calDaysGridExists: false,
+      calCellCount: 0,
+      todayBadgeFound: false,
+      newBookingTest: false,
+      allRecordsTest: false,
+      adminTest: false,
+      frameErrors: [],
+      success: false
+    };
+
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document;
+      var win = frame.contentWindow;
+
+      // 1. Calendar Test
+      var calGrid = doc.getElementById('calDaysGrid');
+      if (calGrid) {
+        report.calDaysGridExists = true;
+        report.calCellCount = calGrid.children.length;
+        report.todayBadgeFound = calGrid.innerHTML.includes('⭐ आज');
+      }
+
+      // 2. New Booking Button Click Test
+      if (typeof win.openNewBookingForm === 'function') {
+        win.openNewBookingForm();
+        var newScr = doc.getElementById('screen-hall-new');
+        if (newScr && (newScr.style.display !== 'none' || newScr.classList.contains('active'))) {
+          report.newBookingTest = true;
+        }
+      }
+
+      // 3. All Records Screen Test
+      if (typeof win.showScreen === 'function') {
+        win.showScreen('hall-list');
+        var listScr = doc.getElementById('screen-hall-list');
+        if (listScr && (listScr.style.display !== 'none' || listScr.classList.contains('active'))) {
+          report.allRecordsTest = true;
+        }
+      }
+
+      // 4. Admin Settings Screen Test
+      if (typeof win.showScreen === 'function') {
+        win.showScreen('admin-settings');
+        var adminScr = doc.getElementById('screen-admin-settings');
+        if (adminScr && (adminScr.style.display !== 'none' || adminScr.classList.contains('active'))) {
+          report.adminTest = true;
+        }
+      }
+
+      // Return to Dashboard
+      if (typeof win.showScreen === 'function') {
+        win.showScreen('hall-dashboard');
+      }
+
+      report.frameErrors = win.testErrors || [];
+      report.success = (report.calCellCount >= 28 && report.newBookingTest && report.allRecordsTest);
+
+    } catch (ex) {
+      report.exception = ex.message;
+    }
+
+    document.getElementById('status').innerText = "Report: " + JSON.stringify(report, null, 2);
+
+    try {
+      await fetch('/report_result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(report)
+      });
+      document.getElementById('status').innerText += "\n[Report successfully transmitted to PowerShell]";
+    } catch(postErr) {
+      document.getElementById('status').innerText += "\n[POST error: " + postErr.message + "]";
+    }
+  }, 1200);
+};
+</script>
+</body>
+</html>

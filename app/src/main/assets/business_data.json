@@ -1,0 +1,59 @@
+{
+  "transactions": [
+    {
+      "id": "tx_1795015162776",
+      "type": "distribution",
+      "title": "कोका-कोला 20 पेटी",
+      "customer": "Am",
+      "amount": 25,
+      "advance": 0,
+      "eventDate": "",
+      "paymentStatus": "paid",
+      "createdBy": "Worker (कर्मचारी)",
+      "role": "worker",
+      "timestamp": "08:49 pm",
+      "date": "2026-11-18"
+    },
+    {
+      "id": "tx_1795015123457",
+      "type": "distribution",
+      "title": "1",
+      "customer": "1",
+      "amount": 2,
+      "advance": 0,
+      "eventDate": "",
+      "paymentStatus": "paid",
+      "createdBy": "Owner (मालिक)",
+      "role": "owner",
+      "timestamp": "08:48 pm",
+      "date": "2026-11-18"
+    },
+    {
+      "id": "tx_init_1",
+      "type": "distribution",
+      "title": "कोका-कोला (Coca-Cola) 50 पेटी डिलीवरी",
+      "customer": "गुप्ता किराना स्टोर (स्टेशन रोड)",
+      "amount": 15000,
+      "paymentStatus": "paid",
+      "createdBy": "Worker (राकेश)",
+      "role": "worker",
+      "timestamp": "07:38 pm",
+      "date": "2026-11-18"
+    },
+    {
+      "id": "tx_init_2",
+      "type": "marriage_hall",
+      "title": "मैरिज हॉल बुकिंग (तिलक समारोह)",
+      "customer": "वर्मा जी (सुल्तानपुर)",
+      "amount": 85000,
+      "advance": 25000,
+      "eventDate": "2026-12-05",
+      "paymentStatus": "advance_paid",
+      "createdBy": "Owner (मालिक)",
+      "role": "owner",
+      "timestamp": "06:38 pm",
+      "date": "2026-11-18"
+    }
+  ],
+  "devices": {}
+}

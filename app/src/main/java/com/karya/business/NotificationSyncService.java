@@ -268,8 +268,11 @@ public class NotificationSyncService extends Service {
 
             NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (nm != null) {
-                int notifId = (int) (System.currentTimeMillis() % 100000);
-                nm.notify(notifId, builder.build());
+                // If app is actively in foreground, user is already seeing in-app alert & hearing chime;
+                // do not clutter notification shade with duplicates!
+                if (!MainActivity.isAppInForeground) {
+                    nm.notify(MainActivity.ALERT_NOTIFICATION_ID, builder.build());
+                }
             }
         } catch (Throwable t) {
             Log.e(TAG, "Notification post error:", t);

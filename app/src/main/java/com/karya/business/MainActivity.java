@@ -43,6 +43,21 @@ public class MainActivity extends AppCompatActivity {
     private static final int NOTIFICATION_PERMISSION_CODE = 101;
     private static final String TAG = "KaryaMainActivity";
 
+    public static volatile boolean isAppInForeground = false;
+    public static final int ALERT_NOTIFICATION_ID = 2026;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isAppInForeground = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isAppInForeground = false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -233,9 +248,8 @@ public class MainActivity extends AppCompatActivity {
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 if (notificationManager != null) {
-                    int notificationId = (int) (System.currentTimeMillis() % 100000);
-                    notificationManager.notify(notificationId, notificationBuilder.build());
-                    Log.d(TAG, "Notification posted: " + title);
+                    notificationManager.notify(ALERT_NOTIFICATION_ID, notificationBuilder.build());
+                    Log.d(TAG, "Notification posted (ID " + ALERT_NOTIFICATION_ID + "): " + title);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error posting notification", e);
@@ -387,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public String getNativeAppVersion() {
-            return "1.1";
+            return "1.2";
         }
 
         @JavascriptInterface

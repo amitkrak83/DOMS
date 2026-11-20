@@ -114,7 +114,7 @@
         </h1>
         <p id="headerAppSubtitle" class="text-[11px] text-amber-200 font-semibold opacity-95 leading-tight truncate flex items-center justify-center gap-1.5">
           <span id="headerAppSubLoc">असनहरा, बस्ती</span>
-          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.1</span>
+          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.2</span>
         </p>
       </div>
 
@@ -1338,7 +1338,7 @@
                 <p class="text-[10px] text-slate-500">इस डिवाइस पर सक्रिय सॉफ्टवेयर</p>
               </div>
               <span id="otaActiveVerBadge" class="text-xs font-black px-2.5 py-1 bg-amber-100 text-amber-950 border border-amber-300 rounded-xl">
-                v1.1
+                v1.2
               </span>
             </div>
 
@@ -1384,11 +1384,11 @@
             <div class="grid grid-cols-2 gap-2 text-xs">
               <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
                 <span class="text-[10px] text-purple-800 font-bold block">क्लाउड बीटा वर्जन:</span>
-                <b id="otaCloudBetaVerText" class="text-sm font-black text-purple-950">v1.1</b>
+                <b id="otaCloudBetaVerText" class="text-sm font-black text-purple-950">v1.2</b>
               </div>
               <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
                 <span class="text-[10px] text-emerald-800 font-bold block">क्लाउड लाइव वर्जन:</span>
-                <b id="otaCloudProdVerText" class="text-sm font-black text-emerald-950">v1.1</b>
+                <b id="otaCloudProdVerText" class="text-sm font-black text-emerald-950">v1.2</b>
               </div>
             </div>
 
@@ -2253,17 +2253,91 @@
       updateAdminMenuVisibility();
     }
 
-    function submitLogin() {
+    async function fetchOperatorsFromCloud() {
+      // 1. Try Firestore SDK if available
+      if (firestoreDb) {
+        try {
+          const doc = await firestoreDb.collection('vmh_settings').doc('operators').get();
+          if (doc.exists) {
+            const d = doc.data();
+            let parsed = null;
+            if (d.rawJson) {
+              try {
+                const pj = JSON.parse(d.rawJson);
+                parsed = pj.operators || pj;
+              } catch(e) {}
+            }
+            if (!parsed && d.operators) parsed = d.operators;
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {
+          console.warn("Firestore SDK fetchOperators error:", e);
+        }
+      }
+
+      // 2. Direct REST API (works even before Firestore SDK is initialized or logged in!)
+      try {
+        const url = `${FIRESTORE_BASE_URL}/vmh_settings/operators?key=${FIREBASE_API_KEY}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          const raw = data.fields?.rawJson?.stringValue;
+          if (raw) {
+            const pj = JSON.parse(raw);
+            const ops = pj.operators || pj;
+            if (Array.isArray(ops) && ops.length > 0) return ops;
+          }
+        }
+      } catch (err) {
+        console.warn("REST API fetchOperators error:", err);
+      }
+      return null;
+    }
+
+    async function submitLogin() {
       const emailInp = document.getElementById('loginEmail');
       const passInp = document.getElementById('loginPassword');
       const errBox = document.getElementById('loginErrorMsg');
+      const submitBtn = document.getElementById('btnLoginSubmit');
       if (!emailInp || !passInp) return;
 
       const email = emailInp.value.trim().toLowerCase();
       const pass = passInp.value.trim();
 
-      const ops = getOperatorsList();
-      const matched = ops.find(u => u.email.toLowerCase() === email && u.pass === pass);
+      if (!email || !pass) {
+        if (errBox) {
+          errBox.innerText = "⚠️ कृपया ईमेल और पासवर्ड दोनों दर्ज करें!";
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
+      // 1. Check local operators first (fast)
+      let ops = getOperatorsList();
+      let matched = ops.find(u => u.email && u.email.toLowerCase() === email && u.pass === pass);
+
+      // 2. If not matched locally, check Firestore Cloud API directly (allows immediate login of newly created accounts)!
+      if (!matched) {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerText = "⏳ सत्यापन हो रहा है...";
+        }
+        try {
+          const cloudOps = await fetchOperatorsFromCloud();
+          if (Array.isArray(cloudOps) && cloudOps.length > 0) {
+            ops = cloudOps;
+            localStorage.setItem('vmh_operators', JSON.stringify(ops));
+            matched = ops.find(u => u.email && u.email.toLowerCase() === email && u.pass === pass);
+          }
+        } catch (fetchErr) {
+          console.warn("Cloud operator verification notice:", fetchErr);
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "लॉगिन करें →";
+          }
+        }
+      }
 
       if (matched) {
         if (errBox) errBox.classList.add('hidden');
@@ -5510,44 +5584,20 @@
           }
         });
 
-        // Detect live changes from the other device for instant notifications
+        // Refresh UI smoothly when changes arrive from cloud
         if (!isInitialCloudSnapshot) {
           snapshot.docChanges().forEach(change => {
-            if (change.type === 'added' || change.type === 'modified') {
-              const d = change.doc.data();
-              let b = null;
-              try { b = d.rawJson ? JSON.parse(d.rawJson) : d; } catch(e) { b = d; }
-              if (b && b.updatedByDevice && b.updatedByDevice !== myDeviceId) {
-                const party = b.partyName || 'ग्राहक';
-                const dateStr = b.eventDate ? formatBookingDate(b.eventDate) : '';
-                const occ = b.occasion || 'आयोजन';
-                if (change.type === 'added') {
-                  triggerMultiDeviceAlert(
-                    'newBooking',
-                    "वर्मा मैरिज हॉल - नई बुकिंग! 🔔",
-                    `${party} (${occ}) - दिनांक: ${dateStr}`,
-                    `🔔 नई बुकिंग प्राप्त हुई: ${party}`
-                  );
-                } else {
-                  triggerMultiDeviceAlert(
-                    'bookingModified',
-                    "वर्मा मैरिज हॉल - बुकिंग अपडेट! ✏️",
-                    `रसीद #${b.id}: ${party} (${dateStr})`,
-                    `✏️ बुकिंग अपडेट: ${party}`
-                  );
-                }
-              }
-            } else if (change.type === 'removed') {
-              const d = change.doc.data();
-              let b = null;
-              try { b = d.rawJson ? JSON.parse(d.rawJson) : d; } catch(e) { b = d; }
-              if (b && b.updatedByDevice && b.updatedByDevice !== myDeviceId) {
-                triggerMultiDeviceAlert(
-                  'bookingDeleted',
-                  "वर्मा मैरिज हॉल - बुकिंग निरस्त! 🗑️",
-                  `रसीद #${change.doc.id} निरस्त कर दी गई।`,
-                  `🗑️ बुकिंग निरस्त: #${change.doc.id}`
-                );
+            const d = change.doc.data();
+            let b = null;
+            try { b = d.rawJson ? JSON.parse(d.rawJson) : d; } catch(e) { b = d; }
+            if (b && b.updatedByDevice && b.updatedByDevice !== myDeviceId) {
+              const party = b.partyName || 'ग्राहक';
+              if (change.type === 'added') {
+                showToast(`🔔 नई बुकिंग: ${party}`);
+              } else if (change.type === 'modified') {
+                showToast(`✏️ बुकिंग अपडेट: ${party}`);
+              } else if (change.type === 'removed') {
+                showToast(`🗑️ बुकिंग निरस्त: #${change.doc.id}`);
               }
             }
           });
@@ -5628,7 +5678,16 @@
         const d = doc.data();
         if (!d) return;
         let remoteOps = null;
-        try { remoteOps = d.rawJson ? JSON.parse(d.rawJson) : d.operators; } catch(e) { remoteOps = d.operators; }
+        if (d.rawJson) {
+          try {
+            const pj = JSON.parse(d.rawJson);
+            remoteOps = pj.operators || pj;
+          } catch(e) {
+            remoteOps = d.operators;
+          }
+        } else if (d.operators) {
+          remoteOps = d.operators;
+        }
         if (Array.isArray(remoteOps) && remoteOps.length > 0) {
           const hasOwner = remoteOps.some(o => o.isOwner || o.id === 'op_owner');
           if (!hasOwner) {
@@ -5905,9 +5964,24 @@
           await syncBookingToCloud(b);
         }
 
-        // 5. Also sync Hall Config and Operator Accounts
+        // 5. Also sync Hall Config and Operator Accounts (2-Way Pull & Merge!)
         await syncHallConfigToCloud();
-        await syncOperatorsToCloud();
+        try {
+          const cloudOps = await fetchOperatorsFromCloud();
+          if (Array.isArray(cloudOps) && cloudOps.length > 0) {
+            const localOps = getOperatorsList();
+            const mergedMap = new Map();
+            cloudOps.forEach(op => mergedMap.set(op.id, op));
+            localOps.forEach(op => { if (!mergedMap.has(op.id)) mergedMap.set(op.id, op); });
+            const merged = Array.from(mergedMap.values());
+            localStorage.setItem('vmh_operators', JSON.stringify(merged));
+            await syncOperatorsToCloud(merged);
+          } else {
+            await syncOperatorsToCloud();
+          }
+        } catch(opErr) {
+          console.warn("Operator sync notice:", opErr);
+        }
 
         // 6. Refresh UI components
         updateDashboardKPIs();
@@ -5953,7 +6027,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.1";
+    const APP_VERSION = "1.2";
     let otaReleaseState = {
       betaVersion: APP_VERSION,
       productionVersion: APP_VERSION,

@@ -33,8 +33,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import android.content.SharedPreferences;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -112,6 +117,44 @@ public class MainActivity extends AppCompatActivity {
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if (request != null && request.getUrl() != null) {
+                    Uri uri = request.getUrl();
+                    String path = uri.getPath();
+                    if (path != null) {
+                        String assetPath = null;
+                        String mimeType = "application/javascript";
+                        if (path.endsWith("tailwind.min.js")) {
+                            assetPath = "tailwind.min.js";
+                        } else if (path.endsWith("qrcode.min.js")) {
+                            assetPath = "qrcode.min.js";
+                        } else if (path.endsWith("html2canvas.min.js")) {
+                            assetPath = "html2canvas.min.js";
+                        } else if (path.endsWith("jspdf.umd.min.js")) {
+                            assetPath = "jspdf.umd.min.js";
+                        } else if (path.endsWith("firebase-app-compat.js")) {
+                            assetPath = "js/firebase-app-compat.js";
+                        } else if (path.endsWith("firebase-firestore-compat.js")) {
+                            assetPath = "js/firebase-firestore-compat.js";
+                        } else if (path.endsWith("styles.css")) {
+                            assetPath = "styles.css";
+                            mimeType = "text/css";
+                        }
+
+                        if (assetPath != null) {
+                            try {
+                                InputStream is = getAssets().open(assetPath);
+                                return new WebResourceResponse(mimeType, "UTF-8", is);
+                            } catch (Exception e) {
+                                Log.w(TAG, "shouldInterceptRequest failed for asset: " + assetPath, e);
+                            }
+                        }
+                    }
+                }
+                return super.shouldInterceptRequest(view, request);
+            }
+
+            @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 if (failingUrl != null && failingUrl.contains("ota_index.html")) {
                     Log.w(TAG, "OTA bundle failed to load, falling back to asset index.html");
@@ -137,7 +180,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Load OTA Live Web Bundle if exists, otherwise fallback to Asset index.html
+        // 1. Ensure all core runtime assets (Tailwind, Firebase, etc.) exist in filesDir
+        copyAssetsToFilesDir();
+
+        // 2. APK Version Upgrade Protection:
+        // If the installed APK binary is newer than previous run, wipe outdated OTA bundle
+        // so app boots cleanly from the new APK's native assets!
+        int currentVersionCode = BuildConfig.VERSION_CODE;
+        SharedPreferences prefs = getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE);
+        int lastVersionCode = prefs.getInt("last_apk_version_code", -1);
+        if (currentVersionCode > lastVersionCode) {
+            Log.i(TAG, "New APK version detected: " + currentVersionCode + " (was " + lastVersionCode + "). Resetting OTA bundle.");
+            File ota = new File(getFilesDir(), "ota_index.html");
+            if (ota.exists()) {
+                ota.delete();
+            }
+            prefs.edit().putInt("last_apk_version_code", currentVersionCode).apply();
+        }
+
+        // 3. Load OTA Live Web Bundle if exists, otherwise fallback to Asset index.html
         File otaBundle = new File(getFilesDir(), "ota_index.html");
         if (otaBundle.exists() && otaBundle.length() > 30000) {
             Log.d(TAG, "Loading from OTA bundle: " + otaBundle.getAbsolutePath() + " (" + otaBundle.length() + " bytes)");
@@ -145,6 +206,58 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "Loading from base asset: file:///android_asset/index.html");
             webView.loadUrl("file:///android_asset/index.html");
+        }
+    }
+
+    private void copyAssetsToFilesDir() {
+        String[] assetsToCopy = new String[]{
+            "tailwind.min.js",
+            "qrcode.min.js",
+            "html2canvas.min.js",
+            "jspdf.umd.min.js",
+            "styles.css"
+        };
+        for (String assetName : assetsToCopy) {
+            try {
+                File outFile = new File(getFilesDir(), assetName);
+                if (!outFile.exists() || outFile.length() == 0) {
+                    copyAssetFile(assetName, outFile);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to copy asset: " + assetName, e);
+            }
+        }
+        try {
+            File jsDir = new File(getFilesDir(), "js");
+            if (!jsDir.exists()) jsDir.mkdirs();
+            String[] jsAssets = new String[]{
+                "js/firebase-app-compat.js",
+                "js/firebase-firestore-compat.js"
+            };
+            for (String jsAsset : jsAssets) {
+                String fileName = jsAsset.substring(jsAsset.lastIndexOf('/') + 1);
+                File outFile = new File(jsDir, fileName);
+                if (!outFile.exists() || outFile.length() == 0) {
+                    copyAssetFile(jsAsset, outFile);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to copy js assets", e);
+        }
+    }
+
+    private void copyAssetFile(String assetPath, File outFile) {
+        try (InputStream in = getAssets().open(assetPath);
+             OutputStream out = new FileOutputStream(outFile)) {
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            out.flush();
+            Log.d(TAG, "Copied asset to files: " + outFile.getAbsolutePath());
+        } catch (Exception e) {
+            Log.w(TAG, "Could not copy asset " + assetPath + ": " + e.getMessage());
         }
     }
 
@@ -352,6 +465,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean saveOtaBundle(String htmlContent, String version) {
             try {
                 if (htmlContent == null || htmlContent.length() < 30000) return false;
+                copyAssetsToFilesDir();
                 File otaFile = new File(mContext.getFilesDir(), "ota_index.html");
                 FileOutputStream fos = new FileOutputStream(otaFile);
                 fos.write(htmlContent.getBytes("UTF-8"));
@@ -401,7 +515,7 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public String getNativeAppVersion() {
-            return "1.2";
+            return "1.3";
         }
 
         @JavascriptInterface

@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                         out.flush();
                     }
 
-                    Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".provider", dstApk);
+                    Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileprovider", dstApk);
 
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("application/vnd.android.package-archive");
@@ -592,7 +592,7 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public String getNativeAppVersion() {
-            return "1.4";
+            return "1.5";
         }
 
         @JavascriptInterface

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="hi" class="h-full">
 <head>
   <meta charset="UTF-8">
@@ -56,7 +56,7 @@
     }
   </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Montserrat:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Rozha+One&family=Yatra+One&display=swap');
     
     :root {
       --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -127,7 +127,776 @@
         break-inside: avoid !important;
       }
     }
-  </style>
+  
+
+/* === ROYAL BURGUNDY & GOLD BILL STYLES === */
+    /* ------------------------------------------------------------- */
+    /* 1. IN-APP MOBILE VIEW: 100% WIDTH FIT, ZERO HORIZONTAL SCROLL */
+    /* ------------------------------------------------------------- */
+    .bill-sheet {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(77, 5, 15, 0.12);
+      overflow: hidden;
+      border: 1.5px solid #d4af37;
+      margin: 0 auto;
+      font-family: 'Mukta', sans-serif;
+      color: #1a1a1a;
+      box-sizing: border-box;
+    }
+
+    .matra-safe {
+      line-height: 1.38 !important;
+      padding-top: 1px !important;
+      padding-bottom: 2px !important;
+      overflow: visible !important;
+    }
+
+    .svg-icon {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    .svg-icon-sm {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    .svg-header-icon {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      vertical-align: middle;
+      flex-shrink: 0;
+      color: #fef08a;
+    }
+
+    .bill-header {
+      background: linear-gradient(135deg, #3d0309 0%, #5a0713 45%, #730c18 100%);
+      color: #ffffff;
+      position: relative;
+      padding: 8px 8px 5px 8px;
+      overflow: hidden;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .hall-photo-frame {
+      width: 74px;
+      height: 54px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1.5px solid #fef08a;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      background-color: #2b0207;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hall-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .header-brand {
+      flex: 1;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .header-quote {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #fde047;
+      margin-bottom: 1px;
+      line-height: 1.2;
+    }
+
+    .header-title {
+      font-family: 'Rozha One', 'Mukta', serif;
+      font-size: 23px;
+      font-weight: 400;
+      color: #fffdf5;
+      line-height: 1.1;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 480px) {
+      .header-title { font-size: 30px; }
+      .hall-photo-frame { width: 92px; height: 68px; }
+      .header-quote { font-size: 11.5px; }
+    }
+
+    .header-address {
+      font-size: 8.5px;
+      font-weight: 600;
+      color: #fef3c7;
+      margin-top: 1px;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .header-phone {
+      font-size: 10px;
+      font-weight: 800;
+      color: #fef08a;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1.2;
+    }
+
+    .phone-badge-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #fef08a;
+      color: #5c0612;
+    }
+
+    .phone-badge-circle svg {
+      width: 7.5px;
+      height: 7.5px;
+      fill: #4a050f;
+    }
+
+    .header-flourish {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 65px;
+      height: 65px;
+      pointer-events: none;
+      opacity: 0.75;
+      z-index: 1;
+    }
+
+    .header-wave {
+      width: 100%;
+      height: 12px;
+      display: block;
+      margin-bottom: -1px;
+    }
+
+    .bill-body {
+      padding: 6px 6px 10px 6px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .section-pill-header {
+      background-color: #5c0612;
+      color: #ffffff;
+      padding: 3px 6px;
+      border-radius: 6px 6px 0 0;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      line-height: 1.3;
+    }
+
+    .booking-card {
+      border: 1px solid #e7d5be;
+      border-radius: 7px;
+      background-color: #fefcf8;
+      overflow: hidden;
+    }
+
+    .booking-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 6px;
+      row-gap: 2px;
+      padding: 4px 6px;
+    }
+
+    .booking-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5px;
+      min-width: 0;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3px;
+      border-bottom: 1px dashed #ebd9c3;
+      padding: 1.5px 0 2px 0 !important;
+      font-size: 10px;
+      line-height: 1.32 !important;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .event-date-highlight-row {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px solid #f59e0b !important;
+      border-radius: 5px;
+      padding: 2px 4px !important;
+      margin: 1px 0;
+    }
+
+    .detail-label {
+      font-weight: 700;
+      color: #4b5563;
+      display: flex;
+      align-items: center;
+      gap: 2.5px;
+      white-space: nowrap;
+      font-size: 9.5px;
+      flex-shrink: 0;
+    }
+
+    .detail-value {
+      font-weight: 800;
+      color: #111827;
+      text-align: right;
+      font-size: 9.5px;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .detail-value.wrap-ok {
+      white-space: normal;
+      word-break: normal;
+      line-height: 1.25;
+      text-overflow: clip;
+    }
+
+    .slip-badge {
+      background-color: #fef3c7;
+      color: #78350f;
+      border: 1px solid #fde68a;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-family: 'Montserrat', monospace;
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .occasion-badge {
+      background-color: #ffedd5;
+      color: #9a3412;
+      border: 1px solid #fed7aa;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .event-date-badge {
+      background: #78350f;
+      color: #fef08a;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+
+    .timing-strip {
+      background-color: #fff8eb;
+      border-top: 1px solid #ebd9c3;
+      padding: 3px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #78350f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      line-height: 1.3;
+    }
+
+    .financials-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e7d5be;
+      background-color: #ffffff;
+    }
+
+    .financials-table th {
+      background-color: #5c0612;
+      color: #ffffff;
+      padding: 3px 6px;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: left;
+      line-height: 1.3;
+    }
+
+    .financials-table th:last-child {
+      text-align: right;
+    }
+
+    .financials-table td {
+      padding: 3px 6px !important;
+      border-bottom: 1px solid #f3e8d8;
+      font-size: 10.5px;
+      line-height: 1.32 !important;
+    }
+
+    .financials-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 800;
+      background-color: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 1px 4px;
+      border-radius: 4px;
+      margin-left: 3px;
+    }
+
+    .payments-card {
+      border: 1px solid #e7d5be;
+      border-radius: 7px;
+      overflow: hidden;
+      background-color: #ffffff;
+    }
+
+    .payments-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .payments-table th {
+      background-color: #6a0815;
+      color: #fef08a;
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 2.5px 2.5px !important;
+      border-right: 1px solid rgba(254, 240, 138, 0.2);
+      text-align: left;
+      line-height: 1.25;
+    }
+
+    .payments-table th:last-child {
+      border-right: none;
+    }
+
+    .payments-table td {
+      padding: 2.5px 2.5px !important;
+      border-bottom: 1px solid #f3e8d8;
+      border-right: 1px solid #f3e8d8;
+      font-size: 9px;
+      line-height: 1.28 !important;
+    }
+
+    .payments-table td:last-child {
+      border-right: none;
+    }
+
+    .payments-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .two-cols-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .list-card {
+      border: 1px solid #e7d5be;
+      border-radius: 7px;
+      background-color: #fefcf8;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .items-list {
+      list-style: none;
+      padding: 3px 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5px; /* Minimal distance */
+    }
+
+    .items-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 600;
+      color: #1f2937;
+      line-height: 1.3 !important;
+      padding: 0 !important;
+    }
+
+    .check-icon-svg {
+      width: 9.5px;
+      height: 9.5px;
+      fill: #854d0e;
+      margin-top: 1.5px;
+      flex-shrink: 0;
+    }
+
+    .qty-bold {
+      font-weight: 800;
+      color: #451a03;
+      font-family: 'Montserrat', sans-serif;
+      margin-right: 2.5px;
+      font-size: 9px;
+    }
+
+    .terms-card {
+      border: 1px solid #e7d5be;
+      border-radius: 7px;
+      background-color: #fefcf8;
+      overflow: hidden;
+    }
+
+    .terms-list {
+      list-style: none;
+      padding: 3px 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5px; /* Minimal distance */
+    }
+
+    .terms-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 3.5px;
+      font-size: 8.5px;
+      color: #374151;
+      font-weight: 500;
+      line-height: 1.3 !important;
+      padding: 0 !important;
+    }
+
+    .rule-num {
+      width: 11px;
+      height: 11px;
+      background-color: #5c0612;
+      color: #ffffff;
+      border-radius: 50%;
+      font-size: 7.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .bill-footer-wave {
+      width: 100%;
+      height: 10px;
+      display: block;
+      background: linear-gradient(135deg, #3d0309 0%, #5a0713 45%, #730c18 100%);
+      border-radius: 0 0 11px 11px;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* 2. EXPORT LUXURY MODE (PHOTO & PDF): 680PX SPACIOUS & GRAND   */
+    /* ------------------------------------------------------------- */
+    .export-mode-680 {
+      width: 680px !important;
+      min-width: 680px !important;
+      max-width: 680px !important;
+      border-radius: 18px !important;
+      border: 2px solid #d4af37 !important;
+      box-shadow: none !important;
+      background-color: #ffffff !important;
+      margin: 0 auto !important;
+    }
+
+    .export-mode-680 .matra-safe {
+      line-height: 1.65 !important;
+      padding-top: 4px !important;
+      padding-bottom: 6px !important;
+    }
+
+    .export-mode-680 .svg-icon {
+      width: 16px !important;
+      height: 16px !important;
+    }
+
+    .export-mode-680 .svg-icon-sm {
+      width: 13px !important;
+      height: 13px !important;
+    }
+
+    .export-mode-680 .svg-header-icon {
+      width: 16px !important;
+      height: 16px !important;
+    }
+
+    .export-mode-680 .bill-header {
+      padding: 18px 20px 14px 20px !important;
+    }
+
+    .export-mode-680 .header-content {
+      gap: 16px !important;
+    }
+
+    .export-mode-680 .hall-photo-frame {
+      width: 146px !important;
+      height: 102px !important;
+      border-radius: 12px !important;
+      border: 2.5px solid #fef08a !important;
+    }
+
+    .export-mode-680 .header-title {
+      font-size: 46px !important;
+      line-height: 1.15 !important;
+      letter-spacing: 1.2px !important;
+      white-space: normal !important;
+    }
+
+    .export-mode-680 .header-quote {
+      font-size: 15px !important;
+      letter-spacing: 3px !important;
+      margin-bottom: 3px !important;
+    }
+
+    .export-mode-680 .header-address {
+      font-size: 13.5px !important;
+      margin-top: 4px !important;
+      gap: 6px !important;
+    }
+
+    .export-mode-680 .header-phone {
+      font-size: 15.5px !important;
+      margin-top: 4px !important;
+      gap: 8px !important;
+    }
+
+    .export-mode-680 .phone-badge-circle {
+      width: 20px !important;
+      height: 20px !important;
+    }
+
+    .export-mode-680 .phone-badge-circle svg {
+      width: 11px !important;
+      height: 11px !important;
+    }
+
+    .export-mode-680 .header-flourish {
+      width: 110px !important;
+      height: 110px !important;
+    }
+
+    .export-mode-680 .header-wave {
+      height: 18px !important;
+    }
+
+    .export-mode-680 .bill-body {
+      padding: 14px 16px 20px 16px !important;
+      gap: 11px !important; /* Spacious luxury gap */
+    }
+
+    .export-mode-680 .section-pill-header {
+      padding: 6px 12px !important;
+      font-size: 13px !important;
+      border-radius: 8px 8px 0 0 !important;
+    }
+
+    .export-mode-680 .booking-card {
+      border: 1.5px solid #e7d5be !important;
+      border-radius: 11px !important;
+    }
+
+    .export-mode-680 .booking-grid {
+      column-gap: 18px !important;
+      row-gap: 4px !important;
+      padding: 10px 14px !important;
+    }
+
+    .export-mode-680 .booking-col {
+      gap: 4px !important;
+    }
+
+    .export-mode-680 .detail-row {
+      padding: 4px 0 4px 0 !important;
+      font-size: 12.5px !important;
+      line-height: 1.5 !important;
+    }
+
+    .export-mode-680 .detail-label {
+      font-size: 12px !important;
+      gap: 5px !important;
+    }
+
+    .export-mode-680 .detail-value {
+      font-size: 12.5px !important;
+    }
+
+    .export-mode-680 .slip-badge {
+      font-size: 11.5px !important;
+      padding: 2px 7px !important;
+      border-radius: 6px !important;
+    }
+
+    .export-mode-680 .occasion-badge {
+      font-size: 11.5px !important;
+      padding: 2px 7px !important;
+      border-radius: 6px !important;
+    }
+
+    .export-mode-680 .event-date-highlight-row {
+      padding: 4px 7px !important;
+      border-radius: 7px !important;
+    }
+
+    .export-mode-680 .event-date-badge {
+      font-size: 12.5px !important;
+      padding: 2px 8px !important;
+    }
+
+    .export-mode-680 .timing-strip {
+      padding: 6px 14px !important;
+      font-size: 12.5px !important;
+    }
+
+    .export-mode-680 .financials-table {
+      border: 1.5px solid #e7d5be !important;
+      border-radius: 9px !important;
+    }
+
+    .export-mode-680 .financials-table th {
+      padding: 6px 12px !important;
+      font-size: 12.5px !important;
+    }
+
+    .export-mode-680 .financials-table td {
+      padding: 7px 12px !important;
+      font-size: 13px !important;
+      line-height: 1.55 !important;
+    }
+
+    .export-mode-680 .mode-pill {
+      font-size: 10.5px !important;
+      padding: 2px 7px !important;
+      border-radius: 5px !important;
+      margin-left: 6px !important;
+    }
+
+    .export-mode-680 .payments-card {
+      border: 1.5px solid #e7d5be !important;
+      border-radius: 11px !important;
+    }
+
+    .export-mode-680 .payments-table th {
+      padding: 6px 8px !important;
+      font-size: 11.5px !important;
+    }
+
+    .export-mode-680 .payments-table td {
+      padding: 7px 8px !important;
+      font-size: 11.5px !important;
+      line-height: 1.5 !important;
+    }
+
+    .export-mode-680 .two-cols-section {
+      gap: 12px !important;
+    }
+
+    .export-mode-680 .list-card {
+      border: 1.5px solid #e7d5be !important;
+      border-radius: 11px !important;
+    }
+
+    .export-mode-680 .items-list {
+      padding: 8px 11px !important;
+      gap: 5px !important;
+    }
+
+    .export-mode-680 .items-list li {
+      font-size: 11.5px !important;
+      gap: 6px !important;
+      line-height: 1.55 !important;
+    }
+
+    .export-mode-680 .check-icon-svg {
+      width: 13px !important;
+      height: 13px !important;
+    }
+
+    .export-mode-680 .qty-bold {
+      font-size: 11.5px !important;
+      margin-right: 4px !important;
+    }
+
+    .export-mode-680 .terms-card {
+      border: 1.5px solid #e7d5be !important;
+      border-radius: 11px !important;
+    }
+
+    .export-mode-680 .terms-list {
+      padding: 8px 11px !important;
+      gap: 5px !important;
+    }
+
+    .export-mode-680 .terms-list li {
+      font-size: 11px !important;
+      gap: 7px !important;
+      line-height: 1.5 !important;
+    }
+
+    .export-mode-680 .rule-num {
+      width: 15px !important;
+      height: 15px !important;
+      font-size: 9.5px !important;
+    }
+
+    .export-mode-680 .bill-footer-wave {
+      height: 14px !important;
+      border-radius: 0 0 16px 16px !important;
+    }
+</style>
 </head>
 <body class="bg-slate-100 text-slate-900 flex justify-center items-stretch min-h-screen p-0 m-0 overflow-hidden">
 
@@ -140,7 +909,9 @@
     <header id="appTopHeader" class="bg-gradient-to-r from-amber-700 via-amber-800 to-amber-900 text-white px-3.5 pb-2.5 flex items-center justify-between shadow-md shrink-0 z-30" style="padding-top: max(10px, env(safe-area-inset-top, 0px));">
       <!-- LEFT: LOGO ICON -->
       <div class="w-8 shrink-0 flex items-center">
-        <span class="text-xl">🏛️</span>
+        <svg class="w-6 h-6 text-amber-200" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L2 7v2h20V7L12 2zm-8 8v9h2v-9H4zm5 0v9h2v-9H9zm5 0v9h2v-9h-2zm5 0v9h2v-9h-2zM2 20v2h20v-2H2z"/>
+        </svg>
       </div>
 
       <!-- CENTER: TITLE & LOCATION -->
@@ -150,17 +921,24 @@
         </h1>
         <p id="headerAppSubtitle" class="text-[11px] text-amber-200 font-semibold opacity-95 leading-tight truncate flex items-center justify-center gap-1.5">
           <span id="headerAppSubLoc">असनहरा, बस्ती</span>
-          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.4</span>
+          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.5</span>
         </p>
       </div>
 
       <!-- RIGHT: OPERATOR / PROFILE PILL & SHARE BUTTON -->
       <div class="shrink-0 flex items-center justify-end gap-1.5">
         <button type="button" onclick="shareAppApk()" title="ऐप शेयर करें (Share App)" class="text-xs bg-amber-950/60 hover:bg-amber-950 text-amber-100 px-2 py-1 rounded-xl border border-amber-300/40 flex items-center justify-center btn-tactile shadow-2xs">
-          <span>📲</span>
+          <svg class="w-3.5 h-3.5 text-amber-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+            <path d="M12 7v6m-3-3l3-3 3 3"/>
+          </svg>
         </button>
-        <button type="button" onclick="openUserProfileModal()" id="headerUserChip" title="वर्तमान ऑपरेटर / प्रोफाइल" class="text-[10px] font-black bg-amber-950/60 hover:bg-amber-950 text-amber-100 px-2.5 py-1 rounded-xl border border-amber-300/40 flex items-center gap-1 btn-tactile shadow-2xs">
-          <span>🏛️</span>
+        <button type="button" onclick="openUserProfileModal()" id="headerUserChip" title="वर्तमान ऑपरेटर / प्रोफाइल" class="text-[10px] font-black bg-amber-950/60 hover:bg-amber-950 text-amber-100 px-2.5 py-1 rounded-xl border border-amber-300/40 flex items-center gap-1.5 btn-tactile shadow-2xs">
+          <svg class="w-3 h-3 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
           <span id="headerUserNameText" class="max-w-[75px] truncate">वर्मा मैरिज हॉल</span>
         </button>
       </div>
@@ -265,7 +1043,11 @@
 
         <!-- QUICK ACTION BUTTON: NEW BOOKING -->
         <button onclick="openNewBookingForm()" class="w-full py-3.5 bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-white font-black text-sm rounded-2xl shadow-md flex items-center justify-center gap-2 btn-tactile">
-          <span class="text-lg">➕</span>
+          <svg class="w-4 h-4 text-amber-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
           <span id="btnAddNewBookingText">नई मैरिज हॉल बुकिंग पर्ची बनाएं</span>
         </button>
 
@@ -327,8 +1109,8 @@
           </div>
 
           <!-- 3. RIGHT: TOP SAVE BUTTON -->
-          <button type="button" onclick="saveCurrentBooking()" id="btnTopSaveBooking" class="text-xs font-black text-white bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 border border-emerald-500 px-3 py-1.5 rounded-lg shadow-xs btn-tactile flex items-center gap-1 shrink-0">
-            <span>💾</span>
+          <button type="button" onclick="saveCurrentBooking()" id="btnTopSaveBooking" class="text-xs font-black text-white bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 border border-emerald-500 px-3 py-1.5 rounded-lg shadow-xs btn-tactile flex items-center gap-1.5 shrink-0">
+            <svg class="w-3.5 h-3.5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             <span id="btnTopSaveBookingText">सेव करें</span>
           </button>
         </div>
@@ -401,7 +1183,7 @@
             </label>
             <div onclick="openCustomDatePickerModal()" class="w-full p-3 bg-white border-2 border-slate-300 hover:border-amber-500 text-slate-950 rounded-xl flex items-center justify-between cursor-pointer btn-tactile transition-all shadow-2xs">
               <div class="flex items-center gap-2">
-                <span class="text-xl">📅</span>
+                <svg class="w-5 h-5 text-amber-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 <span id="hallEventDateDisplay" class="text-sm font-black text-slate-950">तारीख चुनें...</span>
               </div>
               <span class="text-xs font-black bg-amber-100 text-amber-900 px-3 py-1 rounded-lg border border-amber-300">कैलेंडर से चुनें 🗓️</span>
@@ -606,212 +1388,202 @@
           </div>
 
           <!-- Row 2: Action Buttons in an auto-fitting Grid -->
-          <div id="slipActionButtonsGrid" class="grid grid-cols-4 gap-1.5 text-center">
+                    <div id="slipActionButtonsGrid" class="grid grid-cols-4 gap-1.5 text-center">
             <!-- 1. RECEIVE PAYMENT -->
-            <button id="btnSlipTopReceivePayment" onclick="openReceivePaymentModal(selectedBookingId)" title="शेष भुगतान / किश्त लें" class="py-2 px-1 text-[11px] font-black text-emerald-950 bg-emerald-100 hover:bg-emerald-200 border border-emerald-400 rounded-xl btn-tactile flex items-center justify-center gap-1 shadow-2xs">
-              <span class="text-sm">💰</span>
+            <button id="btnSlipTopReceivePayment" onclick="openReceivePaymentModal(selectedBookingId)" title="शेष भुगतान / किश्त लें" class="py-2 px-1 text-[11px] font-black text-emerald-950 bg-emerald-100 hover:bg-emerald-200 border border-emerald-400 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
+              <svg class="w-3.5 h-3.5 text-emerald-800 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+                <circle cx="16" cy="14" r="1.5" fill="currentColor"/>
+              </svg>
               <span>भुगतान</span>
             </button>
             <!-- 2. SHARE -->
-            <button onclick="openShareOptionsModal()" title="रसीद शेयर करें" class="py-2 px-1 text-[11px] font-black text-amber-950 bg-amber-100 hover:bg-amber-200 border border-amber-400 rounded-xl btn-tactile flex items-center justify-center gap-1 shadow-2xs">
-              <span class="text-sm">📤</span>
+            <button onclick="openShareOptionsModal()" title="रसीद शेयर करें" class="py-2 px-1 text-[11px] font-black text-amber-950 bg-amber-100 hover:bg-amber-200 border border-amber-400 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
+              <svg class="w-3.5 h-3.5 text-amber-900 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/>
+                <circle cx="6" cy="12" r="3"/>
+                <circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
               <span id="btnShareText">शेयर</span>
             </button>
             <!-- 3. EDIT -->
-            <button onclick="editLoadedBooking()" title="संशोधित करें" class="py-2 px-1 text-[11px] font-black text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl btn-tactile flex items-center justify-center gap-1 shadow-2xs">
-              <span class="text-sm">✏️</span>
+            <button onclick="editLoadedBooking()" title="संशोधित करें" class="py-2 px-1 text-[11px] font-black text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
+              <svg class="w-3.5 h-3.5 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
               <span>एडिट</span>
             </button>
             <!-- 4. DELETE -->
-            <button onclick="showDeleteConfirmForCurrentSlip()" title="बुकिंग डिलीट करें" class="py-2 px-1 text-[11px] font-black text-red-700 bg-red-50 hover:bg-red-100 border border-red-300 rounded-xl btn-tactile flex items-center justify-center gap-1 shadow-2xs">
-              <span class="text-sm">🗑️</span>
+            <button onclick="showDeleteConfirmForCurrentSlip()" title="बुकिंग डिलीट करें" class="py-2 px-1 text-[11px] font-black text-red-700 bg-red-50 hover:bg-red-100 border border-red-300 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
+              <svg class="w-3.5 h-3.5 text-red-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <line x1="10" y1="11" x2="10" y2="17"/>
+                <line x1="14" y1="11" x2="14" y2="17"/>
+              </svg>
               <span>डिलीट</span>
             </button>
           </div>
         </div>
 
-        <!-- AUTHENTIC RECEIPT SLIP CARD (PRESTIGIOUS & COLORFUL IN-APP) -->
-        <div id="marriageReceiptSlip" class="bg-white text-slate-950 border-2 border-amber-400 rounded-2xl p-5 sm:p-7 space-y-4 shadow-sm" style="font-family: 'Nirmala UI', 'Noto Sans Devanagari', 'Segoe UI', Roboto, Arial, sans-serif; background-color: #ffffff; color: #000000;">
-          
-          <!-- 1. OFFICIAL SLIP HEADER -->
-          <div class="text-center space-y-1 pb-3">
-            <p id="slipHeaderQuote" class="text-xs sm:text-sm font-black tracking-widest uppercase text-red-700">|| श्री गणेशाय नमः ||</p>
-            <h2 id="slipHeaderName" class="text-2xl sm:text-3xl font-black tracking-wide uppercase leading-tight text-amber-950">
-              वर्मा मैरिज हॉल
-            </h2>
-            <p id="slipHeaderAddress" class="text-xs sm:text-sm font-semibold text-slate-700">
-              ग्राम असनहरा, निकट अंकित धर्मकांटा, जिला बस्ती, उत्तर प्रदेश - 272194
-            </p>
-            <p id="slipHeaderPhone" class="text-xs sm:text-sm font-black text-slate-900">
-              मो.: 9918802425, 9936435350
-            </p>
+        <!-- FULL WIDTH TIMING SLOT -->
+        <div class="timing-strip matra-safe">
+          <svg class="svg-icon" style="color: #d97706;" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06z"/>
+          </svg>
+          <span>समय स्लॉट (Timing Slot):</span>
+          <b id="slipSlotTiming" style="color: #451a03;">-</b>
+        </div>
+      </section>
+
+      <!-- 2. FINANCIALS SUMMARY TABLE -->
+      <section>
+        <table class="financials-table">
+          <thead>
+            <tr>
+              <th class="matra-safe">
+                <span style="display: flex; align-items: center; gap: 6px;">
+                  <svg class="svg-header-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+                  </svg>
+                  <span>विवरण (PARTICULARS)</span>
+                </span>
+              </th>
+              <th class="matra-safe">धनराशि (AMOUNT ₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="matra-safe" style="font-weight: 700; color: #1f2937;">
+                <span style="display: flex; align-items: center; gap: 7px;">
+                  <svg class="svg-icon" style="color: #854d0e;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5c0 .83-.67 1.5-1.5 1.5h-1c-.83 0-1.5-.67-1.5-1.5v-1H8v-2h1v-1c0-.83.67-1.5 1.5-1.5h2.5c.83 0 1.5.67 1.5 1.5v1h1v2h-1v.5zm0-4.5h-3v-1h3v1z"/>
+                  </svg>
+                  <span>कुल तय किराया (Total Hall Rent)</span>
+                </span>
+              </td>
+              <td class="matra-safe" style="text-align: right; font-weight: 800; font-family: 'Montserrat', sans-serif; font-size: 15px; color: #111827;"><span id="slipTotalRent">₹ 0</span></td>
+            </tr>
+            <tr>
+              <td class="matra-safe" style="font-weight: 700; color: #1f2937;">
+                <span style="display: flex; align-items: center; gap: 7px; flex-wrap: wrap;">
+                  <svg class="svg-icon" style="color: #059669;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                  </svg>
+                  <span>जमा अग्रिम राशि (Advance Paid)</span>
+                  <span id="slipAdvanceModeText" class="mode-pill">💵 नकद (Cash)</span></span>
+                </span>
+              </td>
+              <td class="matra-safe" style="text-align: right; font-weight: 800; font-family: 'Montserrat', sans-serif; font-size: 15px; color: #059669;"><span id="slipAdvancePaid">₹ 0</span></td>
+            </tr>
+            <tr style="background-color: #fffaf0;">
+              <td class="matra-safe" style="font-weight: 800; color: #991b1b; font-size: 14px;">
+                <span style="display: flex; align-items: center; gap: 7px;">
+                  <svg class="svg-icon" style="color: #b91c1c;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/>
+                  </svg>
+                  <span>शेष देय बकाया राशि (Balance Due)</span>
+                </span>
+              </td>
+              <td class="matra-safe" style="text-align: right; font-weight: 900; font-family: 'Montserrat', sans-serif; font-size: 17px; color: #b91c1c;"><div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;"><span id="slipBalanceDue">₹ 0</span><span id="slipFullyPaidBadge" class="hidden" style="font-size: 11px; font-weight: 800; color: #065f46; background: #d1fae5; border: 1px solid #6ee7b7; padding: 1px 6px; border-radius: 5px;">🟢 पूर्ण चुकता</span></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 3. PAYMENT INFORMATION: 6 COLUMNS TABLE WITH 3 REALISTIC PAYMENTS -->
+      <section id="slipPaymentHistoryContainer" class="payments-card">
+        <div class="section-pill-header">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <svg class="svg-header-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+            </svg>
+            <span>पेमेंट इन्फॉर्मेशन (PAYMENT INFORMATION)</span>
           </div>
-
-          <!-- SOLID DIVIDER LINE -->
-          <div class="border-t-2 border-amber-800"></div>
-
-          <!-- 2 & 3. UNIFIED 2-COLUMN DETAILS (SLIP NO, DATES, PARTY, OCCASION) -->
-          <div class="grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs sm:text-sm leading-snug">
-            <!-- Col 1: रसीद सं. -->
-            <div>
-              <b class="font-black text-black block text-[11px] sm:text-xs text-slate-700">रसीद सं. (Slip No):</b>
-              <span id="slipReceiptNo" class="font-black text-amber-950 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-300 inline-block mt-0.5 text-xs sm:text-sm font-mono whitespace-nowrap">-</span>
-            </div>
-            <!-- Col 2: बुकिंग दिनांक -->
-            <div>
-              <b class="font-black text-black block text-[11px] sm:text-xs text-slate-700">बुकिंग दिनांक (Booking Date):</b>
-              <span id="slipBookingDate" class="font-black text-slate-900 inline-block mt-0.5 text-xs sm:text-sm">-</span>
-            </div>
-
-            <!-- Col 1: पार्टी का नाम -->
-            <div>
-              <b class="font-black text-black block text-[11px] sm:text-xs text-slate-700">पार्टी / वर-वधु पक्ष (Party / Client):</b>
-              <span id="slipPartyName" class="font-black text-slate-950 block mt-0.5 text-xs sm:text-sm break-words">-</span>
-            </div>
-            <!-- Col 2: संपर्क मोबाइल -->
-            <div>
-              <b class="font-black text-black block text-[11px] sm:text-xs text-slate-700">संपर्क मोबाइल (Contact Mobile):</b>
-              <span id="slipPartyPhone" class="font-black text-slate-900 block mt-0.5 text-xs sm:text-sm font-mono">-</span>
-            </div>
-
-            <!-- Full Width (Col-Span-2): पार्टी का पता -->
-            <div class="col-span-2">
-              <b class="font-black text-black block text-[11px] sm:text-xs text-slate-700">पार्टी का पता (Client Address):</b>
-              <span id="slipPartyAddress" class="font-bold text-slate-900 block mt-0.5 text-xs sm:text-sm">-</span>
-            </div>
-
-            <!-- Col 1: कार्यक्रम आयोजन -->
-            <div>
-              <b class="font-black text-black block text-[11px] sm:text-xs text-slate-700">कार्यक्रम आयोजन (Event Occasion):</b>
-              <span id="slipEventOccasion" class="font-black text-amber-900 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 inline-block mt-0.5 text-xs sm:text-sm">-</span>
-            </div>
-            <!-- Col 2: कार्यक्रम दिनांक -->
-            <div>
-              <b class="font-black text-black block text-[11px] sm:text-xs text-slate-700">कार्यक्रम दिनांक (Event Date):</b>
-              <span id="slipEventDate" class="font-black text-slate-900 block mt-0.5 text-xs sm:text-sm">-</span>
-            </div>
-
-            <!-- Full Width (Col-Span-2): समय स्लॉट -->
-            <div class="col-span-2 pt-1 border-t border-slate-200">
-              <b class="font-black text-black text-[11px] sm:text-xs text-slate-700">समय स्लॉट (Timing Slot): </b>
-              <span id="slipSlotTiming" class="font-black text-slate-900 text-xs sm:text-sm">-</span>
-            </div>
-          </div>
-
-          <!-- SOLID DIVIDER LINE -->
-          <div class="border-t-2 border-amber-800"></div>
-
-          <!-- 4. FINANCIAL AMOUNTS (ZERO BOXES - BILINGUAL HEADERS) -->
-          <div class="space-y-2 text-xs sm:text-sm">
-            <div class="flex items-center justify-between pb-1">
-              <b class="font-black text-black uppercase tracking-wide">विवरण (Particulars)</b>
-              <b class="font-black text-black uppercase tracking-wide">धनराशि (Amount ₹)</b>
-            </div>
-            <div class="border-t border-slate-300"></div>
-
-            <div class="flex items-center justify-between py-0.5">
-              <b class="font-black text-black">कुल तय किराया (Total Hall Rent)</b>
-              <span id="slipTotalRent" class="font-black text-slate-950 text-sm sm:text-base font-mono">₹ 0</span>
-            </div>
-
-            <div class="flex items-center justify-between py-0.5">
-              <div>
-                <b class="font-black text-black">जमा अग्रिम राशि (Advance Paid)</b>
-                <span id="slipAdvanceModeText" class="font-bold text-emerald-800 text-xs block">💵 नकद (Cash)</span>
-              </div>
-              <span id="slipAdvancePaid" class="font-black text-emerald-800 text-sm sm:text-base font-mono bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-300" style="color: #15803d !important;">₹ 0</span>
-            </div>
-
-            <div class="border-t border-slate-300"></div>
-
-            <div class="flex items-center justify-between pt-1">
-              <b class="font-black text-black">शेष देय बकाया राशि (Balance Due)</b>
-              <div class="flex items-center gap-1.5">
-                <span id="slipBalanceDue" class="font-black text-red-800 text-base sm:text-lg font-mono bg-red-50 px-2.5 py-0.5 rounded-md border border-red-300" style="color: #b91c1c !important;">₹ 0</span>
-                <span id="slipFullyPaidBadge" class="hidden text-xs font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-400">🟢 पूर्ण चुकता</span>
-              </div>
-            </div>
-
-            <!-- PAYMENT INFORMATION (DETAILED ACCOUNTING TABLE) -->
-            <div id="slipPaymentHistoryContainer" class="hidden mt-3 pt-2.5 border-t-2 border-slate-900 space-y-2">
-              <div class="flex items-center justify-between">
-                <b class="font-black text-slate-950 text-xs uppercase tracking-wide">पेमेंट इन्फॉर्मेशन (Payment Information):</b>
-                <span id="slipTotalInstallmentsCount" class="text-[10px] font-black text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">1 प्रविष्टि</span>
-              </div>
-              
-              <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-[10.5px] sm:text-xs">
-                  <thead>
-                    <tr class="border-t-2 border-b-2 border-slate-800 text-slate-950 font-black leading-relaxed" style="background: transparent;">
-                      <th class="py-2.5 px-2.5 border-r border-slate-300 text-center">#</th>
-                      <th class="py-2.5 px-2.5 border-r border-slate-300">दिनांक व समय</th>
-                      <th class="py-2.5 px-2.5 border-r border-slate-300">माध्यम</th>
-                      <th class="py-2.5 px-2.5 border-r border-slate-300">विवरण / टिप्पणी</th>
-                      <th class="py-2.5 px-2.5 text-right border-r border-slate-300">प्राप्त राशि</th>
-                      <th class="py-2.5 px-2.5 text-right">शेष बकाया</th>
-                      <th class="py-2.5 px-2 text-center no-print border-l border-slate-200">क्रिया</th>
-                    </tr>
-                  </thead>
-                  <tbody id="slipPaymentHistoryTableBody" class="divide-y divide-slate-200 font-medium">
-                    <!-- Populated dynamically -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- RECEIVE PAYMENT INLINE BUTTON (SLIP QUICK ACTION) -->
-            <div id="slipInlineReceivePaymentWrapper" class="no-print pt-2">
-              <button type="button" onclick="openReceivePaymentModal(selectedBookingId)" class="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 btn-tactile">
-                <span>💰</span>
-                <span>शेष भुगतान प्राप्त करें (Receive Payment)</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- SOLID DIVIDER LINE -->
-          <div class="border-t-2 border-amber-800"></div>
-
-          <!-- 5. AMENITIES & UTENSILS LISTS (BILINGUAL HEADERS, BOLD QUANTITIES) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs sm:text-sm">
-            
-            <!-- LEFT COLUMN: AMENITIES (BILINGUAL HEADER & THICK BULLETS) -->
-            <div class="space-y-2">
-              <h3 class="font-black text-black pb-2.5 border-b border-slate-400 leading-relaxed text-xs sm:text-sm">
-                उपलब्ध कराई गई सुविधाएं (Amenities Allotted):
-              </h3>
-              <ul id="slipAmenitiesList" class="space-y-1.5 text-slate-900 font-medium leading-normal pl-1">
-                <!-- Dynamically populated with <li>• Item</li> -->
-              </ul>
-            </div>
-
-            <!-- RIGHT COLUMN: UTENSILS (BILINGUAL HEADER, QUANTITIES BOLD) -->
-            <div class="space-y-2">
-              <h3 class="font-black text-black pb-2.5 border-b border-slate-400 leading-relaxed text-xs sm:text-sm">
-                आबंटित बर्तन व सामान सूची (Utensils & Inventory):
-              </h3>
-              <ul id="slipUtensilsList" class="space-y-1.5 text-slate-900 font-medium leading-normal pl-1">
-                <!-- Dynamically populated with <li>• <b>Qty</b> Name</li> -->
-              </ul>
-            </div>
-
-          </div>
-
-          <!-- SOLID DIVIDER LINE -->
-          <div class="border-t-2 border-amber-800"></div>
-
-          <!-- 6. TERMS & CONDITIONS (BILINGUAL HEADER) -->
-          <div class="space-y-1.5 text-xs sm:text-sm bg-amber-50/70 p-3 rounded-xl border border-amber-200">
-            <h4 class="font-black text-amber-950">
-              नियम एवं शर्तें (Terms & Conditions):
-            </h4>
-            <ol id="slipTermsList" class="space-y-1.5 text-slate-800 font-medium leading-normal pl-4 list-decimal text-[11px] sm:text-xs">
-              <!-- Dynamically populated with <li>Rule</li> -->
-            </ol>
-          </div>
-
+          <span id="slipTotalInstallmentsCount" style="background-color: #059669; color: #ffffff; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px;"><span>✔</span> <span>1 प्रविष्टि</span></span>
         </div>
 
+        <table class="payments-table">
+          <thead>
+            <tr>
+              <th class="matra-safe" style="width: 18px; text-align: center;">#</th>
+              <th class="matra-safe" style="width: 58px;">दिनांक व समय</th>
+              <th class="matra-safe" style="width: 36px; text-align: center;">माध्यम</th>
+              <th class="matra-safe">विवरण / टिप्पणी</th>
+              <th class="matra-safe" style="width: 56px; text-align: right;">प्राप्त राशि</th>
+              <th class="matra-safe" style="width: 56px; text-align: right;">शेष बकाया</th>
+              <th class="matra-safe no-print" style="width: 22px; text-align: center;">⋮</th>
+            </tr>
+          </thead>
+          <tbody id="slipPaymentHistoryTableBody">
+  <!-- Dynamically Populated -->
+</tbody>
+        </table>
+          <!-- RECEIVE PAYMENT INLINE BUTTON (SLIP QUICK ACTION) -->
+    <div id="slipInlineReceivePaymentWrapper" class="no-print" style="padding: 10px 14px; background: #fdfbf7; border-top: 1px solid #f3e8d8;">
+      <button type="button" onclick="openReceivePaymentModal(selectedBookingId)" style="width: 100%; padding: 8px 12px; background: #059669; color: #ffffff; font-weight: 800; font-size: 12.5px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 5px rgba(5,150,105,0.25);" class="btn-tactile">
+        <svg class="w-4 h-4 text-emerald-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="16" cy="14" r="1.5" fill="currentColor"/></svg><span>शेष भुगतान प्राप्त करें (Receive Payment)</span>
+      </button>
+    </div>
       </section>
+
+            <!-- 4. TWO COLUMNS SIDE-BY-SIDE: AMENITIES & UTENSILS -->
+      <section class="two-cols-section">
+        
+        <!-- LEFT: AMENITIES ALLOTTED -->
+        <div class="list-card">
+          <div class="section-pill-header" style="border-radius: 0; background-color: #5c0612;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <svg class="svg-header-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+              </svg>
+              <span>उपलब्ध कराई गई सुविधाएं (Amenities)</span>
+            </div>
+          </div>
+          <ul id="slipAmenitiesList" class="items-list"><!-- Dynamically populated --></ul>
+        </div>
+
+        <!-- RIGHT: UTENSILS & INVENTORY -->
+        <div class="list-card">
+          <div class="section-pill-header" style="border-radius: 0; background-color: #5c0612;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <svg class="svg-header-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/>
+              </svg>
+              <span>आवंटित बर्तन व सामान सूची (Inventory)</span>
+            </div>
+          </div>
+          <ul id="slipUtensilsList" class="items-list"><!-- Dynamically populated --></ul>
+        </div>
+      </section>
+
+      <!-- 5. TERMS & CONDITIONS: FULL WIDTH -->
+      <section class="terms-card" style="width: 100%;">
+        <div class="section-pill-header" style="border-radius: 0; background-color: #5c0612;">
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <svg class="svg-header-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+            </svg>
+            <span>नियम एवं शर्तें (Terms & Conditions)</span>
+          </div>
+        </div>
+        <ul id="slipTermsList" class="terms-list">
+          <!-- Dynamically populated -->
+        </ul>
+      </section>
+
+    </main>
+
+    <!-- FOOTER WAVE STRIP -->
+    <div class="bill-footer-wave"></div>
+
+  </div>
+</div>
+</section>
 
       <!-- ============================================================== -->
       <!-- SCREEN 4: ALL BOOKINGS LIST SCREEN                             -->
@@ -853,17 +1625,21 @@
 
         <!-- 4 FILTER PILLS (UPCOMING, PAST, HAS DUE, ALL) -->
         <div class="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 no-scrollbar">
-          <button type="button" id="rfPill-upcoming" onclick="setRecordsFilter('upcoming')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-amber-700 text-white">
-            📅 आगामी (<span id="rfCount-upcoming">0</span>)
+          <button type="button" id="rfPill-upcoming" onclick="setRecordsFilter('upcoming')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-amber-700 text-white flex items-center gap-1.5">
+            <svg class="w-3 h-3 text-amber-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>आगामी</span> (<span id="rfCount-upcoming">0</span>)
           </button>
-          <button type="button" id="rfPill-past" onclick="setRecordsFilter('past')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200">
-            ✅ संपन्न (<span id="rfCount-past">0</span>)
+          <button type="button" id="rfPill-past" onclick="setRecordsFilter('past')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 flex items-center gap-1.5">
+            <svg class="w-3 h-3 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>संपन्न</span> (<span id="rfCount-past">0</span>)
           </button>
-          <button type="button" id="rfPill-due" onclick="setRecordsFilter('due')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200">
-            ⚠️ बकाया (<span id="rfCount-due">0</span>)
+          <button type="button" id="rfPill-due" onclick="setRecordsFilter('due')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 flex items-center gap-1.5">
+            <svg class="w-3 h-3 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>बकाया</span> (<span id="rfCount-due">0</span>)
           </button>
-          <button type="button" id="rfPill-all" onclick="setRecordsFilter('all')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200">
-            📋 सभी (<span id="rfCount-all">0</span>)
+          <button type="button" id="rfPill-all" onclick="setRecordsFilter('all')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 flex items-center gap-1.5">
+            <svg class="w-3 h-3 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+            <span>सभी</span> (<span id="rfCount-all">0</span>)
           </button>
         </div>
 
@@ -926,7 +1702,9 @@
             <!-- 1. बिज़नेस प्रोफाइल संपादन -->
             <button type="button" onclick="openAdminSubView('profile')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl shrink-0">🏛️</div>
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+  <svg class="w-5 h-5 text-amber-800" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v2h20V7L12 2zm-8 8v9h2v-9H4zm5 0v9h2v-9H9zm5 0v9h2v-9h-2zm5 0v9h2v-9h-2zM2 20v2h20v-2H2z"/></svg>
+</div>
                 <div>
                   <h4 class="text-xs font-black text-slate-900">व्यापार प्रोफ़ाइल संपादन (Business Profile)</h4>
                   <p class="text-[10px] text-slate-500 font-semibold">हॉल का नाम, स्लोगन, पता, संपर्क नंबर एवं UPI ID</p>
@@ -938,7 +1716,9 @@
             <!-- 2. सुविधाएं एवं बर्तन सूची -->
             <button type="button" onclick="openAdminSubView('amenities')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl shrink-0">✨</div>
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+  <svg class="w-5 h-5 text-emerald-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+</div>
                 <div>
                   <h4 class="text-xs font-black text-slate-900">मास्टर सुविधाएं एवं बर्तन सूची (Amenities)</h4>
                   <p class="text-[10px] text-slate-500 font-semibold">कमरे, AC, जनरेटर एवं बर्तनों की डिफ़ॉल्ट मात्रा</p>
@@ -950,7 +1730,9 @@
             <!-- 3. रसीद नियम एवं शर्तें -->
             <button type="button" onclick="openAdminSubView('terms')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center text-xl shrink-0">📜</div>
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center shrink-0">
+  <svg class="w-5 h-5 text-blue-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+</div>
                 <div>
                   <h4 class="text-xs font-black text-slate-900">रसीद नियम एवं शर्तें (Terms & Conditions)</h4>
                   <p class="text-[10px] text-slate-500 font-semibold">आधिकारिक बुकिंग रसीद पर छपने वाले नियम व शर्तें</p>
@@ -962,7 +1744,9 @@
             <!-- 4. नोटिफिकेशन नियंत्रण -->
             <button type="button" onclick="openAdminSubView('notifs')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center text-xl shrink-0">🔔</div>
+                <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center shrink-0">
+  <svg class="w-5 h-5 text-purple-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+</div>
                 <div>
                   <h4 class="text-xs font-black text-slate-900">नोटिफिकेशन एवं अलर्ट नियंत्रण (Alerts)</h4>
                   <p class="text-[10px] text-slate-500 font-semibold">बुकिंग, भुगतान व अनुस्मारक सूचनाओं का नियंत्रण</p>
@@ -974,7 +1758,9 @@
             <!-- 5. ऑपरेटर प्रोफाइल एवं खाते (केवल मुख्य मालिक / वर्मा मैरिज हॉल को दृश्यमान) -->
             <button id="adminMenuCardUsers" type="button" onclick="openAdminSubView('users')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center text-xl shrink-0">👥</div>
+                <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center shrink-0">
+  <svg class="w-5 h-5 text-rose-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+</div>
                 <div>
                   <h4 class="text-xs font-black text-slate-900">ऑपरेटर प्रोफाइल एवं खाते (Staff Accounts)</h4>
                   <p class="text-[10px] text-slate-500 font-semibold">मालिक एवं अधिकृत पारिवारिक ऑपरेटरों का प्रबंधन</p>
@@ -986,7 +1772,9 @@
             <!-- 6. डेटा सुरक्षा एवं बैकअप -->
             <button type="button" onclick="openAdminSubView('backup')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center text-xl shrink-0">💾</div>
+                <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0">
+  <svg class="w-5 h-5 text-teal-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+</div>
                 <div>
                   <h4 class="text-xs font-black text-slate-900">डेटा सुरक्षा एवं बैकअप (Backup & Excel)</h4>
                   <p class="text-[10px] text-slate-500 font-semibold">एक्सेल (CSV) डाउनलोड, डेटा बैकअप व रीस्टोर</p>
@@ -1022,7 +1810,13 @@
             <!-- 9. ऐप शेयर करें (WhatsApp / Bluetooth / Drive) -->
             <button type="button" onclick="shareAppApk()" class="w-full p-3.5 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border border-amber-300 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">📲</div>
+                <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+  <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+    <path d="M12 7v6m-3-3l3-3 3 3"/>
+  </svg>
+</div>
                 <div>
                   <h4 class="text-xs font-black text-amber-950">ऐप शेयर करें (Share App APK)</h4>
                   <p class="text-[10px] text-amber-800 font-semibold">परिवार या ऑपरेटरों को WhatsApp पर सीधा APK भेजें</p>
@@ -1042,9 +1836,9 @@
             <button type="button" onclick="openAdminSubView('hub')" class="text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-lg btn-tactile flex items-center gap-1 shrink-0">
               ← एडमिन हब
             </button>
-            <span class="text-xs sm:text-sm font-black text-slate-900 truncate">🏛️ व्यापार प्रोफ़ाइल संपादन</span>
+            <span class="text-xs sm:text-sm font-black text-slate-900 truncate flex items-center gap-1.5"><svg class="w-4 h-4 text-amber-700 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v2h20V7L12 2zm-8 8v9h2v-9H4zm5 0v9h2v-9H9zm5 0v9h2v-9h-2zm5 0v9h2v-9h-2zM2 20v2h20v-2H2z"/></svg><span>व्यापार प्रोफ़ाइल संपादन</span></span>
             <button type="button" onclick="saveAdminSettings()" class="text-xs font-black text-white bg-amber-600 hover:bg-amber-700 border border-amber-600 px-3 py-1.5 rounded-lg shadow-2xs btn-tactile shrink-0">
-              💾 सेव करें
+              <span class="flex items-center gap-1"><svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>सेव करें</span></span>
             </button>
           </div>
 
@@ -1091,9 +1885,9 @@
             <button type="button" onclick="openAdminSubView('hub')" class="text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-lg btn-tactile flex items-center gap-1 shrink-0">
               ← एडमिन हब
             </button>
-            <span class="text-xs sm:text-sm font-black text-slate-900 truncate">✨ मास्टर सुविधाएं एवं बर्तन</span>
+            <span class="text-xs sm:text-sm font-black text-slate-900 truncate flex items-center gap-1.5"><svg class="w-4 h-4 text-emerald-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg><span>मास्टर सुविधाएं एवं बर्तन</span></span>
             <button type="button" onclick="saveAdminSettings()" class="text-xs font-black text-white bg-amber-600 hover:bg-amber-700 border border-amber-600 px-3 py-1.5 rounded-lg shadow-2xs btn-tactile shrink-0">
-              💾 सेव करें
+              <span class="flex items-center gap-1"><svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>सेव करें</span></span>
             </button>
           </div>
 
@@ -1133,9 +1927,9 @@
             <button type="button" onclick="openAdminSubView('hub')" class="text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-lg btn-tactile flex items-center gap-1 shrink-0">
               ← एडमिन हब
             </button>
-            <span class="text-xs sm:text-sm font-black text-slate-900 truncate">📜 रसीद नियम एवं शर्तें</span>
+            <span class="text-xs sm:text-sm font-black text-slate-900 truncate flex items-center gap-1.5"><svg class="w-4 h-4 text-blue-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>रसीद नियम एवं शर्तें</span></span>
             <button type="button" onclick="saveAdminSettings()" class="text-xs font-black text-white bg-amber-600 hover:bg-amber-700 border border-amber-600 px-3 py-1.5 rounded-lg shadow-2xs btn-tactile shrink-0">
-              💾 सेव करें
+              <span class="flex items-center gap-1"><svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>सेव करें</span></span>
             </button>
           </div>
 
@@ -1161,9 +1955,9 @@
             <button type="button" onclick="openAdminSubView('hub')" class="text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-lg btn-tactile flex items-center gap-1 shrink-0">
               ← एडमिन हब
             </button>
-            <span class="text-xs sm:text-sm font-black text-slate-900 truncate">🔔 नोटिफिकेशन नियंत्रण</span>
+            <span class="text-xs sm:text-sm font-black text-slate-900 truncate flex items-center gap-1.5"><svg class="w-4 h-4 text-purple-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span>नोटिफिकेशन नियंत्रण</span></span>
             <button type="button" onclick="saveAdminSettings()" class="text-xs font-black text-white bg-amber-600 hover:bg-amber-700 border border-amber-600 px-3 py-1.5 rounded-lg shadow-2xs btn-tactile shrink-0">
-              💾 सेव करें
+              <span class="flex items-center gap-1"><svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>सेव करें</span></span>
             </button>
           </div>
 
@@ -1283,7 +2077,7 @@
             <button type="button" onclick="openAdminSubView('hub')" class="text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-lg btn-tactile flex items-center gap-1 shrink-0">
               ← एडमिन हब
             </button>
-            <span class="text-xs sm:text-sm font-black text-slate-900 truncate">👥 ऑपरेटर प्रोफाइल एवं खाते</span>
+            <span class="text-xs sm:text-sm font-black text-slate-900 truncate flex items-center gap-1.5"><svg class="w-4 h-4 text-rose-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>ऑपरेटर प्रोफाइल एवं खाते</span></span>
             <button type="button" onclick="openAddNewOperatorModal()" class="text-xs font-black text-white bg-amber-600 hover:bg-amber-700 border border-amber-600 px-3 py-1.5 rounded-lg shadow-2xs btn-tactile shrink-0">
               ➕ नया खाता
             </button>
@@ -1314,7 +2108,7 @@
             <button type="button" onclick="openAdminSubView('hub')" class="text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-lg btn-tactile flex items-center gap-1 shrink-0">
               ← एडमिन हब
             </button>
-            <span class="text-xs sm:text-sm font-black text-slate-900 truncate">💾 डेटा सुरक्षा एवं बैकअप</span>
+            <span class="text-xs sm:text-sm font-black text-slate-900 truncate flex items-center gap-1.5"><svg class="w-4 h-4 text-teal-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>डेटा सुरक्षा एवं बैकअप</span></span>
             <div class="w-12"></div>
           </div>
 
@@ -1410,7 +2204,7 @@
                 <p class="text-[10px] text-slate-500">इस डिवाइस पर सक्रिय सॉफ्टवेयर</p>
               </div>
               <span id="otaActiveVerBadge" class="text-xs font-black px-2.5 py-1 bg-amber-100 text-amber-950 border border-amber-300 rounded-xl">
-                v1.4
+                v1.5
               </span>
             </div>
 
@@ -1456,11 +2250,11 @@
             <div class="grid grid-cols-2 gap-2 text-xs">
               <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
                 <span class="text-[10px] text-purple-800 font-bold block">क्लाउड बीटा वर्जन:</span>
-                <b id="otaCloudBetaVerText" class="text-sm font-black text-purple-950">v1.4</b>
+                <b id="otaCloudBetaVerText" class="text-sm font-black text-purple-950">v1.5</b>
               </div>
               <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
                 <span class="text-[10px] text-emerald-800 font-bold block">क्लाउड लाइव वर्जन:</span>
-                <b id="otaCloudProdVerText" class="text-sm font-black text-emerald-950">v1.4</b>
+                <b id="otaCloudProdVerText" class="text-sm font-black text-emerald-950">v1.5</b>
               </div>
             </div>
 
@@ -1499,22 +2293,44 @@
     <!-- ========================================== -->
     <!-- BOTTOM NAVIGATION BAR (FIXED)              -->
     <!-- ========================================== -->
-    <nav id="appBottomNav" class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 flex items-center justify-around text-slate-500 text-[11.5px] font-extrabold z-40 no-print" style="height: calc(3.9rem + env(safe-area-inset-bottom, 0px)); padding-bottom: max(6px, env(safe-area-inset-bottom, 0px));">
-      <button id="navTabDashboard" onclick="showScreen('hall-dashboard')" class="flex flex-col items-center gap-0.5 text-amber-700 font-black">
-        <span class="text-lg">📅</span>
-        <span id="navLabelDashboard">कैलेंडर/होम</span>
+        <nav id="appBottomNav" class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 flex items-center justify-around text-slate-500 text-[11px] font-extrabold z-40 no-print shadow-lg" style="height: calc(3.9rem + env(safe-area-inset-bottom, 0px)); padding-bottom: max(6px, env(safe-area-inset-bottom, 0px));">
+      <button id="navTabDashboard" onclick="showScreen('hall-dashboard')" class="flex flex-col items-center gap-1 text-amber-700 font-black btn-tactile">
+        <svg class="w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+          <circle cx="8" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="12" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="16" cy="14" r="1.2" fill="currentColor"/>
+          <circle cx="8" cy="18" r="1.2" fill="currentColor"/>
+          <circle cx="12" cy="18" r="1.2" fill="currentColor"/>
+        </svg>
+        <span id="navLabelDashboard" class="leading-none">कैलेंडर/होम</span>
       </button>
-      <button id="navTabNew" onclick="openNewBookingForm()" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-800">
-        <span class="text-lg">➕</span>
-        <span id="navLabelNew">नई बुकिंग</span>
+      <button id="navTabNew" onclick="openNewBookingForm()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 btn-tactile">
+        <svg class="w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span id="navLabelNew" class="leading-none">नई बुकिंग</span>
       </button>
-      <button id="navTabList" onclick="showScreen('hall-list')" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-800">
-        <span class="text-lg">📋</span>
-        <span id="navLabelList">सभी रिकॉर्ड</span>
+      <button id="navTabList" onclick="showScreen('hall-list')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 btn-tactile">
+        <svg class="w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+          <line x1="9" y1="11" x2="15" y2="11"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+        </svg>
+        <span id="navLabelList" class="leading-none">सभी रिकॉर्ड</span>
       </button>
-      <button id="navTabAdmin" onclick="showScreen('admin-settings')" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-800">
-        <span class="text-lg">⚙️</span>
-        <span id="navLabelAdmin">एडमिन</span>
+      <button id="navTabAdmin" onclick="showScreen('admin-settings')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 btn-tactile">
+        <svg class="w-5 h-5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span id="navLabelAdmin" class="leading-none">एडमिन</span>
       </button>
     </nav>
 
@@ -1528,7 +2344,7 @@
       <div class="bg-white w-full max-w-sm rounded-3xl p-4 space-y-3 shadow-2xl border border-slate-200 max-h-[85vh] overflow-y-auto">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
           <div>
-            <h4 id="dateModalTitle" class="text-sm font-black text-slate-900">📅 तारीख की बुकिंग्स</h4>
+            <h4 id="dateModalTitle" class="text-sm font-black text-slate-900 flex items-center gap-1.5"><svg class="w-4 h-4 text-amber-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>तारीख की बुकिंग्स</span></h4>
             <p id="dateModalSubtitle" class="text-xs font-bold text-amber-800">दर्ज बुकिंग्स</p>
           </div>
           <button type="button" onclick="closeDateBookingsModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center hover:bg-slate-200 btn-tactile">✕</button>
@@ -1551,12 +2367,88 @@
       </div>
     </div>
 
+        <!-- SHARE APP MODAL (WHATSAPP, DOWNLOAD, COPY LINK) -->
+    <div id="shareAppModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3" onclick="closeShareAppModal()">
+      <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-3.5 shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+                <path d="M12 7v6m-3-3l3-3 3 3"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-sm font-black text-slate-900">वर्मा मैरिज हॉल ऐप शेयर करें</h4>
+              <p class="text-[10px] font-bold text-amber-800">आधिकारिक Android डिजिटल ऐप</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeShareAppModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center hover:bg-slate-200 btn-tactile">✕</button>
+        </div>
+
+        <!-- Info Card -->
+        <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950 font-medium leading-relaxed">
+          किसी भी अन्य फ़ोन, टैबलेट या ऑपरेटर को ऐप देने के लिए WhatsApp पर शेयर करें या सीधे APK डाउनलोड करें:
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-2">
+          <!-- WhatsApp Share -->
+          <button type="button" onclick="shareAppOnWhatsApp()" class="w-full p-3.5 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-400 rounded-2xl flex items-center gap-3 text-left btn-tactile shadow-2xs">
+            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h5 class="text-xs font-black text-emerald-950">WhatsApp पर शेयर करें</h5>
+              <p class="text-[10px] text-emerald-800 font-medium">संपर्क या ग्रुप में तुरंत डाउनलोड लिंक भेजें</p>
+            </div>
+            <span class="text-xs text-emerald-700 font-black">शेयर →</span>
+          </button>
+
+          <!-- Direct APK Download Link -->
+          <a id="btnDirectApkDownload" href="https://github.com/amitkrak83/DOMS/raw/verma-marriage-hall-v1.4/app/build/outputs/apk/debug/app-debug.apk" target="_blank" class="w-full p-3.5 bg-amber-50 hover:bg-amber-100 border-2 border-amber-400 rounded-2xl flex items-center gap-3 text-left btn-tactile shadow-2xs block">
+            <div class="w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h5 class="text-xs font-black text-amber-950">सीधा APK फ़ाइल डाउनलोड करें</h5>
+              <p class="text-[10px] text-amber-800 font-medium">Android मोबाइल/टैबलेट हेतु आधिकारिक APK (.apk)</p>
+            </div>
+            <span class="text-xs text-amber-700 font-black">डाउनलोड ↓</span>
+          </a>
+
+          <!-- Copy Link -->
+          <button type="button" onclick="copyAppShareLink()" class="w-full p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-slate-800 btn-tactile">
+            <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>डाउनलोड लिंक कॉपी करें</span>
+          </button>
+        </div>
+
+        <button type="button" onclick="closeShareAppModal()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl btn-tactile">
+          बंद करें
+        </button>
+      </div>
+    </div>
+
     <!-- SHARE OPTIONS MODAL (PHOTO OR PDF) -->
     <div id="shareOptionsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
       <div class="bg-white w-full max-w-sm rounded-3xl p-4 space-y-3 shadow-2xl border border-slate-200">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-          <div class="flex items-center gap-1.5">
-            <span class="text-base">📤</span>
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </div>
             <h4 class="text-sm font-black text-slate-900">रसीद शेयर करें (Share Receipt)</h4>
           </div>
           <button type="button" onclick="closeShareOptionsModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center hover:bg-slate-200 btn-tactile">✕</button>
@@ -1569,9 +2461,13 @@
         <div class="space-y-2">
           <!-- OPTION 1: PHOTO -->
           <button type="button" onclick="closeShareOptionsModal(); shareSlipAsPhoto();" class="w-full p-3.5 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-400 rounded-2xl flex items-center gap-3 text-left btn-tactile shadow-2xs">
-            <span class="text-2xl">📸</span>
+            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
             <div class="flex-1">
-              <h5 class="text-xs font-black text-emerald-950">फोटो (PNG) के रूप में शेयर करें</h5>
+              <h5 class="text-xs font-black text-emerald-950">फोटो (PNG Image) के रूप में शेयर करें</h5>
               <p class="text-[10px] text-emerald-800 font-medium">सीधे WhatsApp, मैसेज या गैलरी में सेव करने हेतु</p>
             </div>
             <span class="text-xs text-emerald-700 font-black">शेयर →</span>
@@ -1579,7 +2475,11 @@
 
           <!-- OPTION 2: PDF -->
           <button type="button" onclick="closeShareOptionsModal(); shareSlipAsPdf();" class="w-full p-3.5 bg-blue-50 hover:bg-blue-100 border-2 border-blue-400 rounded-2xl flex items-center gap-3 text-left btn-tactile shadow-2xs">
-            <span class="text-2xl">📄</span>
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            </div>
             <div class="flex-1">
               <h5 class="text-xs font-black text-blue-950">PDF डॉक्यूमेंट के रूप में शेयर करें</h5>
               <p class="text-[10px] text-blue-800 font-medium">परफेक्ट A4 साइज, प्रिंट निकालने या फाइल रखने हेतु</p>
@@ -1633,7 +2533,7 @@
         <!-- Past Payments Mini-Ledger in Modal -->
         <div id="payModalPastPaymentsBox" class="hidden bg-slate-100/90 border border-slate-200 rounded-xl p-2.5 space-y-1.5 text-[11px]">
           <div class="flex items-center justify-between font-black text-slate-800">
-            <span>📜 अब तक प्राप्त भुगतानों का विवरण:</span>
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>अब तक प्राप्त भुगतानों का विवरण:</span></span>
             <span id="payModalPastPaymentsCount" class="text-[10px] text-emerald-800 font-mono font-bold">0 प्रविष्टियां</span>
           </div>
           <div id="payModalPastPaymentsList" class="space-y-1 max-h-24 overflow-y-auto pr-0.5">
@@ -1685,7 +2585,7 @@
             ✕ रद्द करें
           </button>
           <button type="button" onclick="submitReceivedPayment()" id="btnSubmitPayment" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-xs btn-tactile flex items-center justify-center gap-1.5">
-            <span>💾 भुगतान सेव करें</span>
+            <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>भुगतान सेव करें</span>
           </button>
         </div>
       </div>
@@ -4176,6 +5076,54 @@
     // -------------------------------------------------------------
     // OFFICIAL RECEIPT SLIP POPULATION & ACTIONS
     // -------------------------------------------------------------
+        // -------------------------------------------------------------
+    // THREE-DOT PAYMENT ACTION MENU (MODAL / ACTION SHEET)
+    // -------------------------------------------------------------
+    function showPaymentRowMenu(bookingId, paymentIndex, event) {
+      if (event) event.stopPropagation();
+      const b = realMarriageBookings.find(x => x.id === bookingId);
+      if (!b || !b.payments || !b.payments[paymentIndex]) return;
+      const p = b.payments[paymentIndex];
+      const pAmt = (parseFloat(p.amount) || 0).toLocaleString('en-IN');
+      
+      const existingModal = document.getElementById('paymentActionDropdownModal');
+      if (existingModal) existingModal.remove();
+
+      const modalHtml = `
+        <div id="paymentActionDropdownModal" onclick="this.remove()" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 24px; backdrop-filter: blur(2px);">
+          <div onclick="event.stopPropagation()" style="background: #ffffff; border-radius: 20px; width: 92%; max-width: 320px; padding: 18px; box-shadow: 0 12px 30px rgba(0,0,0,0.35); border: 2px solid #d4af37;" class="space-y-3">
+            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">
+              <span style="font-size: 10.5px; font-weight: 800; color: #78350f; text-transform: uppercase;">भुगतान #${paymentIndex + 1} - विकल्प</span>
+              <h4 style="font-size: 15px; font-weight: 900; color: #111827; margin-top: 2px;">राशि: ₹ ${pAmt} (${p.mode === 'cash' ? '💵 नकद' : '📲 UPI'})</h4>
+              <p style="font-size: 11px; color: #4b5563; margin-top: 2px;">${escapeHtml(p.note || '')}</p>
+            </div>
+            <div class="space-y-2">
+              <button type="button" onclick="document.getElementById('paymentActionDropdownModal').remove(); openEditPaymentModal('${bookingId}', ${paymentIndex});" style="width: 100%; padding: 10px; background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px;" class="btn-tactile">
+                <svg style="width: 16px; height: 16px; stroke-width: 2.2;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                <span>भुगतान संशोधित करें (Edit)</span>
+              </button>
+              <button type="button" onclick="document.getElementById('paymentActionDropdownModal').remove(); deletePaymentEntry('${bookingId}', ${paymentIndex});" style="width: 100%; padding: 10px; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 10px; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px;" class="btn-tactile">
+                <svg style="width: 16px; height: 16px; stroke-width: 2.2;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  <line x1="10" y1="11" x2="10" y2="17"/>
+                  <line x1="14" y1="11" x2="14" y2="17"/>
+                </svg>
+                <span>भुगतान हटाएं (Delete)</span>
+              </button>
+              <button type="button" onclick="document.getElementById('paymentActionDropdownModal').remove()" style="width: 100%; padding: 8px; background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; border-radius: 10px; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;" class="btn-tactile">
+                रद्द करें (Cancel)
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
     function loadBookingIntoSlip(bookingId) {
       const b = realMarriageBookings.find(x => x.id === bookingId);
       if (!b) {
@@ -4184,46 +5132,86 @@
       }
       selectedBookingId = bookingId;
 
-      document.getElementById('slipHeaderQuote').innerText = hallConfig.quote;
-      document.getElementById('slipHeaderName').innerText = hallConfig.name;
-      document.getElementById('slipHeaderAddress').innerText = hallConfig.address;
-      document.getElementById('slipHeaderPhone').innerText = `मो.: ${hallConfig.phone1}, ${hallConfig.phone2}`;
+      const quoteEl = document.getElementById('slipHeaderQuote');
+      if (quoteEl) quoteEl.innerText = hallConfig.quote || "|| श्री गणेशाय नमः ||";
+      const nameEl = document.getElementById('slipHeaderName');
+      if (nameEl) nameEl.innerText = hallConfig.name || "वर्मा मैरिज हॉल";
+      const addrEl = document.getElementById('slipHeaderAddress');
+      if (addrEl) addrEl.innerText = hallConfig.address || "ग्राम असनहरा, निकट अंकित धर्मकांटा, जिला बस्ती, उत्तर प्रदेश - 272194";
+      const phoneEl = document.getElementById('slipHeaderPhone');
+      if (phoneEl) phoneEl.innerText = `${hallConfig.phone1 || '9918802425'}, ${hallConfig.phone2 || '9936435350'}`;
       
-      document.getElementById('slipReceiptNo').innerText = b.id;
-      document.getElementById('slipBookingDate').innerText = b.bookingDateStr || formatDisplayDate(b.createdAt);
+      const receiptNoEl = document.getElementById('slipReceiptNo');
+      if (receiptNoEl) receiptNoEl.innerText = b.id || "-";
+      const bDateEl = document.getElementById('slipBookingDate');
+      if (bDateEl) bDateEl.innerText = b.bookingDateStr || formatDisplayDate(b.createdAt) || "-";
       
-      document.getElementById('slipPartyName').innerText = b.partyName;
-      document.getElementById('slipPartyPhone').innerText = b.partyPhone;
-      const addrEl = document.getElementById('slipPartyAddress');
-      if (addrEl) addrEl.innerText = b.partyAddress || "असनहरा बाज़ार / स्थानीय";
+      const pNameEl = document.getElementById('slipPartyName');
+      if (pNameEl) pNameEl.innerText = b.partyName || "-";
+      const pPhoneEl = document.getElementById('slipPartyPhone');
+      if (pPhoneEl) pPhoneEl.innerText = b.partyPhone || "-";
+      const pAddrEl = document.getElementById('slipPartyAddress');
+      if (pAddrEl) pAddrEl.innerText = b.partyAddress || "असनहरा बाज़ार / स्थानीय";
       const occEl = document.getElementById('slipEventOccasion');
-      if (occEl) occEl.innerText = b.occasion || "विवाह समारोह";
-      document.getElementById('slipEventDate').innerText = formatDisplayDate(b.eventDate);
+      if (occEl) occEl.innerText = b.occasion || "शुभ विवाह समारोह";
+      const evDateEl = document.getElementById('slipEventDate');
+      if (evDateEl) evDateEl.innerText = formatDisplayDate(b.eventDate) || "-";
       
       const d = new Date(b.eventDate);
-      const day = d.getDate();
-      const monthName = MONTH_NAMES_HI[d.getMonth()];
+      const day = isNaN(d.getTime()) ? 1 : d.getDate();
+      const mIdx = isNaN(d.getTime()) ? 0 : d.getMonth();
+      const monthName = MONTH_NAMES_HI[mIdx] || "माह";
       const nextDay = day + 1;
-      if (b.slotType === 'night_wedding') {
-        document.getElementById('slipSlotTiming').innerText = `🌙 ${day} ${monthName} शाम 04:00 से ${nextDay} ${monthName} सुबह 08:00 तक`;
-      } else {
-        document.getElementById('slipSlotTiming').innerText = `☀️ ${day} ${monthName} सुबह 10:00 से शाम 04:00 तक`;
+      const timingEl = document.getElementById('slipSlotTiming');
+      if (timingEl) {
+        if (b.slotType === 'night_wedding') {
+          timingEl.innerText = `🌙 ${day} ${monthName} शाम 04:00 से ${nextDay} ${monthName} सुबह 08:00 तक`;
+        } else {
+          timingEl.innerText = `☀️ ${day} ${monthName} सुबह 10:00 से शाम 04:00 तक`;
+        }
       }
 
-      document.getElementById('slipTotalRent').innerText = "₹ " + (parseFloat(b.totalRent) || 0).toLocaleString('en-IN');
-      document.getElementById('slipAdvancePaid').innerText = "₹ " + (parseFloat(b.advancePaid) || 0).toLocaleString('en-IN');
-      document.getElementById('slipAdvanceModeText').innerText = b.advanceMode === 'cash' ? "💵 नकद (Cash)" : "📲 ऑनलाइन यूपीआई (UPI)";
+      const totalRentNum = parseFloat(b.totalRent) || 0;
+      const totalRentEl = document.getElementById('slipTotalRent');
+      if (totalRentEl) totalRentEl.innerText = "₹ " + totalRentNum.toLocaleString('en-IN');
+
+      const advPaidNum = parseFloat(b.advancePaid) || 0;
+      const advPaidEl = document.getElementById('slipAdvancePaid');
+      if (advPaidEl) advPaidEl.innerText = "₹ " + advPaidNum.toLocaleString('en-IN');
+
+      const advModeEl = document.getElementById('slipAdvanceModeText');
+      if (advModeEl) {
+        advModeEl.innerHTML = b.advanceMode === 'cash' 
+          ? `<svg class="svg-icon-sm" style="color: #065f46;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg> <span>नकद (Cash)</span>`
+          : `<svg class="svg-icon-sm" style="color: #065f46;" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> <span>ऑनलाइन UPI</span>`;
+      }
       
       const bal = parseFloat(b.balanceDue) || 0;
-      document.getElementById('slipBalanceDue').innerText = "₹ " + bal.toLocaleString('en-IN');
+      const balEl = document.getElementById('slipBalanceDue');
+      if (balEl) balEl.innerText = "₹ " + bal.toLocaleString('en-IN');
 
-      // Fully paid badge
+      // Fully paid badge & Status pill
       const fullyPaidBadge = document.getElementById('slipFullyPaidBadge');
       if (fullyPaidBadge) {
         if (bal <= 0) {
           fullyPaidBadge.classList.remove('hidden');
         } else {
           fullyPaidBadge.classList.add('hidden');
+        }
+      }
+
+      const statusBadge = document.getElementById('slipPaymentStatusBadge');
+      if (statusBadge) {
+        if (bal <= 0) {
+          statusBadge.innerText = 'पूर्ण चुकता (Paid)';
+          statusBadge.style.color = '#065f46';
+          statusBadge.style.background = '#ecfdf5';
+          statusBadge.style.border = '1px solid #a7f3d0';
+        } else {
+          statusBadge.innerText = 'बकाया शेष (Due)';
+          statusBadge.style.color = '#b91c1c';
+          statusBadge.style.background = '#fef2f2';
+          statusBadge.style.border = '1px solid #fecaca';
         }
       }
 
@@ -4257,9 +5245,7 @@
       const tableBody = document.getElementById('slipPaymentHistoryTableBody');
       const countBadge = document.getElementById('slipTotalInstallmentsCount');
 
-      const totalRentNum = parseFloat(b.totalRent) || 0;
       let paymentsList = [];
-
       if (b.payments && Array.isArray(b.payments) && b.payments.length > 0) {
         paymentsList = b.payments;
       } else if (parseFloat(b.advancePaid) > 0) {
@@ -4268,15 +5254,16 @@
           date: b.bookingDateStr || formatDisplayDate(b.createdAt) || 'बुकिंग के समय',
           amount: parseFloat(b.advancePaid) || 0,
           mode: b.advanceMode || 'cash',
-          note: 'प्रारंभिक जमा (Initial Deposit)'
+          note: 'प्रारंभिक अग्रिम जमा (Initial Advance)',
+          receivedBy: b.operatorName || hallConfig.name
         }];
       }
 
-      // Render payment installments ledger ONLY if more than 1 payment (किश्तें) exist!
-      // If payment is only 1 (initial advance), table is hidden as per user specification.
-      if (paymentsList.length > 1) {
+      if (paymentsList.length > 0) {
         if (payHistoryContainer) payHistoryContainer.classList.remove('hidden');
-        if (countBadge) countBadge.innerText = `${paymentsList.length} प्रविष्टियां`;
+        if (countBadge) {
+          countBadge.innerHTML = `<span>✔</span> <span>${paymentsList.length} ${paymentsList.length === 1 ? 'प्रविष्टि' : 'प्रविष्टियां'}</span>`;
+        }
         if (tableBody) {
           let runningPaid = 0;
           tableBody.innerHTML = paymentsList.map((p, idx) => {
@@ -4284,23 +5271,46 @@
             runningPaid += pAmt;
             const remaining = Math.max(0, totalRentNum - runningPaid);
             const modeBadge = p.mode === 'cash' 
-              ? '<span class="font-bold text-slate-800">💵 नकद</span>' 
-              : '<span class="font-bold text-emerald-800">📲 UPI</span>';
-            const label = idx === 0 ? 'प्रारंभिक जमा' : `भुगतान #${idx + 1}`;
+              ? `<span style="font-size: 8.5px; font-weight: 800; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 1px 4px; border-radius: 3px; display: inline-flex; align-items: center; gap: 2px;">
+                   <span>नकद</span>
+                 </span>` 
+              : `<span style="font-size: 8.5px; font-weight: 800; background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 1px 4px; border-radius: 3px; display: inline-flex; align-items: center; gap: 2px;">
+                   <span>UPI</span>
+                 </span>`;
+            const label = idx === 0 ? 'प्रारंभिक बयाना / अग्रिम' : `भुगतान #${idx + 1}`;
             const noteText = p.note ? escapeHtml(p.note) : label;
-            const operatorTag = p.receivedBy ? `<span class="block text-[9.5px] text-amber-900 font-bold">प्राप्तकर्ता: ${escapeHtml(p.receivedBy)}</span>` : '';
+            const operatorTag = p.receivedBy ? `<span style="display: block; font-size: 8.5px; font-weight: 700; color: #92400e;">प्राप्तकर्ता: ${escapeHtml(p.receivedBy)}</span>` : '';
+
+            // Split date and time for clean vertical stacking
+            const rawDateTime = p.date || '-';
+            let dPart = rawDateTime;
+            let tPart = '';
+            if (rawDateTime.includes(' ')) {
+              const sp = rawDateTime.split(' ');
+              dPart = sp[0];
+              tPart = sp.slice(1).join(' ');
+            }
 
             return `
-              <tr style="background: transparent;" class="border-b border-slate-300">
-                <td class="py-2.5 px-2.5 font-black text-slate-900 border-r border-slate-200 text-center leading-relaxed">${idx + 1}</td>
-                <td class="py-2.5 px-2.5 font-bold font-mono text-slate-700 border-r border-slate-200 leading-relaxed">${escapeHtml(p.date || '-')}</td>
-                <td class="py-2.5 px-2.5 border-r border-slate-200 leading-relaxed">${modeBadge}</td>
-                <td class="py-2.5 px-2.5 text-slate-800 border-r border-slate-200 leading-relaxed">${noteText}${operatorTag}</td>
-                <td class="py-2.5 px-2.5 text-right font-black font-mono text-emerald-700 border-r border-slate-200 leading-relaxed">+ ₹${pAmt.toLocaleString('en-IN')}</td>
-                <td class="py-2.5 px-2.5 text-right font-black font-mono ${remaining === 0 ? 'text-emerald-700 font-bold' : 'text-red-600'} leading-relaxed">₹${remaining.toLocaleString('en-IN')}</td>
-                <td class="py-2.5 px-2 text-center no-print border-l border-slate-200 whitespace-nowrap leading-relaxed">
-                  <button type="button" onclick="openEditPaymentModal('${b.id}', ${idx})" title="भुगतान संशोधित करें" class="text-[11px] font-bold px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 hover:bg-blue-100 btn-tactile">✏️</button>
-                  <button type="button" onclick="deletePaymentEntry('${b.id}', ${idx})" title="भुगतान हटाएं" class="text-[11px] font-bold px-1.5 py-0.5 bg-red-50 text-red-700 rounded border border-red-200 hover:bg-red-100 btn-tactile ml-0.5">🗑️</button>
+              <tr class="matra-safe">
+                <td class="matra-safe" style="text-align: center; font-weight: 800; color: #111827; padding: 2px 2px !important;">${idx + 1}</td>
+                <td class="matra-safe" style="font-family: 'Montserrat', sans-serif; padding: 2px 3px !important; line-height: 1.2;">
+                  <span style="display: block; font-weight: 700; color: #111827; font-size: 9px; white-space: nowrap;">${escapeHtml(dPart)}</span>
+                  ${tPart ? `<span style="display: block; font-size: 8px; font-weight: 600; color: #6b7280; white-space: nowrap;">${escapeHtml(tPart)}</span>` : ''}
+                </td>
+                <td class="matra-safe" style="text-align: center; padding: 2px 2px !important;">${modeBadge}</td>
+                <td class="matra-safe" style="padding: 2px 3px !important; line-height: 1.25;">
+                  <span style="font-weight: 700; color: #111827; font-size: 9.5px;">${noteText}</span>
+                  ${operatorTag}
+                </td>
+                <td class="matra-safe" style="text-align: right; font-weight: 800; font-family: 'Montserrat', sans-serif; color: #059669; white-space: nowrap; font-size: 9.5px; padding: 2px 3px !important;">
+                  + ₹${pAmt.toLocaleString('en-IN')}
+                </td>
+                <td class="matra-safe" style="text-align: right; font-weight: 800; font-family: 'Montserrat', sans-serif; color: ${remaining === 0 ? '#059669' : '#b91c1c'}; white-space: nowrap; font-size: 9.5px; padding: 2px 3px !important;">
+                  ₹${remaining.toLocaleString('en-IN')}
+                </td>
+                <td class="matra-safe no-print" style="text-align: center; padding: 2px 2px !important; white-space: nowrap;">
+                  <button type="button" onclick="showPaymentRowMenu('${b.id}', ${idx}, event)" title="विकल्प (Options)" style="background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 4px; padding: 1px 5px; font-size: 13px; font-weight: 900; line-height: 1; cursor: pointer; color: #374151;" class="btn-tactile">⋮</button>
                 </td>
               </tr>
             `;
@@ -4310,42 +5320,61 @@
         if (payHistoryContainer) payHistoryContainer.classList.add('hidden');
       }
 
+      // Amenities List
       const amBox = document.getElementById('slipAmenitiesList');
-      if (b.amenities && b.amenities.length > 0) {
-        amBox.innerHTML = b.amenities.map(item => `
-          <li class="flex items-start gap-1.5 leading-snug">
-            <span class="text-amber-800 font-black shrink-0 text-sm leading-none">•</span>
-            <span class="text-slate-900 font-medium text-xs sm:text-sm">${escapeHtml(item)}</span>
-          </li>
-        `).join('');
-      } else {
-        amBox.innerHTML = `<li class="text-slate-400 font-medium text-xs">कोई विशेष सुविधा चयनित नहीं।</li>`;
+      if (amBox) {
+        if (b.amenities && b.amenities.length > 0) {
+          amBox.innerHTML = b.amenities.map(item => `
+            <li class="matra-safe">
+              <svg class="check-icon-svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span>${escapeHtml(item)}</span>
+            </li>
+          `).join('');
+        } else {
+          amBox.innerHTML = `<li class="matra-safe"><span style="color: #9ca3af;">कोई विशेष सुविधा चयनित नहीं।</span></li>`;
+        }
       }
 
+      // Utensils List
       const utBox = document.getElementById('slipUtensilsList');
-      if (b.utensils && b.utensils.length > 0) {
-        utBox.innerHTML = b.utensils.map(u => `
-          <li class="flex items-start gap-1.5 leading-snug">
-            <span class="text-amber-800 font-black shrink-0 text-sm leading-none">•</span>
-            <span class="text-slate-900 font-medium text-xs sm:text-sm"><b class="font-black text-black">${escapeHtml(String(u.qty))}</b> ${escapeHtml(u.name)}</span>
-          </li>
-        `).join('');
-      } else {
-        utBox.innerHTML = `<li class="text-slate-400 font-medium text-xs">कोई बर्तन जारी नहीं किए गए।</li>`;
+      if (utBox) {
+        if (b.utensils && b.utensils.length > 0) {
+          utBox.innerHTML = b.utensils.map(u => `
+            <li class="matra-safe">
+              <svg class="check-icon-svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span><b class="qty-bold">${escapeHtml(String(u.qty))}</b> ${escapeHtml(u.name)}</span>
+            </li>
+          `).join('');
+        } else {
+          utBox.innerHTML = `<li class="matra-safe"><span style="color: #9ca3af;">कोई बर्तन जारी नहीं किए गए।</span></li>`;
+        }
       }
 
+      // Terms List
       const termsBox = document.getElementById('slipTermsList');
-      termsBox.innerHTML = hallConfig.terms.map(t => `
-        <li class="leading-relaxed pl-1 text-[11px] sm:text-xs text-black font-medium">${escapeHtml(t)}</li>
-      `).join('');
+      if (termsBox) {
+        termsBox.innerHTML = (hallConfig.terms || []).map((t, idx) => `
+          <li class="matra-safe">
+            <span class="rule-num">${idx + 1}</span>
+            <span>${escapeHtml(t)}</span>
+          </li>
+        `).join('');
+      }
 
       showScreen('hall-slip');
     }
+
 
     // -------------------------------------------------------------
     // -------------------------------------------------------------
     // CAPTURE CLEAN A4-PROPORTIONED CANVAS (760PX FIXED PRINT WIDTH)
     // GUARANTEES ZERO CUTOFF, 30% LARGER FONTS, PERFECT ALIGNMENT
+    // -------------------------------------------------------------
+        // -------------------------------------------------------------
+    // CAPTURE CLEAN ROYAL BURGUNDY & GOLD CANVAS (680PX PRINT WIDTH)
+    // -------------------------------------------------------------
+        // -------------------------------------------------------------
+    // CAPTURE CLEAN ROYAL BURGUNDY & GOLD CANVAS (680PX LUXURY EXPORT)
     // -------------------------------------------------------------
     async function captureCleanReceiptCanvas() {
       const original = document.getElementById('marriageReceiptSlip');
@@ -4355,14 +5384,14 @@
         await document.fonts.ready;
       }
 
-      // Create a staging container with standard 760px A4 print width
+      // Create a staging container with standard 680px luxury print width
       const stagingWrapper = document.createElement('div');
       stagingWrapper.style.position = 'absolute';
       stagingWrapper.style.left = '0';
       stagingWrapper.style.top = '0';
-      stagingWrapper.style.width = '760px';
-      stagingWrapper.style.minWidth = '760px';
-      stagingWrapper.style.maxWidth = '760px';
+      stagingWrapper.style.width = '680px';
+      stagingWrapper.style.minWidth = '680px';
+      stagingWrapper.style.maxWidth = '680px';
       stagingWrapper.style.boxSizing = 'border-box';
       stagingWrapper.style.zIndex = '-9999';
       stagingWrapper.style.opacity = '0';
@@ -4370,123 +5399,27 @@
 
       const clone = original.cloneNode(true);
       clone.id = 'cleanReceiptPrintClone';
-      clone.className = 'bg-white text-slate-900 border-2 border-slate-900 rounded-2xl p-6 space-y-4 font-normal';
-      clone.style.width = '760px';
-      clone.style.minWidth = '760px';
-      clone.style.maxWidth = '760px';
+      clone.classList.remove('in-app-slip');
+      clone.classList.add('export-mode-680'); // Applies the spacious, full-width luxury styles!
+      clone.style.width = '680px';
+      clone.style.minWidth = '680px';
+      clone.style.maxWidth = '680px';
       clone.style.margin = '0 auto';
-      clone.style.padding = '24px';
-      clone.style.boxSizing = 'border-box';
-      clone.style.borderRadius = '16px';
-      clone.style.border = '2px solid #0f172a';
-      clone.style.backgroundColor = '#ffffff';
 
-      // Typography scaling for 760px print width (OFFICIAL ZERO-BOX BILINGUAL CANVAS):
-      clone.style.width = '760px';
-      clone.style.minWidth = '760px';
-      clone.style.maxWidth = '760px';
-      clone.style.padding = '28px';
-      clone.style.border = '2px solid #000000';
-      clone.style.borderRadius = '12px';
-      clone.style.backgroundColor = '#ffffff';
-      clone.style.color = '#000000';
-
-      // STRIP IN-APP COLOR ACCENTS ON CLONE SO EXPORTED PNG / PDF IS ZERO-BOX MONOCHROME
-      clone.querySelectorAll('.bg-amber-50, .bg-emerald-50, .bg-red-50, .bg-amber-50\\/70').forEach(el => {
-        el.style.backgroundColor = 'transparent';
-        el.style.border = 'none';
-        el.style.padding = '0';
-      });
-      clone.querySelectorAll('.border-amber-800, .border-amber-400').forEach(el => {
-        el.style.borderColor = '#000000';
-      });
-      const qQuote = clone.querySelector('#slipHeaderQuote');
-      if (qQuote) qQuote.style.color = '#000000';
-      const qName = clone.querySelector('#slipHeaderName');
-      if (qName) qName.style.color = '#000000';
-
-      const quote = clone.querySelector('#slipHeaderQuote');
-      if (quote) { quote.style.fontSize = '16px'; quote.style.marginBottom = '4px'; }
-
-      const name = clone.querySelector('#slipHeaderName');
-      if (name) { name.style.fontSize = '34px'; name.style.lineHeight = '1.3'; name.style.marginBottom = '6px'; }
-
-      const addr = clone.querySelector('#slipHeaderAddress');
-      if (addr) { addr.style.fontSize = '15.5px'; addr.style.marginBottom = '4px'; }
-
-      const phone = clone.querySelector('#slipHeaderPhone');
-      if (phone) { phone.style.fontSize = '16px'; phone.style.marginBottom = '12px'; }
-
-      const receiptNoRow = clone.querySelector('#slipReceiptNo')?.parentElement?.parentElement;
-      if (receiptNoRow) { receiptNoRow.style.fontSize = '17px'; receiptNoRow.style.paddingBottom = '6px'; }
-
-      const partyName = clone.querySelector('#slipPartyName');
-      if (partyName) { partyName.style.fontSize = '18px'; }
-      const partyPhone = clone.querySelector('#slipPartyPhone');
-      if (partyPhone) { partyPhone.style.fontSize = '17px'; }
-      const occasion = clone.querySelector('#slipEventOccasion');
-      if (occasion) { occasion.style.fontSize = '17px'; }
-      const eventDate = clone.querySelector('#slipEventDate');
-      if (eventDate) { eventDate.style.fontSize = '18px'; }
-      const slotTiming = clone.querySelector('#slipSlotTiming');
-      if (slotTiming) { slotTiming.style.fontSize = '16px'; }
-
-      // Financial breakdown rows
-      const totalRent = clone.querySelector('#slipTotalRent');
-      if (totalRent) { totalRent.style.fontSize = '18px'; }
-      const advPaid = clone.querySelector('#slipAdvancePaid');
-      if (advPaid) { advPaid.style.fontSize = '18px'; }
-      const balDue = clone.querySelector('#slipBalanceDue');
-      if (balDue) { balDue.style.fontSize = '20px'; }
-
-      const amenitiesBox = clone.querySelector('#slipAmenitiesList');
-      if (amenitiesBox) {
-        amenitiesBox.style.fontSize = '16px';
-        amenitiesBox.style.lineHeight = '1.7';
-        amenitiesBox.querySelectorAll('span').forEach(sp => { sp.style.fontSize = '16px'; });
-      }
-
-      const utensilsBox = clone.querySelector('#slipUtensilsList');
-      if (utensilsBox) {
-        utensilsBox.style.fontSize = '16px';
-        utensilsBox.style.lineHeight = '1.7';
-        utensilsBox.querySelectorAll('span, b').forEach(sp => { sp.style.fontSize = '16px'; });
-      }
-
-      const termsList = clone.querySelector('#slipTermsList');
-      if (termsList) {
-        termsList.style.fontSize = '15px';
-        termsList.style.lineHeight = '1.6';
-        termsList.querySelectorAll('li').forEach(li => {
-          li.style.fontSize = '15px';
-          li.style.lineHeight = '1.6';
-        });
-      }
-
-      // Ensure generous clearance on table cells & headers so horizontal lines never intersect Devanagari bottom matras
-      clone.querySelectorAll('th, td').forEach(cell => {
-        cell.style.paddingTop = '10px';
-        cell.style.paddingBottom = '10px';
-        cell.style.lineHeight = '1.6';
-      });
-      clone.querySelectorAll('h3').forEach(h => {
-        h.style.paddingBottom = '10px';
-        h.style.lineHeight = '1.5';
-      });
-
-            // Strip any interactive in-app buttons (.no-print) so they never appear on exported receipt photo
+      // Strip any interactive in-app buttons (.no-print) so they never appear on exported receipt photo/PDF
       clone.querySelectorAll('.no-print').forEach(el => el.remove());
+      
       stagingWrapper.appendChild(clone);
       document.body.appendChild(stagingWrapper);
 
       try {
         const canvas = await html2canvas(clone, {
-          scale: 2.0, // 760 * 2 = 1520px wide (Ultra HD, razor sharp, memory friendly)
+          scale: 2.0, // 680 * 2 = 1360px wide (Ultra HD, razor sharp, memory friendly)
           useCORS: true,
           backgroundColor: '#ffffff',
           logging: false,
-          windowWidth: 760,
-          windowHeight: clone.scrollHeight + 100
+          windowWidth: 680,
+          windowHeight: clone.scrollHeight + 30
         });
         return canvas;
       } finally {
@@ -4496,9 +5429,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // 1-CLICK DIRECT SHARE AS PHOTO (WHATSAPP & SYSTEM SHARE SHEET)
-    // -------------------------------------------------------------
     async function shareSlipAsPhoto() {
       if (!selectedBookingId) return;
       const b = realMarriageBookings.find(x => x.id === selectedBookingId);
@@ -6243,7 +7173,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.4";
+    const APP_VERSION = "1.5";
     let otaReleaseState = {
       betaVersion: APP_VERSION,
       productionVersion: APP_VERSION,
@@ -6509,13 +7439,58 @@
     }
 
     // -------------------------------------------------------------
-    // DIRECT IN-APP APK SHARING VIA NATIVE FILEPROVIDER
+    // DIRECT IN-APP APK SHARING & MULTI-DEVICE DOWNLOAD HUB
     // -------------------------------------------------------------
+    const VMH_APK_DOWNLOAD_URL = "https://github.com/amitkrak83/DOMS/raw/verma-marriage-hall-v1.4/app/build/outputs/apk/debug/app-debug.apk";
+
     function shareAppApk() {
+      // 1. If running inside native Android App and shareApk exists, invoke native share sheet!
       if (window.AndroidApp && typeof window.AndroidApp.shareApk === 'function') {
-        window.AndroidApp.shareApk();
+        try {
+          window.AndroidApp.shareApk();
+          return;
+        } catch (e) {
+          console.warn("Native shareApk invocation warning:", e);
+        }
+      }
+      // 2. Fallback for Phone browsers, Tablets, or devices on older base APK without shareApk
+      openShareAppModal();
+    }
+
+    function openShareAppModal() {
+      const modal = document.getElementById('shareAppModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeShareAppModal() {
+      const modal = document.getElementById('shareAppModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function shareAppOnWhatsApp() {
+      const text = "🏛️ *वर्मा मैरिज हॉल (Verma Marriage Hall)*\nडिजिटल बिलिंग, रसीद कट्टा एवं विवाह बुकिंग प्रबंधन ऐप।\n📍 स्थान: ग्राम असनहरा, निकट अंकित धर्मकांटा, बस्ती (उ.प्र.)\n📞 संपर्क: 9918802425, 9936435350\n\n📲 *आधिकारिक Android ऐप डाउनलोड लिंक:*\n" + VMH_APK_DOWNLOAD_URL;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: "वर्मा मैरिज हॉल ऐप",
+          text: text
+        }).catch(() => {
+          window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(text), "_blank");
+        });
       } else {
-        showToast("💡 APK शेयरिंग केवल एंड्रॉइड मोबाइल ऐप में उपलब्ध है।");
+        window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(text), "_blank");
+      }
+    }
+
+    function copyAppShareLink() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(VMH_APK_DOWNLOAD_URL).then(() => {
+          showToast("✅ ऐप डाउनलोड लिंक कॉपी हो गया!");
+        }).catch(() => {
+          showToast("लिंक: " + VMH_APK_DOWNLOAD_URL);
+        });
+      } else {
+        showToast("लिंक: " + VMH_APK_DOWNLOAD_URL);
       }
     }
 

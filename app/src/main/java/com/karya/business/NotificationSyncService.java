@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -187,10 +188,18 @@ public class NotificationSyncService extends Service {
 
             SharedPreferences prefs = getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE);
             String localDeviceId = prefs.getString("device_id", "");
+            if (localDeviceId == null || localDeviceId.isEmpty()) {
+                try {
+                    localDeviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                    if (localDeviceId != null && !localDeviceId.isEmpty()) {
+                        prefs.edit().putString("device_id", localDeviceId).apply();
+                    }
+                } catch (Exception ignored) {}
+            }
             String lastSeenAlertId = prefs.getString("last_alert_id", "");
 
             // If first run and no saved last_alert_id, seed it so we don't alert on past events
-            if (isFirstRun && lastSeenAlertId.isEmpty()) {
+            if (isFirstRun && (lastSeenAlertId == null || lastSeenAlertId.isEmpty())) {
                 prefs.edit().putString("last_alert_id", alertId).apply();
                 return;
             }
@@ -200,8 +209,8 @@ public class NotificationSyncService extends Service {
                 prefs.edit().putString("last_alert_id", alertId).apply();
 
                 // If sent by this same device, ignore notification
-                if (!localDeviceId.isEmpty() && localDeviceId.equals(senderDeviceId)) {
-                    Log.d(TAG, "Ignoring self-generated alert: " + alertId);
+                if (localDeviceId != null && !localDeviceId.isEmpty() && localDeviceId.equalsIgnoreCase(senderDeviceId)) {
+                    Log.d(TAG, "Ignoring self-generated alert: " + alertId + " (sender=" + senderDeviceId + ", local=" + localDeviceId + ")");
                     return;
                 }
 

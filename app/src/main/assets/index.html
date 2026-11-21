@@ -150,15 +150,18 @@
         </h1>
         <p id="headerAppSubtitle" class="text-[11px] text-amber-200 font-semibold opacity-95 leading-tight truncate flex items-center justify-center gap-1.5">
           <span id="headerAppSubLoc">असनहरा, बस्ती</span>
-          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.3</span>
+          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.4</span>
         </p>
       </div>
 
-      <!-- RIGHT: OPERATOR / PROFILE PILL -->
-      <div class="shrink-0 flex items-center justify-end">
+      <!-- RIGHT: OPERATOR / PROFILE PILL & SHARE BUTTON -->
+      <div class="shrink-0 flex items-center justify-end gap-1.5">
+        <button type="button" onclick="shareAppApk()" title="ऐप शेयर करें (Share App)" class="text-xs bg-amber-950/60 hover:bg-amber-950 text-amber-100 px-2 py-1 rounded-xl border border-amber-300/40 flex items-center justify-center btn-tactile shadow-2xs">
+          <span>📲</span>
+        </button>
         <button type="button" onclick="openUserProfileModal()" id="headerUserChip" title="वर्तमान ऑपरेटर / प्रोफाइल" class="text-[10px] font-black bg-amber-950/60 hover:bg-amber-950 text-amber-100 px-2.5 py-1 rounded-xl border border-amber-300/40 flex items-center gap-1 btn-tactile shadow-2xs">
           <span>🏛️</span>
-          <span id="headerUserNameText" class="max-w-[85px] truncate">वर्मा मैरिज हॉल</span>
+          <span id="headerUserNameText" class="max-w-[75px] truncate">वर्मा मैरिज हॉल</span>
         </button>
       </div>
     </header>
@@ -739,14 +742,14 @@
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-[10.5px] sm:text-xs">
                   <thead>
-                    <tr class="border-t-2 border-b-2 border-slate-800 text-slate-950 font-black" style="background: transparent;">
-                      <th class="py-1 px-2 border-r border-slate-300 text-center">#</th>
-                      <th class="py-1 px-2 border-r border-slate-300">दिनांक व समय</th>
-                      <th class="py-1 px-2 border-r border-slate-300">माध्यम</th>
-                      <th class="py-1 px-2 border-r border-slate-300">विवरण / टिप्पणी</th>
-                      <th class="py-1 px-2 text-right border-r border-slate-300">प्राप्त राशि</th>
-                      <th class="py-1 px-2 text-right">शेष बकाया</th>
-                      <th class="py-1 px-1.5 text-center no-print border-l border-slate-200">क्रिया</th>
+                    <tr class="border-t-2 border-b-2 border-slate-800 text-slate-950 font-black leading-relaxed" style="background: transparent;">
+                      <th class="py-2.5 px-2.5 border-r border-slate-300 text-center">#</th>
+                      <th class="py-2.5 px-2.5 border-r border-slate-300">दिनांक व समय</th>
+                      <th class="py-2.5 px-2.5 border-r border-slate-300">माध्यम</th>
+                      <th class="py-2.5 px-2.5 border-r border-slate-300">विवरण / टिप्पणी</th>
+                      <th class="py-2.5 px-2.5 text-right border-r border-slate-300">प्राप्त राशि</th>
+                      <th class="py-2.5 px-2.5 text-right">शेष बकाया</th>
+                      <th class="py-2.5 px-2 text-center no-print border-l border-slate-200">क्रिया</th>
                     </tr>
                   </thead>
                   <tbody id="slipPaymentHistoryTableBody" class="divide-y divide-slate-200 font-medium">
@@ -773,7 +776,7 @@
             
             <!-- LEFT COLUMN: AMENITIES (BILINGUAL HEADER & THICK BULLETS) -->
             <div class="space-y-2">
-              <h3 class="font-black text-black pb-1 border-b border-black">
+              <h3 class="font-black text-black pb-2.5 border-b border-slate-400 leading-relaxed text-xs sm:text-sm">
                 उपलब्ध कराई गई सुविधाएं (Amenities Allotted):
               </h3>
               <ul id="slipAmenitiesList" class="space-y-1.5 text-slate-900 font-medium leading-normal pl-1">
@@ -783,7 +786,7 @@
 
             <!-- RIGHT COLUMN: UTENSILS (BILINGUAL HEADER, QUANTITIES BOLD) -->
             <div class="space-y-2">
-              <h3 class="font-black text-black pb-1 border-b border-black">
+              <h3 class="font-black text-black pb-2.5 border-b border-slate-400 leading-relaxed text-xs sm:text-sm">
                 आबंटित बर्तन व सामान सूची (Utensils & Inventory):
               </h3>
               <ul id="slipUtensilsList" class="space-y-1.5 text-slate-900 font-medium leading-normal pl-1">
@@ -846,6 +849,27 @@
         <!-- SEARCH INPUT -->
         <div>
           <input type="text" id="hallSearchInput" oninput="renderAllBookingsList()" placeholder="🔍 पार्टी का नाम या मोबाइल नंबर खोजें..." class="w-full text-sm font-bold p-3 bg-white border-2 border-slate-400 rounded-xl outline-none focus:border-amber-800 shadow-xs text-slate-950 placeholder-slate-500">
+        </div>
+
+        <!-- 4 FILTER PILLS (UPCOMING, PAST, HAS DUE, ALL) -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 no-scrollbar">
+          <button type="button" id="rfPill-upcoming" onclick="setRecordsFilter('upcoming')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-amber-700 text-white">
+            📅 आगामी (<span id="rfCount-upcoming">0</span>)
+          </button>
+          <button type="button" id="rfPill-past" onclick="setRecordsFilter('past')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200">
+            ✅ संपन्न (<span id="rfCount-past">0</span>)
+          </button>
+          <button type="button" id="rfPill-due" onclick="setRecordsFilter('due')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200">
+            ⚠️ बकाया (<span id="rfCount-due">0</span>)
+          </button>
+          <button type="button" id="rfPill-all" onclick="setRecordsFilter('all')" class="px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200">
+            📋 सभी (<span id="rfCount-all">0</span>)
+          </button>
+        </div>
+
+        <!-- PAST MONTHS HORIZONTAL SELECTOR (VISIBLE WHEN 'PAST' FILTER ACTIVE) -->
+        <div id="recordsPastMonthSelector" class="hidden flex items-center gap-1.5 overflow-x-auto py-1 px-1 bg-amber-50/70 border border-amber-200/80 rounded-xl no-scrollbar">
+          <!-- Populated dynamically via JS: [सभी महीने] [नवंबर 2026] [अक्टूबर 2026] ... -->
         </div>
 
         <!-- MULTI-SELECT ACTION BAR (ALL RECORDS) -->
@@ -993,6 +1017,18 @@
                 </div>
               </div>
               <span class="text-xs font-black text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-lg">OTA</span>
+            </button>
+
+            <!-- 9. ऐप शेयर करें (WhatsApp / Bluetooth / Drive) -->
+            <button type="button" onclick="shareAppApk()" class="w-full p-3.5 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border border-amber-300 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">📲</div>
+                <div>
+                  <h4 class="text-xs font-black text-amber-950">ऐप शेयर करें (Share App APK)</h4>
+                  <p class="text-[10px] text-amber-800 font-semibold">परिवार या ऑपरेटरों को WhatsApp पर सीधा APK भेजें</p>
+                </div>
+              </div>
+              <span class="text-xs font-black text-amber-900 bg-amber-200 border border-amber-300 px-2 py-0.5 rounded-lg">APK</span>
             </button>
           </div>
         </div>
@@ -1374,7 +1410,7 @@
                 <p class="text-[10px] text-slate-500">इस डिवाइस पर सक्रिय सॉफ्टवेयर</p>
               </div>
               <span id="otaActiveVerBadge" class="text-xs font-black px-2.5 py-1 bg-amber-100 text-amber-950 border border-amber-300 rounded-xl">
-                v1.3
+                v1.4
               </span>
             </div>
 
@@ -1420,15 +1456,21 @@
             <div class="grid grid-cols-2 gap-2 text-xs">
               <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200">
                 <span class="text-[10px] text-purple-800 font-bold block">क्लाउड बीटा वर्जन:</span>
-                <b id="otaCloudBetaVerText" class="text-sm font-black text-purple-950">v1.3</b>
+                <b id="otaCloudBetaVerText" class="text-sm font-black text-purple-950">v1.4</b>
               </div>
               <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
                 <span class="text-[10px] text-emerald-800 font-bold block">क्लाउड लाइव वर्जन:</span>
-                <b id="otaCloudProdVerText" class="text-sm font-black text-emerald-950">v1.3</b>
+                <b id="otaCloudProdVerText" class="text-sm font-black text-emerald-950">v1.4</b>
               </div>
             </div>
 
             <div class="space-y-2 pt-1">
+              <!-- Hard Refresh / Check Updates Button -->
+              <button type="button" onclick="hardRefreshOtaStatus()" class="w-full py-2.5 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-black text-xs rounded-xl border border-indigo-300 flex items-center justify-center gap-1.5 btn-tactile shadow-2xs">
+                <span>🔄</span>
+                <span>सर्वर से ताज़ा स्थिति जांचें (Hard Refresh / Check Updates)</span>
+              </button>
+
               <!-- Promote Button -->
               <button type="button" onclick="promoteBetaToProduction()" class="w-full py-3 px-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-black text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-md btn-tactile">
                 <span>🚀</span>
@@ -2709,7 +2751,7 @@
         if (target) {
           target.classList.remove('hidden');
           if (viewId === 'users') renderAdminOperatorsList();
-          if (viewId === 'ota') updateOtaUI();
+          if (viewId === 'ota') { updateOtaUI(); hardRefreshOtaStatus(); }
           if (viewId === 'profile') {
             if (document.getElementById('cfgHallQuote')) document.getElementById('cfgHallQuote').value = hallConfig.quote || '|| श्री गणेशाय नमः ||';
             if (document.getElementById('cfgHallName')) document.getElementById('cfgHallName').value = hallConfig.name;
@@ -3184,11 +3226,21 @@
 
         if (bookingsOnDate.length > 0) {
           if (isPast) {
-            // Past Booked Date -> Slate styled, viewable
+            // Past Booked Date -> Keep grey background cell, but text "संपन्न" is RED with slot icon
+            let pastSlotIcon = '🌙';
+            let pastSlotText = 'संपन्न';
+            if (bookingsOnDate.length === 1) {
+              const b = bookingsOnDate[0];
+              pastSlotIcon = b.slotType === 'day_event' ? '☀️' : '🌙';
+              pastSlotText = b.slotType === 'day_event' ? 'दिन संपन्न' : 'रात संपन्न';
+            } else {
+              pastSlotIcon = '🔴';
+              pastSlotText = 'पूर्ण संपन्न';
+            }
             btn.className = "p-1.5 sm:p-2.5 rounded-xl bg-slate-100 text-slate-800 border-2 border-slate-300 font-bold text-sm relative btn-tactile hover:bg-slate-200 shadow-2xs flex flex-col items-center justify-center min-h-[52px] sm:min-h-[62px]";
             btn.innerHTML = `
               <span class="font-black text-sm text-slate-800">${day}</span>
-              <span class="text-[8px] sm:text-[9px] font-bold text-slate-600 leading-none">संपन्न (${bookingsOnDate.length})</span>
+              <span class="text-[8px] sm:text-[9px] font-black text-red-600 leading-none">${pastSlotIcon} ${pastSlotText}</span>
             `;
           } else if (bookingsOnDate.length === 1) {
             // 🟡 1 BOOKED: YELLOW COLOR
@@ -4239,14 +4291,14 @@
             const operatorTag = p.receivedBy ? `<span class="block text-[9.5px] text-amber-900 font-bold">प्राप्तकर्ता: ${escapeHtml(p.receivedBy)}</span>` : '';
 
             return `
-              <tr style="background: transparent;" class="border-b border-slate-200">
-                <td class="py-1 px-2 font-black text-slate-900 border-r border-slate-200 text-center">${idx + 1}</td>
-                <td class="py-1 px-2 font-bold font-mono text-slate-700 border-r border-slate-200">${escapeHtml(p.date || '-')}</td>
-                <td class="py-1 px-2 border-r border-slate-200">${modeBadge}</td>
-                <td class="py-1 px-2 text-slate-800 border-r border-slate-200">${noteText}${operatorTag}</td>
-                <td class="py-1 px-2 text-right font-black font-mono text-emerald-700 border-r border-slate-200">+ ₹${pAmt.toLocaleString('en-IN')}</td>
-                <td class="py-1 px-2 text-right font-black font-mono ${remaining === 0 ? 'text-emerald-700 font-bold' : 'text-red-600'}">₹${remaining.toLocaleString('en-IN')}</td>
-                <td class="py-1 px-1.5 text-center no-print border-l border-slate-200 whitespace-nowrap">
+              <tr style="background: transparent;" class="border-b border-slate-300">
+                <td class="py-2.5 px-2.5 font-black text-slate-900 border-r border-slate-200 text-center leading-relaxed">${idx + 1}</td>
+                <td class="py-2.5 px-2.5 font-bold font-mono text-slate-700 border-r border-slate-200 leading-relaxed">${escapeHtml(p.date || '-')}</td>
+                <td class="py-2.5 px-2.5 border-r border-slate-200 leading-relaxed">${modeBadge}</td>
+                <td class="py-2.5 px-2.5 text-slate-800 border-r border-slate-200 leading-relaxed">${noteText}${operatorTag}</td>
+                <td class="py-2.5 px-2.5 text-right font-black font-mono text-emerald-700 border-r border-slate-200 leading-relaxed">+ ₹${pAmt.toLocaleString('en-IN')}</td>
+                <td class="py-2.5 px-2.5 text-right font-black font-mono ${remaining === 0 ? 'text-emerald-700 font-bold' : 'text-red-600'} leading-relaxed">₹${remaining.toLocaleString('en-IN')}</td>
+                <td class="py-2.5 px-2 text-center no-print border-l border-slate-200 whitespace-nowrap leading-relaxed">
                   <button type="button" onclick="openEditPaymentModal('${b.id}', ${idx})" title="भुगतान संशोधित करें" class="text-[11px] font-bold px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 hover:bg-blue-100 btn-tactile">✏️</button>
                   <button type="button" onclick="deletePaymentEntry('${b.id}', ${idx})" title="भुगतान हटाएं" class="text-[11px] font-bold px-1.5 py-0.5 bg-red-50 text-red-700 rounded border border-red-200 hover:bg-red-100 btn-tactile ml-0.5">🗑️</button>
                 </td>
@@ -4410,6 +4462,17 @@
           li.style.lineHeight = '1.6';
         });
       }
+
+      // Ensure generous clearance on table cells & headers so horizontal lines never intersect Devanagari bottom matras
+      clone.querySelectorAll('th, td').forEach(cell => {
+        cell.style.paddingTop = '10px';
+        cell.style.paddingBottom = '10px';
+        cell.style.lineHeight = '1.6';
+      });
+      clone.querySelectorAll('h3').forEach(h => {
+        h.style.paddingBottom = '10px';
+        h.style.lineHeight = '1.5';
+      });
 
             // Strip any interactive in-app buttons (.no-print) so they never appear on exported receipt photo
       clone.querySelectorAll('.no-print').forEach(el => el.remove());
@@ -4612,14 +4675,110 @@
     }
 
     // -------------------------------------------------------------
-    // ALL BOOKINGS SCREEN SEARCH & LIST (SHOWS RENT, ADVANCE & DUE)
+    // ALL BOOKINGS SCREEN SEARCH, 4 FILTERS & PAST MONTH SELECTOR
     // -------------------------------------------------------------
+    let recordsActiveFilter = 'upcoming'; // 'upcoming', 'past', 'due', 'all'
+    let recordsPastMonthFilter = 'all'; // 'all' or 'YYYY-MM'
+
+    function setRecordsFilter(f) {
+      recordsActiveFilter = f;
+      recordsPastMonthFilter = 'all';
+      renderAllBookingsList();
+    }
+
+    function setRecordsPastMonth(m) {
+      recordsPastMonthFilter = m;
+      renderAllBookingsList();
+    }
+
     function renderAllBookingsList() {
       const q = (document.getElementById('hallSearchInput')?.value || '').toLowerCase().trim();
       const container = document.getElementById('allBookingsListContainer');
       if (!container) return;
 
-      const filtered = realMarriageBookings.filter(b => {
+      const now = new Date();
+      const todayY = now.getFullYear();
+      const todayM = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : '' + (now.getMonth() + 1);
+      const todayD = now.getDate() < 10 ? '0' + now.getDate() : '' + now.getDate();
+      const todayStr = `${todayY}-${todayM}-${todayD}`;
+
+      const upcomingBookings = realMarriageBookings.filter(b => b.eventDate >= todayStr);
+      const pastBookings = realMarriageBookings.filter(b => b.eventDate < todayStr);
+      const dueBookings = realMarriageBookings.filter(b => (parseFloat(b.balanceDue) || 0) > 0);
+      const allBookings = realMarriageBookings;
+
+      // Update Pill Count Badges
+      const countUp = document.getElementById('rfCount-upcoming');
+      if (countUp) countUp.innerText = upcomingBookings.length;
+      const countPast = document.getElementById('rfCount-past');
+      if (countPast) countPast.innerText = pastBookings.length;
+      const countDue = document.getElementById('rfCount-due');
+      if (countDue) countDue.innerText = dueBookings.length;
+      const countAll = document.getElementById('rfCount-all');
+      if (countAll) countAll.innerText = allBookings.length;
+
+      // Update Pill Visual States
+      const filterPills = ['upcoming', 'past', 'due', 'all'];
+      filterPills.forEach(p => {
+        const btn = document.getElementById('rfPill-' + p);
+        if (btn) {
+          if (recordsActiveFilter === p) {
+            btn.className = "px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-xs btn-tactile bg-amber-700 text-white";
+          } else {
+            btn.className = "px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all shadow-2xs btn-tactile bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300";
+          }
+        }
+      });
+
+      // Update Month Selector for 'past' filter
+      const monthSelector = document.getElementById('recordsPastMonthSelector');
+      if (monthSelector) {
+        if (recordsActiveFilter === 'past' && pastBookings.length > 0) {
+          monthSelector.classList.remove('hidden');
+          const pastMonths = Array.from(new Set(pastBookings.map(b => (b.eventDate || '').substring(0, 7)).filter(Boolean))).sort().reverse();
+          
+          let monthHtml = `
+            <button type="button" onclick="setRecordsPastMonth('all')" class="px-2.5 py-1 rounded-lg text-[11px] font-black shrink-0 btn-tactile ${recordsPastMonthFilter === 'all' ? 'bg-amber-800 text-white shadow-2xs' : 'bg-white text-slate-700 border border-amber-200 hover:bg-amber-100'}">
+              सभी महीने (${pastBookings.length})
+            </button>
+          `;
+
+          pastMonths.forEach(ym => {
+            const parts = ym.split('-');
+            const y = parts[0];
+            const m = parts[1];
+            const mIdx = parseInt(m, 10) - 1;
+            const mName = (typeof MONTH_NAMES_HI !== 'undefined' && MONTH_NAMES_HI[mIdx]) ? MONTH_NAMES_HI[mIdx] : m;
+            const label = `${mName} ${y}`;
+            const mCount = pastBookings.filter(b => b.eventDate.startsWith(ym)).length;
+            const isAct = recordsPastMonthFilter === ym;
+            monthHtml += `
+              <button type="button" onclick="setRecordsPastMonth('${ym}')" class="px-2.5 py-1 rounded-lg text-[11px] font-black shrink-0 btn-tactile ${isAct ? 'bg-amber-800 text-white shadow-2xs' : 'bg-white text-slate-700 border border-amber-200 hover:bg-amber-100'}">
+                ${label} (${mCount})
+              </button>
+            `;
+          });
+          monthSelector.innerHTML = monthHtml;
+        } else {
+          monthSelector.classList.add('hidden');
+        }
+      }
+
+      // Determine Base List
+      let baseList = [];
+      if (recordsActiveFilter === 'upcoming') {
+        baseList = upcomingBookings;
+      } else if (recordsActiveFilter === 'past') {
+        baseList = (recordsPastMonthFilter === 'all') 
+          ? pastBookings 
+          : pastBookings.filter(b => (b.eventDate || '').startsWith(recordsPastMonthFilter));
+      } else if (recordsActiveFilter === 'due') {
+        baseList = dueBookings;
+      } else {
+        baseList = allBookings;
+      }
+
+      const filtered = baseList.filter(b => {
         if (!q) return true;
         return (b.partyName && b.partyName.toLowerCase().includes(q)) ||
                (b.partyPhone && b.partyPhone.includes(q)) ||
@@ -4627,15 +4786,25 @@
       });
 
       if (filtered.length === 0) {
+        let emptyMsg = "कोई बुकिंग रिकॉर्ड नहीं मिला।";
+        if (recordsActiveFilter === 'upcoming') emptyMsg = "कोई आगामी बुकिंग रिकॉर्ड नहीं मिला। नई बुकिंग जोड़ने के लिए नीचे 'नई बुकिंग' दबाएं।";
+        else if (recordsActiveFilter === 'past') emptyMsg = "इस अवधि में कोई संपन्न बुकिंग रिकॉर्ड नहीं मिला।";
+        else if (recordsActiveFilter === 'due') emptyMsg = "🎉 बहुत बढ़िया! किसी भी बुकिंग पर कोई शेष बकाया नहीं है।";
         container.innerHTML = `
           <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-6 text-center text-slate-400 text-xs">
-            कोई बुकिंग रिकॉर्ड नहीं मिला। नई बुकिंग जोड़ने के लिए नीचे "नई बुकिंग" टैब दबाएं।
+            ${emptyMsg}
           </div>
         `;
         return;
       }
 
-      const sorted = [...filtered].sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate));
+      // Past bookings sorted newest first, upcoming sorted nearest first
+      const sorted = [...filtered].sort((a, b) => {
+        if (recordsActiveFilter === 'past') {
+          return new Date(b.eventDate) - new Date(a.eventDate);
+        }
+        return new Date(a.eventDate) - new Date(b.eventDate);
+      });
 
       container.innerHTML = sorted.map(b => {
         const slotText = b.slotType === 'night_wedding' 
@@ -5352,9 +5521,13 @@
     let cloudPollTimer = null; // Stays null - ZERO POLLING!
 
     // Persistent Device Identifier so this device does not alert on its own actions
-    let myDeviceId = localStorage.getItem('vmh_device_id');
+    let myDeviceId = (window.AndroidApp && typeof window.AndroidApp.getNativeDeviceId === 'function') 
+      ? window.AndroidApp.getNativeDeviceId() 
+      : localStorage.getItem('vmh_device_id');
     if (!myDeviceId) {
       myDeviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+      localStorage.setItem('vmh_device_id', myDeviceId);
+    } else {
       localStorage.setItem('vmh_device_id', myDeviceId);
     }
 
@@ -5365,6 +5538,13 @@
     function syncNativeState() {
       try {
         if (window.AndroidApp) {
+          if (window.AndroidApp.getNativeDeviceId) {
+            const nativeId = window.AndroidApp.getNativeDeviceId();
+            if (nativeId && nativeId.length > 2) {
+              myDeviceId = nativeId;
+              localStorage.setItem('vmh_device_id', myDeviceId);
+            }
+          }
           if (window.AndroidApp.syncNativeDeviceId && myDeviceId) {
             window.AndroidApp.syncNativeDeviceId(myDeviceId);
           }
@@ -6063,7 +6243,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.3";
+    const APP_VERSION = "1.4";
     let otaReleaseState = {
       betaVersion: APP_VERSION,
       productionVersion: APP_VERSION,
@@ -6325,6 +6505,76 @@
           localStorage.removeItem('vmh_ota_browser_version');
           location.reload();
         }
+      }
+    }
+
+    // -------------------------------------------------------------
+    // DIRECT IN-APP APK SHARING VIA NATIVE FILEPROVIDER
+    // -------------------------------------------------------------
+    function shareAppApk() {
+      if (window.AndroidApp && typeof window.AndroidApp.shareApk === 'function') {
+        window.AndroidApp.shareApk();
+      } else {
+        showToast("💡 APK शेयरिंग केवल एंड्रॉइड मोबाइल ऐप में उपलब्ध है।");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // HARD REFRESH & LIVE RELEASE CHECK VIA FIRESTORE REST API
+    // -------------------------------------------------------------
+    async function hardRefreshOtaStatus() {
+      showToast("🔄 सर्वर से ताज़ा स्थिति जांची जा रही है...");
+      try {
+        let releaseData = null;
+        // 1. Direct REST fetch to bypass cached state
+        const restUrl = "https://firestore.googleapis.com/v1/projects/verma-marriage-hall/databases/(default)/documents/vmh_system/ota_release?key=AIzaSyBBbUJ6DA0tRDALZC4Oqx_GX7F2R1K6qgc";
+        try {
+          const resp = await fetch(restUrl, { cache: 'no-store' });
+          if (resp.ok) {
+            const json = await resp.json();
+            if (json && json.fields) {
+              releaseData = {
+                betaVersion: json.fields.betaVersion?.stringValue || APP_VERSION,
+                productionVersion: json.fields.productionVersion?.stringValue || APP_VERSION,
+                betaBundle: json.fields.betaBundle?.stringValue || '',
+                productionBundle: json.fields.productionBundle?.stringValue || ''
+              };
+            }
+          }
+        } catch(fe) {
+          console.warn("REST ota fetch note:", fe);
+        }
+
+        // 2. If REST failed, fallback to SDK
+        if (!releaseData && firestoreDb) {
+          const doc = await firestoreDb.collection('vmh_system').doc('ota_release').get();
+          if (doc.exists) releaseData = doc.data();
+        }
+
+        if (!releaseData) {
+          showToast("⚠️ सर्वर से संपर्क नहीं हो सका। कृपया इंटरनेट जांचें।");
+          return;
+        }
+
+        otaReleaseState.betaVersion = releaseData.betaVersion || APP_VERSION;
+        otaReleaseState.productionVersion = releaseData.productionVersion || APP_VERSION;
+        updateOtaUI();
+
+        const ch = getDeviceOtaChannel();
+        const targetVersion = ch === 'beta' ? releaseData.betaVersion : releaseData.productionVersion;
+        const currentVer = (window.AndroidApp && window.AndroidApp.getOtaVersion) 
+          ? (window.AndroidApp.getOtaVersion() || APP_VERSION) 
+          : APP_VERSION;
+
+        if (isVersionNewer(targetVersion, currentVer)) {
+          showToast(`✨ नया वर्जन v${targetVersion} उपलब्ध है! अभी अपडेट हो रहा है...`);
+          handleIncomingOtaDoc(releaseData);
+        } else {
+          showToast(`✅ आपका ऐप पूरी तरह अप-टू-डेट है (v${currentVer})!`);
+        }
+      } catch (err) {
+        console.error("hardRefreshOtaStatus error:", err);
+        showToast("⚠️ स्थिति जांचने में समस्या आई: " + err.message);
       }
     }
   

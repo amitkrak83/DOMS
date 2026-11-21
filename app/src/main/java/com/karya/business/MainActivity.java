@@ -34,9 +34,11 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -82,6 +84,19 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
         checkAndRequestNotificationPermission();
+
+        // Initialize permanent Hardware Device ID in native SharedPreferences
+        try {
+            String hardwareId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            if (hardwareId == null || hardwareId.isEmpty()) {
+                hardwareId = "vmh_" + Build.MANUFACTURER + "_" + Build.MODEL.replaceAll("\\s+", "");
+            }
+            SharedPreferences nativePrefs = getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE);
+            nativePrefs.edit().putString("device_id", hardwareId).apply();
+            Log.d(TAG, "Hardware device_id initialized: " + hardwareId);
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing hardware device_id", e);
+        }
 
         // Start background native sync service for closed app & lock-screen notifications
         try {
@@ -296,6 +311,68 @@ public class MainActivity extends AppCompatActivity {
 
         WebAppInterface(Context c) {
             mContext = c;
+        }
+
+        @JavascriptInterface
+        public String getNativeDeviceId() {
+            try {
+                SharedPreferences prefs = mContext.getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE);
+                String id = prefs.getString("device_id", "");
+                if (id == null || id.isEmpty()) {
+                    id = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+                    if (id != null && !id.isEmpty()) {
+                        prefs.edit().putString("device_id", id).apply();
+                    }
+                }
+                return id != null ? id : "";
+            } catch (Exception e) {
+                return "";
+            }
+        }
+
+        @JavascriptInterface
+        public void shareApk() {
+            runOnUiThread(() -> {
+                try {
+                    String apkPath = mContext.getApplicationInfo().sourceDir;
+                    File srcApk = new File(apkPath);
+                    if (!srcApk.exists()) {
+                        Toast.makeText(mContext, "APK फ़ाइल नहीं मिली!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    File shareFolder = new File(mContext.getCacheDir(), "shared_apk");
+                    if (!shareFolder.exists()) shareFolder.mkdirs();
+                    File dstApk = new File(shareFolder, "VermaMarriageHall.apk");
+
+                    try (InputStream in = new FileInputStream(srcApk);
+                         OutputStream out = new FileOutputStream(dstApk)) {
+                        byte[] buffer = new byte[8192];
+                        int len;
+                        while ((len = in.read(buffer)) != -1) {
+                            out.write(buffer, 0, len);
+                        }
+                        out.flush();
+                    }
+
+                    Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".provider", dstApk);
+
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("application/vnd.android.package-archive");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "वर्मा मैरिज हॉल - आधिकारिक डिजिटल ऐप");
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "🏛️ वर्मा मैरिज हॉल (Verma Marriage Hall)\nडिजिटल बिलिंग, रसीद कट्टा एवं विवाह बुकिंग प्रबंधन ऐप।\nस्थान: ग्राम असनहरा, बस्ती (उ.प्र.)\n\nइस APK को इंस्टॉल करें और उपयोग करें।");
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    Intent chooser = Intent.createChooser(shareIntent, "वर्मा मैरिज हॉल ऐप शेयर करें (WhatsApp / Share)");
+                    chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(chooser);
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Error sharing APK", e);
+                    Toast.makeText(mContext, "APK शेयर करने में त्रुटि: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
         @JavascriptInterface
@@ -515,7 +592,7 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public String getNativeAppVersion() {
-            return "1.3";
+            return "1.4";
         }
 
         @JavascriptInterface

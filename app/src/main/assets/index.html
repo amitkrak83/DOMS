@@ -171,7 +171,7 @@
         </h1>
         <p id="headerAppSubtitle" class="text-[11px] text-amber-200 font-semibold opacity-95 leading-tight truncate flex items-center justify-center gap-1.5">
           <span id="headerAppSubLoc">असनहरा, बस्ती</span>
-          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.2</span>
+          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.2.1</span>
           <button type="button" onclick="manualForceSyncCloud()" title="क्लाउड सिंक स्थिति (टैप करके तुरंत सिंक करें)" class="inline-flex items-center gap-1 text-[9.5px] bg-amber-950/70 text-emerald-300 border border-emerald-400/40 px-1.5 py-0.5 rounded-md font-bold btn-tactile">
             <span id="headerSyncDot" class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span id="headerSyncStatus">2-फोन सिंक ☁️</span>
@@ -7028,15 +7028,16 @@
     let cloudPollTimer = null; // Stays null - ZERO POLLING!
 
     // Hardware-bound unique Device Identifier: prevents self-alert suppression across different devices
-    let myDeviceId = (window.AndroidApp && typeof window.AndroidApp.getNativeDeviceId === 'function') 
-      ? window.AndroidApp.getNativeDeviceId() 
-      : localStorage.getItem('vmh_device_id');
-    if (!myDeviceId || myDeviceId.startsWith('dev_s0znijp') || myDeviceId === 'dev_null') {
-      myDeviceId = 'web_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-      localStorage.setItem('vmh_device_id', myDeviceId);
-    } else {
-      localStorage.setItem('vmh_device_id', myDeviceId);
+    let rawNativeId = (window.AndroidApp && typeof window.AndroidApp.getNativeDeviceId === 'function') ? window.AndroidApp.getNativeDeviceId() : '';
+    let myDeviceId = localStorage.getItem('vmh_device_id');
+    if (rawNativeId && !rawNativeId.startsWith('dev_s0znijp') && rawNativeId !== 'dev_null') {
+      myDeviceId = rawNativeId;
     }
+    if (!myDeviceId || myDeviceId.startsWith('dev_s0znijp') || myDeviceId === 'dev_null') {
+      const prefix = window.AndroidApp ? 'android_' : 'web_';
+      myDeviceId = prefix + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+    }
+    localStorage.setItem('vmh_device_id', myDeviceId);
 
     // Alert tracking for 2-phone instant notifications (immune to device clock differences)
     let lastProcessedAlertId = localStorage.getItem('vmh_last_alert_id') || '';
@@ -7047,7 +7048,7 @@
         if (window.AndroidApp) {
           if (window.AndroidApp.getNativeDeviceId) {
             const nativeId = window.AndroidApp.getNativeDeviceId();
-            if (nativeId && nativeId.length > 2) {
+            if (nativeId && nativeId.length > 2 && !nativeId.startsWith('dev_s0znijp') && nativeId !== 'dev_null') {
               myDeviceId = nativeId;
               localStorage.setItem('vmh_device_id', myDeviceId);
             }
@@ -7167,16 +7168,24 @@
     }
 
     function playAlertChime() {
+      // 1. Native Android notification ringtone (100% audible on device)
+      if (window.AndroidApp && typeof window.AndroidApp.playNativeAlertSound === 'function') {
+        try { window.AndroidApp.playNativeAlertSound(); } catch(e) {}
+      }
+      // 2. Web Audio oscillator chime with resume
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
         const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
         osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12); // A5
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.45);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -7842,7 +7851,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.1";
+    const APP_VERSION = "1.2.1";
     window.APP_VERSION = APP_VERSION;
     let otaReleaseState = {
       betaVersion: APP_VERSION,

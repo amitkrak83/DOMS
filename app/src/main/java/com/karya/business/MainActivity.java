@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setUseWideViewPort(false);
         webSettings.setLoadWithOverviewMode(false);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
 
         // Native Android Bridge to JavaScript
         webView.addJavascriptInterface(new WebAppInterface(this), "AndroidApp");
@@ -463,6 +464,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
+        public void playNativeAlertSound() {
+            try {
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                android.media.Ringtone r = RingtoneManager.getRingtone(mContext, defaultSoundUri);
+                if (r != null) {
+                    r.play();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error playing native ringtone", e);
+            }
+        }
+
+        @JavascriptInterface
         public void shareImage(String base64Data, String filename, String title, String caption) {
             try {
                 if (base64Data.contains(",")) {
@@ -608,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public String getNativeAppVersion() {
-            return "1.0";
+            return BuildConfig.VERSION_NAME;
         }
 
         @JavascriptInterface

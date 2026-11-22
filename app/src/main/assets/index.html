@@ -171,7 +171,11 @@
         </h1>
         <p id="headerAppSubtitle" class="text-[11px] text-amber-200 font-semibold opacity-95 leading-tight truncate flex items-center justify-center gap-1.5">
           <span id="headerAppSubLoc">असनहरा, बस्ती</span>
-          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.0</span>
+          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.2</span>
+          <button type="button" onclick="manualForceSyncCloud()" title="क्लाउड सिंक स्थिति (टैप करके तुरंत सिंक करें)" class="inline-flex items-center gap-1 text-[9.5px] bg-amber-950/70 text-emerald-300 border border-emerald-400/40 px-1.5 py-0.5 rounded-md font-bold btn-tactile">
+            <span id="headerSyncDot" class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="headerSyncStatus">2-फोन सिंक ☁️</span>
+          </button>
         </p>
       </div>
 
@@ -392,27 +396,18 @@
             <input type="text" id="hallCustAddress" placeholder="उदा. ग्राम असनहरा, बस्ती या शहर का नाम" class="w-full text-sm font-bold p-3 bg-white border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all text-slate-950">
           </div>
 
-          <!-- CUSTOM OCCASION SELECTOR (TOUCH CHIPS - NO NATIVE DROPDOWN) -->
+          <!-- CUSTOM OCCASION SELECTOR (TOUCH CHIPS - DYNAMIC CRUD) -->
           <div>
-            <label id="labelEventOccasion" class="text-xs font-black text-slate-800 block mb-1.5">
-              कार्यक्रम आयोजन (Event Occasion) *
-            </label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label id="labelEventOccasion" class="text-xs font-black text-slate-800">
+                कार्यक्रम आयोजन (Event Occasion) *
+              </label>
+              <button type="button" onclick="showScreen('hall-admin'); openAdminSubView('occasions');" class="text-[10px] text-amber-700 font-bold hover:underline">
+                ⚙️ आयोजन प्रबंध
+              </button>
+            </div>
             <div class="grid grid-cols-2 gap-2" id="occasionChipsContainer">
-              <button type="button" data-occasion="विवाह समारोह" onclick="selectOccasion('विवाह समारोह')" class="occasion-chip py-2 px-2.5 rounded-xl border text-xs font-bold text-left flex items-center gap-1.5 transition-all bg-amber-100 border-amber-500 text-amber-950 font-black ring-1 ring-amber-400">
-                <span>💍</span> <span class="truncate">विवाह समारोह</span>
-              </button>
-              <button type="button" data-occasion="तिलक / सगाई" onclick="selectOccasion('तिलक / सगाई')" class="occasion-chip py-2 px-2.5 rounded-xl border text-xs font-bold text-left flex items-center gap-1.5 transition-all bg-white border-slate-300 text-slate-700 hover:bg-slate-50">
-                <span>🪔</span> <span class="truncate">तिलक / सगाई</span>
-              </button>
-              <button type="button" data-occasion="मांगलिक प्रीतिभोज" onclick="selectOccasion('मांगलिक प्रीतिभोज')" class="occasion-chip py-2 px-2.5 rounded-xl border text-xs font-bold text-left flex items-center gap-1.5 transition-all bg-white border-slate-300 text-slate-700 hover:bg-slate-50">
-                <span>🍽️</span> <span class="truncate">मांगलिक प्रीतिभोज</span>
-              </button>
-              <button type="button" data-occasion="जन्मदिन / वर्षगांठ" onclick="selectOccasion('जन्मदिन / वर्षगांठ')" class="occasion-chip py-2 px-2.5 rounded-xl border text-xs font-bold text-left flex items-center gap-1.5 transition-all bg-white border-slate-300 text-slate-700 hover:bg-slate-50">
-                <span>🎂</span> <span class="truncate">जन्मदिन / वर्षगांठ</span>
-              </button>
-              <button type="button" data-occasion="अन्य पारिवारिक उत्सव" onclick="selectOccasion('अन्य पारिवारिक उत्सव')" class="occasion-chip col-span-2 py-2 px-2.5 rounded-xl border text-xs font-bold text-left flex items-center gap-1.5 transition-all bg-white border-slate-300 text-slate-700 hover:bg-slate-50">
-                <span>🎉</span> <span class="truncate">अन्य पारिवारिक उत्सव</span>
-              </button>
+              <!-- Dynamically populated from hallConfig.occasions -->
             </div>
             <input type="hidden" id="hallEventOccasion" value="विवाह समारोह">
           </div>
@@ -447,43 +442,21 @@
               <span>इस तारीख पर कोई स्लॉट उपलब्ध नहीं है!</span>
             </div>
             <p id="slotConflictDesc" class="text-[11px] text-red-800 font-semibold leading-relaxed">
-              दिन व रात दोनों स्लॉट पहले से बुक हैं। कृपया कैलेंडर से कोई अन्य तारीख चुनें।
+              इस तारीख पर सभी मान्य समय स्लॉट पहले से बुक हैं। कृपया कैलेंडर से कोई अन्य तारीख चुनें।
             </p>
           </div>
 
-          <!-- CUSTOM SLOT SELECTOR CARDS (NO NATIVE SPINNER DROPDOWN) -->
+          <!-- CUSTOM SLOT SELECTOR CARDS (DYNAMIC SLOTS) -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
               <label id="labelSlotType" class="text-xs font-black text-slate-800">
-                कार्यक्रम समय स्लॉट (Timing Slot - केवल 2 मान्य स्लॉट) *
+                कार्यक्रम समय स्लॉट (Timing Slot) *
               </label>
-              <span id="slotAvailabilitySummary" class="text-[11px] font-bold text-emerald-700">🟢 2 स्लॉट उपलब्ध</span>
+              <span id="slotAvailabilitySummary" class="text-[11px] font-bold text-emerald-700">दिनांक चुनें</span>
             </div>
 
             <div class="grid grid-cols-1 gap-2" id="slotSelectorCards">
-              <!-- NIGHT SLOT CARD -->
-              <button type="button" id="slotCardNight" onclick="selectSlotType('night_wedding')" class="slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-amber-50 border-amber-500 ring-2 ring-amber-400">
-                <span class="text-2xl shrink-0 mt-0.5">🌙</span>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-black text-slate-950">रात का कार्यक्रम</span>
-                    <span id="slotBadgeNight" class="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300">उपलब्ध</span>
-                  </div>
-                  <p class="text-[11px] text-slate-600 font-semibold mt-0.5">शाम 04:00 से अगली सुबह 08:00 तक</p>
-                </div>
-              </button>
-
-              <!-- DAY SLOT CARD -->
-              <button type="button" id="slotCardDay" onclick="selectSlotType('day_event')" class="slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-white border-slate-300 hover:bg-slate-50">
-                <span class="text-2xl shrink-0 mt-0.5">☀️</span>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-black text-slate-950">दिन का कार्यक्रम</span>
-                    <span id="slotBadgeDay" class="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300">उपलब्ध</span>
-                  </div>
-                  <p class="text-[11px] text-slate-600 font-semibold mt-0.5">सुबह 10:00 से शाम 04:00 तक</p>
-                </div>
-              </button>
+              <!-- Dynamically populated from hallConfig.timingSlots -->
             </div>
             <input type="hidden" id="hallSlotType" value="night_wedding">
           </div>
@@ -1015,6 +988,34 @@
               <span class="text-xs font-black text-slate-400">➔</span>
             </button>
 
+            <!-- 4. कार्यक्रम आयोजन प्रबंधन -->
+            <button type="button" onclick="openAdminSubView('occasions')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-800 flex items-center justify-center shrink-0 text-xl">
+                  💍
+                </div>
+                <div>
+                  <h4 class="text-xs font-black text-slate-900">कार्यक्रम आयोजन प्रबंधन (Event Occasions)</h4>
+                  <p class="text-[10px] text-slate-500 font-semibold">विवाह, तिलक, प्रीतिभोज, जन्मदिन आदि का जोड़ना, हटाना व संपादन</p>
+                </div>
+              </div>
+              <span class="text-xs font-black text-slate-400">➔</span>
+            </button>
+
+            <!-- 5. कार्यक्रम समय स्लॉट प्रबंधन -->
+            <button type="button" onclick="openAdminSubView('slots')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center shrink-0 text-xl">
+                  ⏰
+                </div>
+                <div>
+                  <h4 class="text-xs font-black text-slate-900">कार्यक्रम समय स्लॉट प्रबंधन (Timing Slots)</h4>
+                  <p class="text-[10px] text-slate-500 font-semibold">रात का कार्यक्रम, दिन का कार्यक्रम, समय सीमा व नए स्लॉट का प्रबंधन</p>
+                </div>
+              </div>
+              <span class="text-xs font-black text-slate-400">➔</span>
+            </button>
+
             <!-- 4. नोटिफिकेशन नियंत्रण -->
             <button type="button" onclick="openAdminSubView('notifs')" class="w-full p-3.5 bg-white hover:bg-amber-50/50 border border-slate-200 hover:border-amber-400 rounded-2xl flex items-center justify-between text-left shadow-2xs btn-tactile transition-all">
               <div class="flex items-center gap-3">
@@ -1215,6 +1216,58 @@
               </button>
             </div>
             <div id="adminTermsList" class="space-y-2">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SUB-VIEW: EVENT OCCASIONS (कार्यक्रम आयोजन प्रबंधन)           -->
+        <!-- ============================================================== -->
+        <div id="adminSubView-occasions" class="admin-subview hidden space-y-3">
+          <!-- Fixed Sticky Top Header -->
+          <div class="sticky top-0 z-30 bg-white/95 backdrop-blur-md py-2 px-3 rounded-xl border border-slate-300 shadow-xs flex items-center justify-between gap-2">
+            <button type="button" onclick="openAdminSubView('hub')" class="text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-lg btn-tactile flex items-center gap-1 shrink-0">
+              ← एडमिन हब
+            </button>
+            <span class="text-xs sm:text-sm font-black text-slate-900 truncate flex items-center gap-1.5"><span class="text-base">💍</span><span>कार्यक्रम आयोजन प्रबंधन</span></span>
+            <button type="button" onclick="openAddOccasionModal()" class="text-xs font-black text-white bg-amber-600 hover:bg-amber-700 border border-amber-600 px-3 py-1.5 rounded-lg shadow-2xs btn-tactile shrink-0">
+              ➕ नया आयोजन
+            </button>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-3 space-y-2.5 shadow-xs">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+              <h4 class="text-xs font-black text-slate-800">सक्रिय आयोजन सूची (Booking Form Chips)</h4>
+              <span class="text-[10px] text-slate-500 font-bold">टॉगल करें या नया जोड़ें</span>
+            </div>
+            <div id="adminOccasionsList" class="space-y-2">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SUB-VIEW: TIMING SLOTS (कार्यक्रम समय स्लॉट प्रबंधन)         -->
+        <!-- ============================================================== -->
+        <div id="adminSubView-slots" class="admin-subview hidden space-y-3">
+          <!-- Fixed Sticky Top Header -->
+          <div class="sticky top-0 z-30 bg-white/95 backdrop-blur-md py-2 px-3 rounded-xl border border-slate-300 shadow-xs flex items-center justify-between gap-2">
+            <button type="button" onclick="openAdminSubView('hub')" class="text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-lg btn-tactile flex items-center gap-1 shrink-0">
+              ← एडमिन हब
+            </button>
+            <span class="text-xs sm:text-sm font-black text-slate-900 truncate flex items-center gap-1.5"><span class="text-base">⏰</span><span>समय स्लॉट प्रबंधन</span></span>
+            <button type="button" onclick="openAddSlotModal()" class="text-xs font-black text-white bg-amber-600 hover:bg-amber-700 border border-amber-600 px-3 py-1.5 rounded-lg shadow-2xs btn-tactile shrink-0">
+              ➕ नया स्लॉट
+            </button>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-3 space-y-2.5 shadow-xs">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+              <h4 class="text-xs font-black text-slate-800">सक्रिय समय स्लॉट सूची</h4>
+              <span class="text-[10px] text-slate-500 font-bold">नाम, समय व विवरण</span>
+            </div>
+            <div id="adminSlotsList" class="space-y-2">
               <!-- Dynamically populated -->
             </div>
           </div>
@@ -2034,7 +2087,7 @@
     </div>
 
     <!-- UNIVERSAL CUSTOM APP CONFIRMATION MODAL -->
-    <div id="genericConfirmModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeGenericConfirmModal(false)">
+    <div id="genericConfirmModal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeGenericConfirmModal(false)">
       <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-3.5 shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
         <div id="genericConfirmIconContainer" class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mx-auto shadow-inner">
           <span id="genericConfirmIcon">⚠️</span>
@@ -2166,6 +2219,116 @@
             <button type="submit" class="py-2.5 px-3 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-xs btn-tactile flex items-center justify-center gap-1.5">
               <span>💾</span>
               <span>खाता जोड़ें</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ADD / EDIT OCCASION MODAL -->
+    <div id="modalAddEditOccasion" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3" onclick="closeAddEditOccasionModal()">
+      <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-3.5 shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl" id="modalOccasionHeaderIcon">💍</span>
+            <div>
+              <h4 class="text-sm font-black text-slate-900" id="modalOccasionTitle">नया कार्यक्रम आयोजन जोड़ें</h4>
+              <p class="text-[10px] text-slate-500 font-bold">बुकिंग फॉर्म में चयन हेतु उपलब्ध होगा</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeAddEditOccasionModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center hover:bg-slate-200 btn-tactile">✕</button>
+        </div>
+
+        <form onsubmit="event.preventDefault(); saveOccasionForm();" class="space-y-3">
+          <input type="hidden" id="editOccasionId" value="">
+          <div>
+            <label class="text-xs font-black text-slate-800 block mb-1">आयोजन का नाम (Occasion Name) *</label>
+            <input type="text" id="inputOccasionName" required placeholder="जैसे: विवाह समारोह, मुंडन, आदि" class="w-full text-sm font-bold p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white text-slate-900">
+          </div>
+          <div>
+            <label class="text-xs font-black text-slate-800 block mb-1">आइकन इमोजी (Icon / Emoji) *</label>
+            <div class="flex items-center gap-2">
+              <input type="text" id="inputOccasionIcon" required value="💍" class="w-20 text-center text-lg font-bold p-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white text-slate-900">
+              <div class="flex items-center gap-1.5 overflow-x-auto py-1">
+                <button type="button" onclick="document.getElementById('inputOccasionIcon').value='💍'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">💍</button>
+                <button type="button" onclick="document.getElementById('inputOccasionIcon').value='🌸'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">🌸</button>
+                <button type="button" onclick="document.getElementById('inputOccasionIcon').value='🎉'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">🎉</button>
+                <button type="button" onclick="document.getElementById('inputOccasionIcon').value='🎂'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">🎂</button>
+                <button type="button" onclick="document.getElementById('inputOccasionIcon').value='👶'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">👶</button>
+                <button type="button" onclick="document.getElementById('inputOccasionIcon').value='🎙️'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">🎙️</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            <button type="button" onclick="closeAddEditOccasionModal()" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl btn-tactile">
+              रद्द करें
+            </button>
+            <button type="submit" class="py-2.5 px-3 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-xs btn-tactile">
+              सेव करें
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ADD / EDIT TIMING SLOT MODAL -->
+    <div id="modalAddEditSlot" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3" onclick="closeAddEditSlotModal()">
+      <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-3.5 shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl" id="modalSlotHeaderIcon">⏰</span>
+            <div>
+              <h4 class="text-sm font-black text-slate-900" id="modalSlotTitle">नया समय स्लॉट जोड़ें</h4>
+              <p class="text-[10px] text-slate-500 font-bold">समय सीमा व विवरण सेट करें</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeAddEditSlotModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center hover:bg-slate-200 btn-tactile">✕</button>
+        </div>
+
+        <form onsubmit="event.preventDefault(); saveSlotForm();" class="space-y-3">
+          <input type="hidden" id="editSlotId" value="">
+          <div>
+            <label class="text-xs font-black text-slate-800 block mb-1">स्लॉट का नाम (Slot Name) *</label>
+            <input type="text" id="inputSlotName" required placeholder="जैसे: रात का कार्यक्रम / दिन का कार्यक्रम" class="w-full text-sm font-bold p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white text-slate-900">
+          </div>
+          <div>
+            <label class="text-xs font-black text-slate-800 block mb-1">आइकन इमोजी (Icon / Emoji) *</label>
+            <div class="flex items-center gap-2">
+              <input type="text" id="inputSlotIcon" required value="🌙" class="w-20 text-center text-lg font-bold p-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white text-slate-900">
+              <div class="flex items-center gap-1.5 overflow-x-auto py-1">
+                <button type="button" onclick="document.getElementById('inputSlotIcon').value='🌙'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">🌙</button>
+                <button type="button" onclick="document.getElementById('inputSlotIcon').value='☀️'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">☀️</button>
+                <button type="button" onclick="document.getElementById('inputSlotIcon').value='⭐'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">⭐</button>
+                <button type="button" onclick="document.getElementById('inputSlotIcon').value='🕒'" class="text-lg p-1.5 bg-slate-100 hover:bg-amber-100 rounded-lg">🕒</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-black text-slate-800 block mb-1">समय विवरण (Timing Description) *</label>
+            <input type="text" id="inputSlotTimeDesc" required placeholder="जैसे: शाम 04:00 से अगली सुबह 08:00 तक" class="w-full text-sm font-bold p-2.5 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white text-slate-900">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[11px] font-bold text-slate-700 block mb-1">शुरुआती समय</label>
+              <input type="text" id="inputSlotStartTime" placeholder="16:00" value="16:00" class="w-full text-xs font-bold p-2 bg-slate-50 border border-slate-300 rounded-xl">
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-slate-700 block mb-1">समाप्ति समय</label>
+              <input type="text" id="inputSlotEndTime" placeholder="08:00" value="08:00" class="w-full text-xs font-bold p-2 bg-slate-50 border border-slate-300 rounded-xl">
+            </div>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <input type="checkbox" id="inputSlotNextDay" class="w-4 h-4 text-amber-600 rounded">
+            <label for="inputSlotNextDay" class="text-xs font-bold text-slate-800">अगले दिन समाप्त (Next Day Ending)</label>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            <button type="button" onclick="closeAddEditSlotModal()" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl btn-tactile">
+              रद्द करें
+            </button>
+            <button type="submit" class="py-2.5 px-3 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-xs btn-tactile">
+              सेव करें
             </button>
           </div>
         </form>
@@ -2387,6 +2550,36 @@
         "बुकिंग कैंसिल (Cancel) होने पर एडवांस राशि वापस नहीं होगी।",
         "कार्यक्रम समाप्त होने पर पूरे बकाया (Balance) का तुरंत भुगतान करना ज़रूरी है।",
         "कानूनी विवाद क्षेत्र: बस्ती कोर्ट (उ.प्र.)"
+      ],
+      occasions: [
+        { id: "occ_1", name: "विवाह समारोह", icon: "💍", enabled: true },
+        { id: "occ_2", name: "तिलक / सगाई", icon: "🌸", enabled: true },
+        { id: "occ_3", name: "शुभ विवाह एवं प्रीतिभोज", icon: "🎉", enabled: true },
+        { id: "occ_4", name: "जन्मदिन / वर्षगांठ", icon: "🎂", enabled: true },
+        { id: "occ_5", name: "अन्नप्राशन / मुंडन", icon: "👶", enabled: true },
+        { id: "occ_6", name: "गोष्ठी / सभा / सेमिनार", icon: "🎙️", enabled: true }
+      ],
+      timingSlots: [
+        {
+          id: "night_wedding",
+          name: "रात का कार्यक्रम",
+          icon: "🌙",
+          timeDesc: "शाम 04:00 से अगली सुबह 08:00 तक",
+          startTime: "16:00",
+          endTime: "08:00",
+          nextDay: true,
+          enabled: true
+        },
+        {
+          id: "day_event",
+          name: "दिन का कार्यक्रम",
+          icon: "☀️",
+          timeDesc: "सुबह 10:00 से शाम 03:00 तक",
+          startTime: "10:00",
+          endTime: "15:00",
+          nextDay: false,
+          enabled: true
+        }
       ]
     };
 
@@ -2401,11 +2594,16 @@
         hallConfig = { ...DEFAULT_HALL_CONFIG, ...parsed };
       }
     } catch(e) {}
-    // Ensure official details are updated to user specifications
     hallConfig.name = "वर्मा मैरिज हॉल";
     hallConfig.address = "ग्राम असनहरा, निकट अंकित धर्मकांटा, जिला बस्ती, उत्तर प्रदेश - 272194";
     hallConfig.phone1 = "9918802425";
     hallConfig.phone2 = "9936435350";
+    if (!hallConfig.occasions || !Array.isArray(hallConfig.occasions) || hallConfig.occasions.length === 0) {
+      hallConfig.occasions = [...DEFAULT_HALL_CONFIG.occasions];
+    }
+    if (!hallConfig.timingSlots || !Array.isArray(hallConfig.timingSlots) || hallConfig.timingSlots.length === 0) {
+      hallConfig.timingSlots = [...DEFAULT_HALL_CONFIG.timingSlots];
+    }
     localStorage.setItem('vmh_config', JSON.stringify(hallConfig));
 
     // Clear legacy test bookings to maintain a 100% clean blank database
@@ -2417,7 +2615,7 @@
         if (Array.isArray(parsedBk)) {
           realMarriageBookings = parsedBk.filter(b => {
             const p = (b.partyName || '').toLowerCase().trim();
-            return p !== 'fdsfds' && p !== 'demo' && !b.id.startsWith('DEMO') && b.id !== 'VMH-2026-001';
+            return p !== 'fdsfds' && p !== 'demo' && !b.id.startsWith('DEMO');
           });
         }
       }
@@ -2647,6 +2845,7 @@
     }
 
     async function logoutCurrentUser() {
+      closeUserProfileModal();
       const ok = await showGenericConfirm({
         title: "लॉगआउट कन्फर्म करें",
         message: "क्या आप वाकई इस डिवाइस से लॉगआउट करना चाहते हैं?",
@@ -2657,8 +2856,8 @@
       });
       if (!ok) return;
       setCurrentUser(null);
-      closeUserProfileModal();
       showToast("सफलतापूर्वक लॉगआउट किया गया।");
+      showScreen('login');
     }
 
     function openUserProfileModal() {
@@ -2938,17 +3137,27 @@
     }
 
     // -------------------------------------------------------------
-    // ADMIN HUB & SPOKE VIEW SWITCHER
+    // ADMIN HUB & SPOKE VIEW SWITCHER (WITH SCROLL RESTORATION)
     // -------------------------------------------------------------
+    let adminHubScrollTop = 0;
     function openAdminSubView(viewId) {
       const hub = document.getElementById('adminHubView');
       const allSubviews = document.querySelectorAll('.admin-subview');
+      const mainScroll = document.getElementById('appMainContent');
 
       if (viewId === 'hub') {
         updateAdminMenuVisibility();
         if (hub) hub.classList.remove('hidden');
         allSubviews.forEach(v => v.classList.add('hidden'));
+        if (mainScroll) {
+          requestAnimationFrame(() => {
+            mainScroll.scrollTop = adminHubScrollTop;
+          });
+        }
       } else {
+        if (mainScroll && hub && !hub.classList.contains('hidden')) {
+          adminHubScrollTop = mainScroll.scrollTop;
+        }
         // Security check: ONLY master owner ('वर्मा मैरिज हॉल') can access 'users' and 'ota' subviews!
         if (viewId === 'users' || viewId === 'ota') {
           const cur = getCurrentUser();
@@ -2975,6 +3184,12 @@
             if (document.getElementById('cfgHallPhone2')) document.getElementById('cfgHallPhone2').value = hallConfig.phone2;
             if (document.getElementById('cfgHallUpiId')) document.getElementById('cfgHallUpiId').value = hallConfig.upiId || '';
           }
+          if (viewId === 'occasions') {
+            renderAdminOccasionsList();
+          }
+          if (viewId === 'slots') {
+            renderAdminSlotsList();
+          }
           if (viewId === 'amenities') {
             renderAdminAmenitiesList();
             renderAdminUtensilsList();
@@ -2986,10 +3201,8 @@
             if (typeof loadNotifPrefsUI === 'function') loadNotifPrefsUI();
           }
         }
+        if (mainScroll) mainScroll.scrollTop = 0;
       }
-
-      const mainScroll = document.getElementById('appMainContent');
-      if (mainScroll) mainScroll.scrollTop = 0;
     }
 
     // -------------------------------------------------------------
@@ -3009,6 +3222,9 @@
         currentCalendarMonth = now.getMonth();
         
         getOperatorsList();
+        try { initFirebaseCloud(); } catch(e) { console.error("initFirebaseCloud error:", e); }
+        try { initOtaSyncListener(); } catch(e) { console.error("initOtaSyncListener error:", e); }
+
         const curUser = getCurrentUser();
         if (!curUser) {
           updateAuthUI();
@@ -3024,9 +3240,8 @@
         try { updateDashboardKPIs(); } catch(e) { console.error("updateDashboardKPIs error:", e); }
         try { renderUpcomingBookingsList(); } catch(e) { console.error("renderUpcomingBookingsList error:", e); }
         try { populateAdminSettings(); } catch(e) { console.error("populateAdminSettings error:", e); }
+        try { renderFormOccasionChips(); } catch(e) { console.error("renderFormOccasionChips error:", e); }
         try { updateSlotTimes(); } catch(e) { console.error("updateSlotTimes error:", e); }
-        try { initFirebaseCloud(); } catch(e) { console.error("initFirebaseCloud error:", e); }
-        try { initOtaSyncListener(); } catch(e) { console.error("initOtaSyncListener error:", e); }
 
         const mainScrollArea = document.getElementById('appMainContent');
         if (mainScrollArea) {
@@ -3659,8 +3874,32 @@
     }
 
     // -------------------------------------------------------------
-    // CUSTOM OCCASION SELECTOR (TOUCH CHIPS)
+    // CUSTOM OCCASION SELECTOR (TOUCH CHIPS - DYNAMIC CRUD)
     // -------------------------------------------------------------
+    function renderFormOccasionChips(selectedOccasion) {
+      const container = document.getElementById('occasionChipsContainer');
+      if (!container) return;
+      const list = ((hallConfig && hallConfig.occasions) || DEFAULT_HALL_CONFIG.occasions).filter(o => o.enabled !== false);
+      let cur = selectedOccasion || document.getElementById('hallEventOccasion')?.value || (list[0] ? list[0].name : "विवाह समारोह");
+      if (document.getElementById('hallEventOccasion')) {
+        document.getElementById('hallEventOccasion').value = cur;
+      }
+      let html = '';
+      list.forEach((item, idx) => {
+        const isMatch = item.name === cur;
+        const colSpan = (idx === list.length - 1 && list.length % 2 === 1) ? 'col-span-2' : '';
+        const cls = isMatch
+          ? 'bg-amber-100 border-amber-500 text-amber-950 font-black ring-1 ring-amber-400'
+          : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50 font-bold';
+        html += `
+          <button type="button" data-occasion="${escapeHtml(item.name)}" onclick="selectOccasion('${escapeHtml(item.name)}')" class="occasion-chip ${colSpan} py-2 px-2.5 rounded-xl border text-xs text-left flex items-center gap-1.5 transition-all ${cls}">
+            <span>${item.icon || '💍'}</span> <span class="truncate">${escapeHtml(item.name)}</span>
+          </button>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
     function selectOccasion(occ) {
       const hiddenInput = document.getElementById('hallEventOccasion');
       if (hiddenInput) hiddenInput.value = occ;
@@ -3678,80 +3917,93 @@
     }
 
     // -------------------------------------------------------------
-    // CUSTOM SLOT SELECTOR CARDS & CONFLICT PROTECTION
+    // CUSTOM SLOT SELECTOR CARDS & CONFLICT PROTECTION (DYNAMIC CRUD)
     // -------------------------------------------------------------
-    function selectSlotType(slot) {
+    function getActiveTimingSlots() {
+      const slots = (hallConfig && hallConfig.timingSlots) || DEFAULT_HALL_CONFIG.timingSlots;
+      return slots.filter(s => s.enabled !== false);
+    }
+
+    function selectSlotType(slotId) {
       const dateVal = document.getElementById('hallEventDate').value;
       const existingOnDate = realMarriageBookings.filter(b => b.eventDate === dateVal && (!editingBookingId || b.id !== editingBookingId));
-      if (existingOnDate.some(b => b.slotType === slot)) {
-        showToast("⚠️ यह स्लॉट पहले से बुक है! कृपया दूसरा स्लॉट चुनें।");
+      if (existingOnDate.some(b => b.slotType === slotId)) {
+        showToast("⚠️ यह स्लॉट इस तारीख के लिए पहले से बुक है!");
         return;
       }
-      document.getElementById('hallSlotType').value = slot;
-      renderSlotSelectorUI(slot, existingOnDate);
+      document.getElementById('hallSlotType').value = slotId;
+      renderSlotSelectorUI(slotId, existingOnDate);
       updateSlotTimes();
     }
 
     function renderSlotSelectorUI(selectedSlot, existingOnDate = []) {
-      const nightBooked = existingOnDate.some(b => b.slotType === 'night_wedding');
-      const dayBooked = existingOnDate.some(b => b.slotType === 'day_event');
-
-      const cardNight = document.getElementById('slotCardNight');
-      const cardDay = document.getElementById('slotCardDay');
-      const badgeNight = document.getElementById('slotBadgeNight');
-      const badgeDay = document.getElementById('slotBadgeDay');
-      if (!cardNight || !cardDay) return;
-
-      // Night card
-      if (nightBooked) {
-        cardNight.className = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-slate-100 border-slate-200 text-slate-400 opacity-60 cursor-not-allowed";
-        badgeNight.className = "text-[10px] font-black px-2 py-0.5 rounded-md bg-red-100 text-red-800 border border-red-300";
-        badgeNight.innerText = "🔴 पहले से बुक";
-      } else if (selectedSlot === 'night_wedding') {
-        cardNight.className = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-amber-50 border-amber-500 ring-2 ring-amber-400 text-amber-950 font-bold";
-        badgeNight.className = "text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300";
-        badgeNight.innerText = "🟢 चयनित (उपलब्ध)";
-      } else {
-        cardNight.className = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-white border-slate-300 hover:bg-slate-50 text-slate-900";
-        badgeNight.className = "text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200";
-        badgeNight.innerText = "उपलब्ध";
+      const container = document.getElementById('slotSelectorCards');
+      if (!container) return;
+      const activeSlots = getActiveTimingSlots();
+      if (activeSlots.length === 0) {
+        container.innerHTML = `<div class="p-3 text-xs text-slate-500 text-center">कोई समय स्लॉट सक्रिय नहीं है। एडमिन में स्लॉट जोड़ें।</div>`;
+        return;
       }
 
-      // Day card
-      if (dayBooked) {
-        cardDay.className = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-slate-100 border-slate-200 text-slate-400 opacity-60 cursor-not-allowed";
-        badgeDay.className = "text-[10px] font-black px-2 py-0.5 rounded-md bg-red-100 text-red-800 border border-red-300";
-        badgeDay.innerText = "🔴 पहले से बुक";
-      } else if (selectedSlot === 'day_event') {
-        cardDay.className = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-amber-50 border-amber-500 ring-2 ring-amber-400 text-amber-950 font-bold";
-        badgeDay.className = "text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300";
-        badgeDay.innerText = "🟢 चयनित (उपलब्ध)";
-      } else {
-        cardDay.className = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-white border-slate-300 hover:bg-slate-50 text-slate-900";
-        badgeDay.className = "text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200";
-        badgeDay.innerText = "उपलब्ध";
-      }
+      let html = '';
+      activeSlots.forEach(slot => {
+        const isBooked = existingOnDate.some(b => b.slotType === slot.id);
+        const isSelected = selectedSlot === slot.id;
+        let cardClass = "";
+        let badgeHtml = "";
+
+        if (isBooked) {
+          cardClass = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-slate-100 border-slate-200 text-slate-400 opacity-60 cursor-not-allowed";
+          badgeHtml = `<span class="text-[10px] font-black px-2 py-0.5 rounded-md bg-red-100 text-red-800 border border-red-300">🔴 पहले से बुक</span>`;
+        } else if (isSelected) {
+          cardClass = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-amber-50 border-amber-500 ring-2 ring-amber-400 text-amber-950 font-bold";
+          badgeHtml = `<span class="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300">🟢 चयनित (उपलब्ध)</span>`;
+        } else {
+          cardClass = "slot-type-card p-3 rounded-xl border-2 text-left flex items-start gap-2.5 transition-all bg-white border-slate-300 hover:bg-slate-50 text-slate-900";
+          badgeHtml = `<span class="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">उपलब्ध</span>`;
+        }
+
+        html += `
+          <button type="button" id="slotCard_${slot.id}" onclick="selectSlotType('${slot.id}')" class="${cardClass}">
+            <span class="text-2xl shrink-0 mt-0.5">${slot.icon || '⏰'}</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-slate-950">${escapeHtml(slot.name)}</span>
+                ${badgeHtml}
+              </div>
+              <p class="text-[11px] text-slate-600 font-semibold mt-0.5">${escapeHtml(slot.timeDesc || '')}</p>
+            </div>
+          </button>
+        `;
+      });
+      container.innerHTML = html;
     }
 
     function updateSlotConflictStatus(dateStr) {
       const noticeBox = document.getElementById('slotConflictNotice');
       const summary = document.getElementById('slotAvailabilitySummary');
       const btnSave = document.getElementById('btnTopSaveBooking');
+      const activeSlots = getActiveTimingSlots();
+      const totalSlots = activeSlots.length;
 
       if (!dateStr) {
         if (noticeBox) noticeBox.classList.add('hidden');
         if (summary) summary.innerText = "दिनांक चुनें";
+        renderSlotSelectorUI(document.getElementById('hallSlotType')?.value || (activeSlots[0] ? activeSlots[0].id : null), []);
         return;
       }
 
       const existingOnDate = realMarriageBookings.filter(b => b.eventDate === dateStr && (!editingBookingId || b.id !== editingBookingId));
+      const bookedSlotIds = new Set(existingOnDate.map(b => b.slotType));
+      const availableSlots = activeSlots.filter(s => !bookedSlotIds.has(s.id));
+      const availableCount = availableSlots.length;
 
-      if (existingOnDate.length >= 2) {
-        // BOTH BOOKED
+      if (availableCount === 0) {
+        // ALL SLOTS BOOKED FOR THIS DATE
         if (noticeBox) noticeBox.classList.remove('hidden');
         if (summary) {
           summary.className = "text-[11px] font-black text-red-600";
-          summary.innerText = "🔴 दोनों स्लॉट बुक (पूर्ण)";
+          summary.innerText = `🔴 सभी स्लॉट बुक (0/${totalSlots} उपलब्ध)`;
         }
         renderSlotSelectorUI(null, existingOnDate);
         if (btnSave) {
@@ -3759,34 +4011,38 @@
           btnSave.classList.add('opacity-50', 'cursor-not-allowed');
         }
         const computedText = document.getElementById('slotComputedText');
-        if (computedText) computedText.innerText = "⛔ इस तारीख पर दोनों स्लॉट बुक हैं! कृपया अन्य तारीख चुनें।";
-      } else if (existingOnDate.length === 1) {
-        // 1 BOOKED, 1 AVAILABLE
+        if (computedText) computedText.innerText = "⛔ इस तारीख पर सभी स्लॉट बुक हैं! कृपया अन्य तारीख चुनें।";
+      } else if (availableCount < totalSlots) {
+        // PARTIALLY BOOKED
         if (noticeBox) noticeBox.classList.add('hidden');
-        const booked = existingOnDate[0].slotType;
-        const availableSlot = booked === 'night_wedding' ? 'day_event' : 'night_wedding';
-        
         if (summary) {
           summary.className = "text-[11px] font-black text-amber-700";
-          summary.innerText = booked === 'night_wedding' ? "🟡 केवल दिन का स्लॉट खाली" : "🟡 केवल रात का स्लॉट खाली";
+          summary.innerText = `🟡 ${availableCount}/${totalSlots} स्लॉट उपलब्ध`;
         }
-
-        document.getElementById('hallSlotType').value = availableSlot;
-        renderSlotSelectorUI(availableSlot, existingOnDate);
+        let cur = document.getElementById('hallSlotType').value;
+        if (!availableSlots.some(s => s.id === cur)) {
+          cur = availableSlots[0].id;
+          document.getElementById('hallSlotType').value = cur;
+        }
+        renderSlotSelectorUI(cur, existingOnDate);
         if (btnSave) {
           btnSave.disabled = false;
           btnSave.classList.remove('opacity-50', 'cursor-not-allowed');
         }
         updateSlotTimes();
       } else {
-        // BOTH SLOTS AVAILABLE
+        // ALL SLOTS AVAILABLE
         if (noticeBox) noticeBox.classList.add('hidden');
         if (summary) {
           summary.className = "text-[11px] font-black text-emerald-700";
-          summary.innerText = "🟢 दोनों स्लॉट खाली (2/2 उपलब्ध)";
+          summary.innerText = `🟢 सभी स्लॉट खाली (${totalSlots}/${totalSlots} उपलब्ध)`;
         }
-        let currentSlot = document.getElementById('hallSlotType').value || 'night_wedding';
-        renderSlotSelectorUI(currentSlot, existingOnDate);
+        let cur = document.getElementById('hallSlotType').value;
+        if (!activeSlots.some(s => s.id === cur)) {
+          cur = activeSlots[0] ? activeSlots[0].id : '';
+          document.getElementById('hallSlotType').value = cur;
+        }
+        renderSlotSelectorUI(cur, existingOnDate);
         if (btnSave) {
           btnSave.disabled = false;
           btnSave.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -4120,17 +4376,23 @@
 
       const d = new Date(dateVal);
       const day = d.getDate();
-      const monthName = currentLang === 'hi' ? MONTH_NAMES_HI[d.getMonth()] : MONTH_NAMES_EN[d.getMonth()];
+      const monthName = (typeof MONTH_NAMES_HI !== 'undefined' && MONTH_NAMES_HI[d.getMonth()]) ? MONTH_NAMES_HI[d.getMonth()] : (MONTH_NAMES_EN[d.getMonth()] || '');
       const nextDay = day + 1;
 
-      if (slotVal === 'night_wedding') {
-        notice.innerText = currentLang === 'hi' 
-          ? `🌙 ${day} ${monthName} शाम 04:00 से ${nextDay} ${monthName} सुबह 08:00 बजे तक (विवाह / मंडप)`
-          : `🌙 ${day} ${monthName} 4:00 PM to ${nextDay} ${monthName} 8:00 AM (Wedding Mandap)`;
+      const activeSlots = (hallConfig && hallConfig.timingSlots) || DEFAULT_HALL_CONFIG.timingSlots;
+      const matched = activeSlots.find(s => s.id === slotVal);
+
+      if (matched) {
+        const icon = matched.icon || '⏰';
+        if (matched.nextDay) {
+          notice.innerText = `${icon} ${day} ${monthName} ${matched.timeDesc || ''} (अगली सुबह)`;
+        } else {
+          notice.innerText = `${icon} ${day} ${monthName} ${matched.timeDesc || ''}`;
+        }
+      } else if (slotVal === 'night_wedding') {
+        notice.innerText = `🌙 ${day} ${monthName} शाम 04:00 से ${nextDay} ${monthName} सुबह 08:00 बजे तक (विवाह / मंडप)`;
       } else {
-        notice.innerText = currentLang === 'hi'
-          ? `☀️ ${day} ${monthName} सुबह 10:00 से शाम 04:00 बजे तक (दिन का कार्यक्रम / सगाई / तिलक)`
-          : `☀️ ${day} ${monthName} 10:00 AM to 4:00 PM (Day Event / Tilak)`;
+        notice.innerText = `☀️ ${day} ${monthName} सुबह 10:00 से शाम 04:00 बजे तक (दिन का कार्यक्रम)`;
       }
     }
 
@@ -4519,7 +4781,12 @@
       const nextDay = day + 1;
       const timingEl = document.getElementById('slipSlotTiming');
       if (timingEl) {
-        if (b.slotType === 'night_wedding') {
+        const activeSlots = (hallConfig && hallConfig.timingSlots) || DEFAULT_HALL_CONFIG.timingSlots;
+        const matched = activeSlots.find(s => s.id === b.slotType);
+        if (matched) {
+          const icon = matched.icon || '⏰';
+          timingEl.innerText = `${icon} ${day} ${monthName} ${matched.timeDesc || ''}`;
+        } else if (b.slotType === 'night_wedding') {
           timingEl.innerText = `🌙 ${day} ${monthName} शाम 04:00 से ${nextDay} ${monthName} सुबह 08:00 तक`;
         } else {
           timingEl.innerText = `☀️ ${day} ${monthName} सुबह 10:00 से शाम 04:00 तक`;
@@ -4752,7 +5019,12 @@
         const mIdx = isNaN(d.getTime()) ? 0 : d.getMonth();
         const monthName = (typeof MONTH_NAMES_HI !== 'undefined' && MONTH_NAMES_HI[mIdx]) ? MONTH_NAMES_HI[mIdx] : 'माह';
         const nextDay = day + 1;
-        if (b.slotType === 'night_wedding') {
+        const activeSlots = (cfg && cfg.timingSlots) || DEFAULT_HALL_CONFIG.timingSlots;
+        const matched = activeSlots.find(s => s.id === b.slotType);
+        if (matched) {
+          const icon = matched.icon || '⏰';
+          timingSlotVal = `${icon} ${day} ${monthName} ${matched.timeDesc || ''}`;
+        } else if (b.slotType === 'night_wedding') {
           timingSlotVal = `🌙 ${day} ${monthName} शाम 04:00 से ${nextDay} ${monthName} सुबह 08:00 तक (रात का कार्यक्रम)`;
         } else {
           timingSlotVal = `☀️ ${day} ${monthName} सुबह 10:00 से शाम 04:00 तक (दिन का कार्यक्रम)`;
@@ -5879,6 +6151,273 @@
       renderAdminUtensilsList();
     }
 
+    // -------------------------------------------------------------
+    // EVENT OCCASIONS CRUD (कार्यक्रम आयोजन प्रबंधन)
+    // -------------------------------------------------------------
+    function renderAdminOccasionsList() {
+      const container = document.getElementById('adminOccasionsList');
+      if (!container) return;
+      if (!hallConfig.occasions || !Array.isArray(hallConfig.occasions)) {
+        hallConfig.occasions = [...DEFAULT_HALL_CONFIG.occasions];
+      }
+
+      container.innerHTML = hallConfig.occasions.map((occ, idx) => `
+        <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-2xl shrink-0">${occ.icon || '💍'}</span>
+            <div class="min-w-0">
+              <span class="text-xs font-black text-slate-900 block truncate">${escapeHtml(occ.name)}</span>
+              <span class="text-[10px] ${occ.enabled !== false ? 'text-emerald-700' : 'text-slate-400'} font-bold">
+                ${occ.enabled !== false ? '🟢 सक्रिय (Active)' : '⚪ निष्क्रिय (Disabled)'}
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <label class="relative inline-flex items-center cursor-pointer mr-1">
+              <input type="checkbox" onchange="toggleOccasionEnabled('${occ.id}', this.checked)" class="sr-only peer" ${occ.enabled !== false ? 'checked' : ''}>
+              <div class="w-8 h-4 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-amber-600"></div>
+            </label>
+            <button type="button" onclick="openEditOccasionModal('${occ.id}')" title="संपादित करें" class="text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 px-2 py-1 rounded-lg border border-amber-200 btn-tactile">
+              ✏️
+            </button>
+            <button type="button" onclick="confirmDeleteOccasion('${occ.id}')" title="हटाएं" class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-2 py-1 rounded-lg border border-red-200 btn-tactile">
+              🗑️
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleOccasionEnabled(id, enabled) {
+      const occ = hallConfig.occasions.find(o => o.id === id);
+      if (occ) {
+        occ.enabled = enabled;
+        saveHallConfig();
+        renderAdminOccasionsList();
+        renderFormOccasionChips();
+      }
+    }
+
+    function openAddOccasionModal() {
+      document.getElementById('editOccasionId').value = '';
+      document.getElementById('modalOccasionTitle').innerText = "नया कार्यक्रम आयोजन जोड़ें";
+      document.getElementById('inputOccasionName').value = '';
+      document.getElementById('inputOccasionIcon').value = '💍';
+      document.getElementById('modalAddEditOccasion')?.classList.remove('hidden');
+    }
+
+    function openEditOccasionModal(id) {
+      const occ = hallConfig.occasions.find(o => o.id === id);
+      if (!occ) return;
+      document.getElementById('editOccasionId').value = occ.id;
+      document.getElementById('modalOccasionTitle').innerText = "कार्यक्रम आयोजन संपादित करें";
+      document.getElementById('inputOccasionName').value = occ.name;
+      document.getElementById('inputOccasionIcon').value = occ.icon || '💍';
+      document.getElementById('modalAddEditOccasion')?.classList.remove('hidden');
+    }
+
+    function closeAddEditOccasionModal() {
+      document.getElementById('modalAddEditOccasion')?.classList.add('hidden');
+    }
+
+    function saveOccasionForm() {
+      const id = document.getElementById('editOccasionId').value;
+      const name = document.getElementById('inputOccasionName').value.trim();
+      const icon = document.getElementById('inputOccasionIcon').value.trim() || '💍';
+      if (!name) {
+        showToast("⚠️ कृपया आयोजन का नाम दर्ज करें!");
+        return;
+      }
+      if (!hallConfig.occasions) hallConfig.occasions = [...DEFAULT_HALL_CONFIG.occasions];
+
+      if (id) {
+        const occ = hallConfig.occasions.find(o => o.id === id);
+        if (occ) {
+          occ.name = name;
+          occ.icon = icon;
+        }
+      } else {
+        hallConfig.occasions.push({
+          id: 'occ_' + Date.now(),
+          name: name,
+          icon: icon,
+          enabled: true
+        });
+      }
+      saveHallConfig();
+      closeAddEditOccasionModal();
+      renderAdminOccasionsList();
+      renderFormOccasionChips();
+      showToast("✅ कार्यक्रम आयोजन सफलतापूर्वक सेव हुआ!");
+    }
+
+    async function confirmDeleteOccasion(id) {
+      const occ = hallConfig.occasions.find(o => o.id === id);
+      if (!occ) return;
+      const ok = await showGenericConfirm({
+        title: "आयोजन हटाएं",
+        message: `क्या आप वाकई '${occ.name}' को सूची से हटाना चाहते हैं?`,
+        icon: "🗑️",
+        isDanger: true,
+        confirmText: "हाँ, हटाएं",
+        cancelText: "रद्द करें"
+      });
+      if (!ok) return;
+      hallConfig.occasions = hallConfig.occasions.filter(o => o.id !== id);
+      saveHallConfig();
+      renderAdminOccasionsList();
+      renderFormOccasionChips();
+      showToast("🗑️ आयोजन सूची से हटा दिया गया!");
+    }
+
+    // -------------------------------------------------------------
+    // TIMING SLOTS CRUD (कार्यक्रम समय स्लॉट प्रबंधन)
+    // -------------------------------------------------------------
+    function renderAdminSlotsList() {
+      const container = document.getElementById('adminSlotsList');
+      if (!container) return;
+      if (!hallConfig.timingSlots || !Array.isArray(hallConfig.timingSlots)) {
+        hallConfig.timingSlots = [...DEFAULT_HALL_CONFIG.timingSlots];
+      }
+
+      container.innerHTML = hallConfig.timingSlots.map((slot, idx) => `
+        <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-2xl shrink-0">${slot.icon || '⏰'}</span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-black text-slate-900 truncate">${escapeHtml(slot.name)}</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${slot.nextDay ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-200 text-slate-700'}">
+                  ${slot.nextDay ? 'अगले दिन' : 'समान दिन'}
+                </span>
+              </div>
+              <p class="text-[10px] text-slate-600 font-semibold truncate">${escapeHtml(slot.timeDesc || '')}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <label class="relative inline-flex items-center cursor-pointer mr-1">
+              <input type="checkbox" onchange="toggleSlotEnabled('${slot.id}', this.checked)" class="sr-only peer" ${slot.enabled !== false ? 'checked' : ''}>
+              <div class="w-8 h-4 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-amber-600"></div>
+            </label>
+            <button type="button" onclick="openEditSlotModal('${slot.id}')" title="संपादित करें" class="text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 px-2 py-1 rounded-lg border border-amber-200 btn-tactile">
+              ✏️
+            </button>
+            <button type="button" onclick="confirmDeleteSlot('${slot.id}')" title="हटाएं" class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-2 py-1 rounded-lg border border-red-200 btn-tactile">
+              🗑️
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleSlotEnabled(id, enabled) {
+      const slot = hallConfig.timingSlots.find(s => s.id === id);
+      if (slot) {
+        slot.enabled = enabled;
+        saveHallConfig();
+        renderAdminSlotsList();
+        updateSlotConflictStatus(document.getElementById('hallEventDate')?.value);
+      }
+    }
+
+    function openAddSlotModal() {
+      document.getElementById('editSlotId').value = '';
+      document.getElementById('modalSlotTitle').innerText = "नया समय स्लॉट जोड़ें";
+      document.getElementById('inputSlotName').value = '';
+      document.getElementById('inputSlotIcon').value = '🌙';
+      document.getElementById('inputSlotTimeDesc').value = '';
+      document.getElementById('inputSlotStartTime').value = '16:00';
+      document.getElementById('inputSlotEndTime').value = '08:00';
+      document.getElementById('inputSlotNextDay').checked = true;
+      document.getElementById('modalAddEditSlot')?.classList.remove('hidden');
+    }
+
+    function openEditSlotModal(id) {
+      const slot = hallConfig.timingSlots.find(s => s.id === id);
+      if (!slot) return;
+      document.getElementById('editSlotId').value = slot.id;
+      document.getElementById('modalSlotTitle').innerText = "समय स्लॉट संपादित करें";
+      document.getElementById('inputSlotName').value = slot.name;
+      document.getElementById('inputSlotIcon').value = slot.icon || '⏰';
+      document.getElementById('inputSlotTimeDesc').value = slot.timeDesc || '';
+      document.getElementById('inputSlotStartTime').value = slot.startTime || '16:00';
+      document.getElementById('inputSlotEndTime').value = slot.endTime || '08:00';
+      document.getElementById('inputSlotNextDay').checked = !!slot.nextDay;
+      document.getElementById('modalAddEditSlot')?.classList.remove('hidden');
+    }
+
+    function closeAddEditSlotModal() {
+      document.getElementById('modalAddEditSlot')?.classList.add('hidden');
+    }
+
+    function saveSlotForm() {
+      const id = document.getElementById('editSlotId').value;
+      const name = document.getElementById('inputSlotName').value.trim();
+      const icon = document.getElementById('inputSlotIcon').value.trim() || '⏰';
+      const timeDesc = document.getElementById('inputSlotTimeDesc').value.trim();
+      const startTime = document.getElementById('inputSlotStartTime').value.trim() || '16:00';
+      const endTime = document.getElementById('inputSlotEndTime').value.trim() || '08:00';
+      const nextDay = document.getElementById('inputSlotNextDay').checked;
+
+      if (!name) {
+        showToast("⚠️ कृपया स्लॉट का नाम दर्ज करें!");
+        return;
+      }
+      if (!hallConfig.timingSlots) hallConfig.timingSlots = [...DEFAULT_HALL_CONFIG.timingSlots];
+
+      if (id) {
+        const slot = hallConfig.timingSlots.find(s => s.id === id);
+        if (slot) {
+          slot.name = name;
+          slot.icon = icon;
+          slot.timeDesc = timeDesc;
+          slot.startTime = startTime;
+          slot.endTime = endTime;
+          slot.nextDay = nextDay;
+        }
+      } else {
+        const newId = 'slot_' + Date.now();
+        hallConfig.timingSlots.push({
+          id: newId,
+          name: name,
+          icon: icon,
+          timeDesc: timeDesc,
+          startTime: startTime,
+          endTime: endTime,
+          nextDay: nextDay,
+          enabled: true
+        });
+      }
+      saveHallConfig();
+      closeAddEditSlotModal();
+      renderAdminSlotsList();
+      updateSlotConflictStatus(document.getElementById('hallEventDate')?.value);
+      showToast("✅ समय स्लॉट सफलतापूर्वक सेव हुआ!");
+    }
+
+    async function confirmDeleteSlot(id) {
+      if (hallConfig.timingSlots.filter(s => s.enabled !== false).length <= 1) {
+        showToast("⚠️ कम से कम 1 समय स्लॉट सक्रिय रहना अनिवार्य है!");
+        return;
+      }
+      const slot = hallConfig.timingSlots.find(s => s.id === id);
+      if (!slot) return;
+      const ok = await showGenericConfirm({
+        title: "समय स्लॉट हटाएं",
+        message: `क्या आप वाकई '${slot.name}' को हटाना चाहते हैं?`,
+        icon: "🗑️",
+        isDanger: true,
+        confirmText: "हाँ, हटाएं",
+        cancelText: "रद्द करें"
+      });
+      if (!ok) return;
+      hallConfig.timingSlots = hallConfig.timingSlots.filter(s => s.id !== id);
+      saveHallConfig();
+      renderAdminSlotsList();
+      updateSlotConflictStatus(document.getElementById('hallEventDate')?.value);
+      showToast("🗑️ समय स्लॉट हटा दिया गया!");
+    }
+
     function renderAdminTermsList() {
       const container = document.getElementById('adminTermsList');
       if (!container) return;
@@ -6488,12 +7027,12 @@
     let isInitialCloudSnapshot = true;
     let cloudPollTimer = null; // Stays null - ZERO POLLING!
 
-    // Persistent Device Identifier so this device does not alert on its own actions
+    // Hardware-bound unique Device Identifier: prevents self-alert suppression across different devices
     let myDeviceId = (window.AndroidApp && typeof window.AndroidApp.getNativeDeviceId === 'function') 
       ? window.AndroidApp.getNativeDeviceId() 
       : localStorage.getItem('vmh_device_id');
-    if (!myDeviceId) {
-      myDeviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+    if (!myDeviceId || myDeviceId.startsWith('dev_s0znijp') || myDeviceId === 'dev_null') {
+      myDeviceId = 'web_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
       localStorage.setItem('vmh_device_id', myDeviceId);
     } else {
       localStorage.setItem('vmh_device_id', myDeviceId);
@@ -6741,12 +7280,117 @@
       }
     }
 
-    function startCloudSyncListeners() {
-      // CLEAR ANY RESIDUAL POLLING TIMER - ZERO POLLING!
-      if (cloudPollTimer) {
-        clearInterval(cloudPollTimer);
-        cloudPollTimer = null;
+    // Fast REST Polling & Foreground Resume Engine
+    async function syncBookingsFromCloudFast() {
+      try {
+        const url = `${FIRESTORE_BASE_URL}/vmh_bookings?key=${FIREBASE_API_KEY}`;
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        const remoteDocs = data.documents || [];
+        const cloudBookings = [];
+        remoteDocs.forEach(doc => {
+          const f = doc.fields || {};
+          let item = null;
+          if (f.rawJson && f.rawJson.stringValue) {
+            try { item = JSON.parse(f.rawJson.stringValue); } catch(e) {}
+          }
+          if (!item) {
+            item = {
+              id: f.id?.stringValue || doc.name.split('/').pop(),
+              partyName: f.partyName?.stringValue || '',
+              partyPhone: f.partyPhone?.stringValue || '',
+              partyAddress: f.partyAddress?.stringValue || '',
+              eventDate: f.eventDate?.stringValue || '',
+              slotType: f.slotType?.stringValue || '',
+              occasion: f.occasion?.stringValue || '',
+              totalRent: Number(f.totalRent?.integerValue || 0),
+              advancePaid: Number(f.advancePaid?.integerValue || 0),
+              balanceDue: Number(f.balanceDue?.integerValue || 0),
+              advanceMode: f.advanceMode?.stringValue || 'cash',
+              amenities: f.amenities?.arrayValue?.values ? f.amenities.arrayValue.values.map(v => v.stringValue) : [],
+              utensils: f.utensils?.arrayValue?.values ? f.utensils.arrayValue.values.map(v => ({ name: v.mapValue?.fields?.name?.stringValue, qty: Number(v.mapValue?.fields?.qty?.integerValue || 0), unit: v.mapValue?.fields?.unit?.stringValue })) : [],
+              payments: f.payments?.arrayValue?.values ? f.payments.arrayValue.values.map(v => ({ id: v.mapValue?.fields?.id?.stringValue, date: v.mapValue?.fields?.date?.stringValue, amount: Number(v.mapValue?.fields?.amount?.integerValue || 0), mode: v.mapValue?.fields?.mode?.stringValue, note: v.mapValue?.fields?.note?.stringValue, receivedBy: v.mapValue?.fields?.receivedBy?.stringValue })) : [],
+              updatedAt: Number(f.updatedAt?.integerValue || 0),
+              updatedByDevice: f.updatedByDevice?.stringValue || ''
+            };
+          }
+          if (item && item.id) cloudBookings.push(item);
+        });
+
+        // Cloud is master truth: if cloud is empty or different, update local state
+        const sortedCloud = cloudBookings.sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
+        const cloudJson = JSON.stringify(sortedCloud);
+        const localJson = JSON.stringify(realMarriageBookings);
+
+        if (cloudJson !== localJson) {
+          console.log("Fast REST Sync detected cloud change! Cloud count:", sortedCloud.length);
+          realMarriageBookings = sortedCloud;
+          localStorage.setItem('vmh_bookings', cloudJson);
+          updateDashboardKPIs();
+          renderCalendar();
+          renderUpcomingBookingsList();
+          renderAllBookingsList();
+          if (currentActiveScreen === 'hall-slip' && selectedBookingId) {
+            loadBookingIntoSlip(selectedBookingId);
+          }
+        }
+        updateCloudSyncStatusBadge('online');
+      } catch (err) {
+        console.warn("syncBookingsFromCloudFast notice:", err);
       }
+    }
+
+    async function checkAlertsFromCloudFast() {
+      try {
+        const url = `${FIRESTORE_BASE_URL}/vmh_alerts/active_alert?key=${FIREBASE_API_KEY}`;
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        const f = data.fields || {};
+        const alertId = f.alertId?.stringValue || '';
+        const senderId = f.senderDeviceId?.stringValue || '';
+        const title = f.title?.stringValue || 'वर्मा मैरिज हॉल अलर्ट';
+        const message = f.message?.stringValue || '';
+        const category = f.category?.stringValue || 'newBooking';
+
+        if (alertId && alertId !== lastProcessedAlertId && senderId !== myDeviceId) {
+          console.log("Fast REST alert detected:", alertId, title);
+          lastProcessedAlertId = alertId;
+          localStorage.setItem('vmh_last_alert_id', alertId);
+          syncNativeState();
+          triggerMultiDeviceAlert(category, title, message, `🔔 ${title}`);
+        }
+      } catch(e) {}
+    }
+
+    let cloudHeartbeatTimer = null;
+    function startCloudHeartbeat() {
+      if (cloudHeartbeatTimer) clearInterval(cloudHeartbeatTimer);
+      syncBookingsFromCloudFast();
+      checkAlertsFromCloudFast();
+      cloudHeartbeatTimer = setInterval(() => {
+        if (!document.hidden) {
+          syncBookingsFromCloudFast();
+          checkAlertsFromCloudFast();
+        }
+      }, 10000);
+    }
+
+    // Auto-resync when device unlocks, app foregrounds, or tab focuses
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        syncBookingsFromCloudFast();
+        checkAlertsFromCloudFast();
+      }
+    });
+    window.addEventListener('focus', () => {
+      syncBookingsFromCloudFast();
+      checkAlertsFromCloudFast();
+    });
+
+    function startCloudSyncListeners() {
+      startCloudHeartbeat();
 
       if (!firestoreDb) {
         console.log("Running offline-first mode without Firestore SDK.");
@@ -7079,11 +7723,11 @@
           }
         }
 
-        // REST fallback if SDK not available or returned empty
+        // REST fallback if SDK not available
         if (remoteBookings.length === 0) {
           try {
             const url = `${FIRESTORE_BASE_URL}/vmh_bookings?key=${FIREBASE_API_KEY}`;
-            const res = await fetch(url);
+            const res = await fetch(url, { cache: 'no-store' });
             if (res.ok) {
               const data = await res.json();
               if (data && data.documents) {
@@ -7098,9 +7742,17 @@
                       id: fields.id?.stringValue || doc.name.split('/').pop(),
                       partyName: fields.partyName?.stringValue || '',
                       partyPhone: fields.partyPhone?.stringValue || '',
+                      partyAddress: fields.partyAddress?.stringValue || '',
                       eventDate: fields.eventDate?.stringValue || '',
                       slotType: fields.slotType?.stringValue || '',
                       occasion: fields.occasion?.stringValue || '',
+                      totalRent: Number(fields.totalRent?.integerValue || 0),
+                      advancePaid: Number(fields.advancePaid?.integerValue || 0),
+                      balanceDue: Number(fields.balanceDue?.integerValue || 0),
+                      advanceMode: fields.advanceMode?.stringValue || 'cash',
+                      amenities: fields.amenities?.arrayValue?.values ? fields.amenities.arrayValue.values.map(v => v.stringValue) : [],
+                      utensils: fields.utensils?.arrayValue?.values ? fields.utensils.arrayValue.values.map(v => ({ name: v.mapValue?.fields?.name?.stringValue, qty: Number(v.mapValue?.fields?.qty?.integerValue || 0), unit: v.mapValue?.fields?.unit?.stringValue })) : [],
+                      payments: fields.payments?.arrayValue?.values ? fields.payments.arrayValue.values.map(v => ({ id: v.mapValue?.fields?.id?.stringValue, date: v.mapValue?.fields?.date?.stringValue, amount: Number(v.mapValue?.fields?.amount?.integerValue || 0), mode: v.mapValue?.fields?.mode?.stringValue, note: v.mapValue?.fields?.note?.stringValue, receivedBy: v.mapValue?.fields?.receivedBy?.stringValue })) : [],
                       updatedAt: parseInt(fields.updatedAt?.integerValue || '0', 10),
                       updatedByDevice: fields.updatedByDevice?.stringValue || ''
                     };
@@ -7116,57 +7768,15 @@
           }
         }
 
-        // 2. SMART MERGE (Local & Remote) with Conflict Resolution
-        const localMap = new Map();
-        for (const b of realMarriageBookings) {
-          if (b && b.id) localMap.set(b.id, b);
-        }
-
-        const remoteMap = new Map();
-        for (const rb of remoteBookings) {
-          if (rb && rb.id) remoteMap.set(rb.id, rb);
-        }
-
-        const mergedMap = new Map();
-        const toPushToCloud = [];
-
-        // Examine remote bookings:
-        for (const [id, rBooking] of remoteMap.entries()) {
-          const lBooking = localMap.get(id);
-          if (!lBooking) {
-            // New booking from other device - incorporate it locally!
-            mergedMap.set(id, rBooking);
-          } else {
-            // Exists both locally and remotely -> newer timestamp wins!
-            const rTime = Number(rBooking.updatedAt || new Date(rBooking.createdAt || 0).getTime() || 0);
-            const lTime = Number(lBooking.updatedAt || new Date(lBooking.createdAt || 0).getTime() || 0);
-            if (rTime > lTime) {
-              mergedMap.set(id, rBooking);
-            } else if (lTime > rTime) {
-              mergedMap.set(id, lBooking);
-              toPushToCloud.push(lBooking);
-            } else {
-              mergedMap.set(id, lBooking);
-            }
-          }
-        }
-
-        // Examine local-only bookings:
-        for (const [id, lBooking] of localMap.entries()) {
-          if (!remoteMap.has(id)) {
-            // Created on this phone while offline -> keep and push to cloud!
-            mergedMap.set(id, lBooking);
-            toPushToCloud.push(lBooking);
-          }
-        }
-
-        // 3. Update local state and persist
-        realMarriageBookings = Array.from(mergedMap.values()).sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
+        // Cloud is master source of truth
+        realMarriageBookings = remoteBookings.sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
         saveRealBookingsToStorage();
-
-        // 4. Push local-only or local-newer bookings to cloud
-        for (const b of toPushToCloud) {
-          await syncBookingToCloud(b);
+        updateDashboardKPIs();
+        renderCalendar();
+        renderUpcomingBookingsList();
+        renderAllBookingsList();
+        if (currentActiveScreen === 'hall-slip' && selectedBookingId) {
+          loadBookingIntoSlip(selectedBookingId);
         }
 
         // 5. Also sync Hall Config and Operator Accounts (2-Way Pull & Merge!)

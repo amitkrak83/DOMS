@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDefaultTextEncodingName("UTF-8");
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowContentAccess(true);
+        webSettings.setAllowFileAccessFromFileURLs(true);
+        webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setUseWideViewPort(false);
         webSettings.setLoadWithOverviewMode(false);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
@@ -324,32 +326,72 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public String getNativeDeviceId() {
             try {
-                SharedPreferences prefs = mContext.getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE);
-                String id = prefs.getString("device_id", "");
-                if (id == null || id.isEmpty()) {
-                    id = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-                    if (id != null && !id.isEmpty()) {
-                        prefs.edit().putString("device_id", id).apply();
-                    }
+                String androidId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+                if (androidId != null && !androidId.isEmpty() && !"9774d56d682e549c".equals(androidId)) {
+                    return "android_" + androidId;
                 }
-                return id != null ? id : "";
+                SharedPreferences prefs = mContext.getSharedPreferences("VMH_DEVICE_SPECIFIC", Context.MODE_PRIVATE);
+                String id = prefs.getString("unique_device_uuid", "");
+                if (id == null || id.isEmpty()) {
+                    id = "dev_" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+                    prefs.edit().putString("unique_device_uuid", id).apply();
+                }
+                return id;
             } catch (Exception e) {
-                return "";
+                return "android_" + Math.abs(android.os.Build.FINGERPRINT.hashCode());
             }
         }
 
         @JavascriptInterface
         public void shareApk() {
             try {
+                File srcApk = new File(mContext.getApplicationInfo().sourceDir);
+                if (!srcApk.exists()) {
+                    Log.e(TAG, "Source APK not found: " + srcApk.getAbsolutePath());
+                    return;
+                }
+                File dstApk = new File(mContext.getCacheDir(), "VermaMarriageHall.apk");
+
+                // Copy APK if not existing or length differs
+                if (!dstApk.exists() || dstApk.length() != srcApk.length()) {
+                    java.io.InputStream in = new java.io.FileInputStream(srcApk);
+                    java.io.OutputStream out = new java.io.FileOutputStream(dstApk);
+                    byte[] buf = new byte[16384];
+                    int len;
+                    while ((len = in.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                    in.close();
+                    out.close();
+                }
+
+                Uri apkUri = androidx.core.content.FileProvider.getUriForFile(
+                        mContext,
+                        mContext.getPackageName() + ".fileprovider",
+                        dstApk
+                );
+
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
+                shareIntent.setType("application/vnd.android.package-archive");
+                shareIntent.putExtra(Intent.EXTRA_STREAM, apkUri);
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "वर्मा मैरिज हॉल - आधिकारिक डिजिटल ऐप");
                 shareIntent.putExtra(Intent.EXTRA_TEXT, "🏛️ वर्मा मैरिज हॉल (Verma Marriage Hall)\nडिजिटल बिलिंग, रसीद कट्टा एवं विवाह बुकिंग प्रबंधन ऐप।\nस्थान: ग्राम असनहरा, बस्ती (उ.प्र.)");
-                Intent chooser = Intent.createChooser(shareIntent, "वर्मा मैरिज हॉल ऐप शेयर करें");
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                Intent chooser = Intent.createChooser(shareIntent, "वर्मा मैरिज हॉल ऐप शेयर करें (APK File)");
                 chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                java.util.List<android.content.pm.ResolveInfo> resInfoList = mContext.getPackageManager()
+                        .queryIntentActivities(chooser, android.content.pm.PackageManager.MATCH_DEFAULT_ONLY);
+                for (android.content.pm.ResolveInfo resolveInfo : resInfoList) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    mContext.grantUriPermission(packageName, apkUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+
                 mContext.startActivity(chooser);
             } catch (Exception e) {
-                Log.e(TAG, "Error sharing app", e);
+                Log.e(TAG, "Error sharing APK file", e);
             }
         }
 
@@ -360,17 +402,8 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public void syncNativeDeviceId(String deviceId) {
-            try {
-                if (deviceId != null && !deviceId.isEmpty()) {
-                    mContext.getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE)
-                            .edit()
-                            .putString("device_id", deviceId)
-                            .apply();
-                    Log.d(TAG, "Native device_id synced: " + deviceId);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error syncing native device_id", e);
-            }
+            // Keep native device ID hardware-bound and unique per device
+            Log.d(TAG, "Native device_id requested by JS: " + deviceId);
         }
 
         @JavascriptInterface

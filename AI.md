@@ -1,14 +1,16 @@
-# 🏛️ वर्मा मैरिज हॉल (Verma Marriage Hall) - Complete Project Documentation (AI.md)
+# 🏛️ वर्मा मैरिज हॉल (Verma Marriage Hall) - Complete AI & Project Handover Documentation
 
 > **प्रोजेक्ट:** वर्मा मैरिज हॉल - डिजिटल प्रबंधन, रसीद बिलिंग एवं बुकिंग प्रणाली  
 > **स्थान:** ग्राम असनहरा, निकट अंकित धर्मकांटा, जिला बस्ती, उत्तर प्रदेश - 272194  
 > **संपर्क:** 9918802425, 9936435350  
-> **वर्तमान सॉफ्टवेयर वर्जन:** `v1.4` (Hard Refresh Status, Hardware Device-ID Self Alert Filter, Records 4-Pill & Month Filter, Calendar Red Past Slot, Direct In-App APK Share, Matra Clearance Borders)  
+> **वर्तमान सॉफ्टवेयर वर्जन:** `v1.1` (VersionCode 14) — Production Clean Release  
 > **टारगेट प्लेटफॉर्म:** Android 8.0+ (API 26+) & Modern Web Browsers  
+> **गिट रिपोजिटरी:** `https://github.com/amitkrak83/DOMS.git`  
+> **वर्तमान सक्रिय शाखा (Branch):** `verma-marriage-hall-v1.4`  
 
 ---
 
-## 🌟 1. प्रोजेक्ट विजन एवं उद्देश्य (Project Vision)
+## 🌟 1. प्रोजेक्ट अवलोकन एवं विजन (Project Vision)
 वर्मा मैरिज हॉल का उद्देश्य पारंपरिक कागज़ी बही-खातों और रसीद कट्टों को हटाकर एक आधुनिक, सरल, तेज़ और 100% विश्वसनीय डिजिटल समाधान तैयार करना है जिसे परिवार के वरिष्ठ सदस्य (पापा जी) भी बिना किसी तकनीकी उलझन के आसानी से चला सकें।
 - **शून्य डेटा हानि (Zero Data Loss):** इंटरनेट न होने (ऑफलाइन) पर भी हर बुकिंग सुरक्षित रहे।
 - **पारंपरिक रसीद (Authentic Slip):** भारतीय वैवाहिक रसीदों जैसी सुंदर, स्पष्ट और प्रामाणिक रसीद (श्री गणेशाय नमः, बर्तन व सामान सूची, सुविधाएं, नियम व शर्तें)।
@@ -17,155 +19,142 @@
 
 ---
 
-## 🏗️ 2. तकनीकी आर्किटेक्चर (Technical Architecture)
+## 🛠️ 2. एआई के लिए टूलकिट एवं पथ संदर्भ (AI Tooling & Exact Paths)
 
-```mermaid
-flowchart TD
-    subgraph Client ["एंड्रॉइड ऐप / मोबाइल क्लाइंट"]
-        UI["Tailwind CSS + Pure JS UI (index.html)"]
-        Native["Android Native WebView Wrapper (MainActivity.java)"]
-        LocalStore[("Local Device Storage (localStorage)")]
-        OTAFile[("OTA Local Bundle (ota_index.html)")]
-        BgService["Background Sync Service (NotificationSyncService.java)"]
-    end
+भविष्य में किसी भी एआई एजेंट या डेवलपर के लिए इस प्रोजेक्ट में कार्य करने हेतु आवश्यक टूल्स के सटीक पथ:
 
-    subgraph Cloud ["Google Firebase Cloud Platform"]
-        FirestoreDB[("Cloud Firestore Database")]
-        OTACloud[("vmh_system / ota_release")]
-        BackupCloud[("vmh_system / ota_backup")]
-        SettingsCloud[("vmh_settings / operators")]
-    end
+| टूल / घटक | सिस्टम में स्थित पथ (Exact System Path) |
+|---|---|
+| **Project Workspace** | `C:\Users\Sushil Kumar\.gemini\antigravity\scratch\karya-apk-project` |
+| **Git Binary** | `C:\Users\Sushil Kumar\.gemini\antigravity\scratch\android-tools\git\cmd\git.exe` |
+| **Java JDK 17** | `C:\Users\Sushil Kumar\.gemini\antigravity\scratch\android-tools\jdk\jdk-17.0.12+7` |
+| **Android SDK** | `C:\Users\Sushil Kumar\.gemini\antigravity\scratch\android-tools\sdk` |
+| **Build Tools (34.0.0)** | `C:\Users\Sushil Kumar\.gemini\antigravity\scratch\android-tools\sdk\build-tools\34.0.0` |
+| **Gradle 8.5 Binary** | `C:\Users\Sushil Kumar\.gemini\antigravity\scratch\android-tools\gradle-8.5\bin\gradle.bat` |
+| **Clean APK Build Script**| `C:\Users\Sushil Kumar\.gemini\antigravity\scratch\build_apk_clean.ps1` |
+| **OTA Publish Script** | `C:\Users\Sushil Kumar\.gemini\antigravity\scratch\publish_ota.ps1` |
+| **Live Local Test Server** | `http://localhost:8888/` (Port 8888 serving `app/src/main/assets/`) |
 
-    UI <--> LocalStore
-    UI <--> FirestoreDB
-    UI <--> SettingsCloud
-    Native --> OTAFile
-    Native --> UI
-    OTACloud --> UI
-    BgService <--> FirestoreDB
+---
+
+## 🏗️ 3. तकनीकी आर्किटेक्चर एवं सुरक्षा शुद्धिकरण (Architecture & Security Cleanup)
+
+### Play Protect "Harmful App" समस्या और उसका स्थायी समाधान:
+- **समस्या का कारण:**
+  1. `app/src/main/assets/` के अंदर 74 MB की पुरानी APK फाइल गलती से पैक हो गई थी और `MainActivity.java` में `getApplicationInfo().sourceDir` से APK कॉपी करने का लॉजिक था। Google Play Protect इसे **PHA: Dropper / Hostile Downloader** के रूप में फ्लैग कर देता था।
+  2. `AndroidManifest.xml` में `WAKE_LOCK`, `RECEIVE_BOOT_COMPLETED`, और `FOREGROUND_SERVICE_DATA_SYNC` जैसी बैकग्राउंड परमिशन्स थीं।
+  3. `setAllowUniversalAccessFromFileURLs(true)` वेबव्यू फ्लैग।
+- **किए गए स्थायी सुधार:**
+  1. `assets/` से सभी अननेसेसरी फाइल्स, टेस्ट HTMLs, स्क्रिप्ट्स और एम्बेडेड APK हटा दिए गए। ऐप का साइज़ **74 MB से घटकर मात्र 6.19 MB** हो गया।
+  2. `NotificationSyncService.java` और `BootReceiver.java` को पूरी तरह हटा दिया गया।
+  3. `AndroidManifest.xml` को न्यूनतम एवं पूर्ण सुरक्षित 4 परमिशन्स पर सीमित किया गया:
+     - `android.permission.INTERNET`
+     - `android.permission.ACCESS_NETWORK_STATE`
+     - `android.permission.VIBRATE`
+     - `android.permission.POST_NOTIFICATIONS`
+  4. अब Google Play Protect इसे 100% सुरक्षित स्कैन करता है।
+
+---
+
+## 🎨 4. रसीद एवं बिलिंग डिज़ाइन नियम (Receipt Layout & Spacing Rules)
+
+### बिल शेयरिंग और एक्सपोर्ट के महत्वपूर्ण नियम:
+1. **मात्रा कटिंग रोकथाम (Matra Clearance):**
+   - देवनागरी (हिंदी) लिपि में नीचे की मात्राएं (`ु`, `ू`, `ृ`, `्`, `्रो`) बेसलाइन से नीचे तक लटकती हैं।
+   - सभी हिंदी टेक्स्ट की `line-height: 1.5` रखी गई है और नीचे `3px–4px` बॉटम पैडिंग दी गई है।
+   - किसी भी डिवाइडर लाइन (`border-t`) का मार्जिन कम से कम `10px–14px` होना चाहिए। कभी भी `3px` या `7px` जैसा तंग मार्जिन न रखें।
+2. **html2canvas मोबाइल व्यूपोर्ट नियम:**
+   - मोबाइल फोन पर स्क्रीन चौड़ाई केवल 390px होती है, जबकि रसीद 580px की होती है।
+   - इमेज एक्सपोर्ट करते समय `html2canvas` को हमेशा `windowWidth: 620px` और `width: 580px` पास किया जाता है, ताकि मोबाइल पर भी डेस्कटॉप जैसी परफेक्ट रेंडरिंग मिले।
+   - स्टेजिंग रैपर को `position: absolute; left: 0px; top: 0px; opacity: 0; pointer-events: none;` पर रखा जाता है।
+3. **हेडिंग्स पर पैडिंग बॉटम:**
+   - 'उपलब्ध कराई गई सुविधाएं' और 'शामिल बर्तन व सामान सूची' के `<h3>` में `pb-2`, `mb-2`, और `line-height: 1.5` अनिवार्य है।
+
+---
+
+## 👥 5. ऑपरेटर खाते एवं प्रमाणीकरण आर्किटेक्चर (Multi-User & Auth System)
+
+### खाते एवं सुरक्षा नियम:
+1. **बाइनरी में केवल 1 मुख्य खाता:**
+   - कोड के `DEFAULT_OPERATORS` में केवल एकमात्र मुख्य मालिक खाता (`vermamarriagehall@gmail.com`) होना चाहिए।
+   - किसी भी ऑपरेटर (जैसे "पापा जी" या "चाचा जी") का खाता बाइनरी कोड में हार्डकोडेड **नहीं** होना चाहिए।
+2. **क्लाउड ऑथेंटिकेशन प्राथमिकता:**
+   - लॉगिन के समय `submitLogin()` पहले **Firebase Cloud (`vmh_settings/operators`)** से लेटेस्ट ऑपरेटर और बदले हुए पासवर्ड फेच करता है।
+   - यदि मुख्य खाते का पासवर्ड बदल दिया गया है, तो Clear Data करने पर भी पुराना डिफ़ॉल्ट पासवर्ड `verma@2026` काम **नहीं** करेगा; केवल नया बदला हुआ पासवर्ड ही काम करेगा।
+   - यदि किसी ऑपरेटर को हटाया गया है, तो Clear Data करने के बाद भी वह खाता दोबारा नहीं दिखेगा क्योंकि वह क्लाउड से हटाया जा चुका है।
+
+---
+
+## ☁️ 6. फायरबेस डेटाबेस संरचना (Firestore Cloud Collections)
+
+प्रोजेक्ट आईडी: `verma-marriage-hall` (API Key: `AIzaSyBBbUJ6DA0tRDALZC4Oqx_GX7F2R1K6qgc`)
+
+| कलेक्शन / पाथ | उद्देश्य एवं विवरण |
+|---|---|
+| `vmh_bookings/{bookingId}` | सभी वैवाहिक बुकिंग्स (पार्टी का नाम, तारीख, तय किराया, एडवांस, बर्तन, आदि)। |
+| `vmh_settings/operators` | अधिकृत ऑपरेटरों की सूची, भूमिकाएं और हैश्ड/सुरक्षित पासवर्ड। |
+| `vmh_settings/hall_config` | मैरिज हॉल की मुख्य प्रोफाइल (नाम, पता, फोन नंबर, UPI आईडी, कोटेशन)। |
+| `vmh_system/ota_release` | ओवर-द-एयर (OTA) रिलीज़ मेटाडेटा और HTML बंडल (`productionVersion`, `productionBundle`, `betaVersion`, `betaBundle`)। |
+| `vmh_alerts/active_alert` | मल्टी-डिवाइस रियल-टाइम अलर्ट्स (नए बुकिंग या पेमेंट की 2-डिवाइस घंटी)। |
+
+> [!IMPORTANT]
+> **डेटा सुरक्षा नियम:** `vmh_bookings` में मौजूद किसी भी बुकिंग डेटा को कभी भी डिलीट या ओवरराइट न करें।
+
+---
+
+## 🚀 7. सामान्य कमांड संदर्भ (Cheat Sheet for Future Agents)
+
+### क. नया स्वच्छ APK बिल्ड करना (Build Clean APK):
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\Users\Sushil Kumar\.gemini\antigravity\scratch\build_apk_clean.ps1"
+```
+यह स्क्रिप्ट:
+1. `app/src/main/assets/` को पूरी तरह चेक करती है ताकि कोई अतिरिक्त फाइल्स न रहें।
+2. Gradle 8.5 और JDK 17 के साथ `assembleDebug` रन करती है।
+3. तैयार APK (लगभग 6.19 MB) को `scratch` और `artifacts` में कॉपी करती है।
+
+### ख. फायरबेस पर OTA प्रोडक्शन रिलीज़ पब्लिश करना (Publish OTA to Production):
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\Users\Sushil Kumar\.gemini\antigravity\scratch\publish_ota.ps1" -Channel "production" -Version "1.1"
+```
+यह स्क्रिप्ट `index.html` को सीधे Firestore `vmh_system/ota_release` में अपडेट कर देती है। सभी इंस्टॉल किए गए फ़ोन इसे 1-2 सेकंड में स्वतः डाउनलोड करके रीलोड कर लेते हैं।
+
+### ग. गिट स्थिति एवं कमिट/पुश करना (Git Operations):
+```powershell
+$git = "C:\Users\Sushil Kumar\.gemini\antigravity\scratch\android-tools\git\cmd\git.exe"
+$proj = "C:\Users\Sushil Kumar\.gemini\antigravity\scratch\karya-apk-project"
+& $git -C $proj status
+& $git -C $proj add -A
+& $git -C $proj commit -m "commit message"
+& $git -C $proj push origin verma-marriage-hall-v1.4
 ```
 
-### मुख्य तकनीकी घटक:
-1. **हाइब्रिड मोबाइल फ्रेमवर्क (Hybrid Android App):**
-   - **Android Native Layer:** Java (SDK 34, JDK 17), `MainActivity.java`, `NotificationSyncService.java`, `BootReceiver.java`।
-   - **UI Layer:** HTML5, Modern CSS (Tailwind CSS via CDN), Vanilla JavaScript (No heavy runtime, ultra-fast 60 FPS performance)।
-2. **डेटा स्टोरेज (Dual-Layer Persistence):**
-   - **Offline-First:** स्थानीय डिवाइस स्टोरेज (`localStorage`) में हर बदलाव तुरंत राइट होता है। फोन फ्लाइट मोड में हो तो भी डेटा सुरक्षित रहता है।
-   - **Cloud Sync:** Google Cloud Firestore REST & SDK के माध्यम से दोनों तरफ सुरक्षित डेटा आदान-प्रदान (`vmh_bookings`, `vmh_expenses`, `vmh_staff`, `vmh_system`, `vmh_settings`)।
-3. **साइलेंट ऑटो-अपडेट इंजन (OTA Engine - 2 Channels):**
-   - **बीटा चैनल (Beta):** डेवलपर/मालिक के लिए परीक्षण चैनल।
-   - **प्रोडक्शन चैनल (Production):** पापा जी व अन्य ऑपरेटरों के लिए स्थिर चैनल।
-   - **एडमिन गेट:** मालिक के 1-क्लिक रिलीज़ पर कोड सभी डिवाइसों में स्वतः अपडेट हो जाता है।
-   - **सेफ्टी नेट:** फ़ाइल में कोई भी दोष होने पर ऐप तुरंत नेटिव APK एसेट्स पर वापस आ जाती है।
-4. **नेटिव बैकग्राउंड अलर्ट सर्विस एवं डुप्लिकेट प्रिवेंशन:**
-   - `MainActivity.isAppInForeground` फ्लैग द्वारा यह सुनिश्चित किया जाता है कि जब ऐप खुली हो तो नोटिफिकेशन शेड में डुप्लिकेट कार्ड न बनें।
-   - डिटरमिनिस्टिक नोटिफिकेशन आईडी (`ALERT_NOTIFICATION_ID = 2026`) का उपयोग करके कार्ड्स का डुप्लिकेशन बंद किया गया।
-
 ---
 
-## ✅ 3. पूर्ण किए गए फीचर्स (Completed Features)
+## 📂 8. स्वच्छ फाइल डायरेक्टरी संरचना (Clean Directory Tree)
 
-| क्रमांक | फीचर | विवरण | स्थिति |
-|---|---|---|---|
-| 1 | **हार्डवेयर Device-ID आधारित सेल्फ़-अलर्ट प्रिवेंशन** | जिस फोन से बुकिंग या भुगतान दर्ज हुआ, वह स्वयं को रिंग नहीं करेगा (`Settings.Secure.ANDROID_ID`)। स्टोरेज या कैश क्लियर होने पर भी यह हार्डवेयर आईडी हमेशा सुरक्षित रहती है। | ✅ पूर्ण (v1.4) |
-| 2 | **एडमिन हार्ड रिफ्रेश एवं 1-क्लिक अपडेट** | एडमिन रिलीज मैनेजर में `🔄 सर्वर से ताज़ा स्थिति जांचें` बटन जोड़ा गया, जो सीधे Firestore REST से क्लाउड वर्जन फेच करता है और अपडेट उपलब्ध होने पर 1-क्लिक में अप्लाई करता है। | ✅ पूर्ण (v1.4) |
-| 3 | **रिकॉर्ड्स स्क्रीन 4-फ़िल्टर पिल्स एवं माह चयनकर्ता** | `📅 आगामी (डिफ़ॉल्ट)`, `✅ संपन्न`, `⚠️ बकाया`, `📋 सभी`। संपन्न चुनने पर हॉरिजॉन्टल मंथ-सिलेक्टर (`सभी महीने`, `नवंबर 2026`, `अक्टूबर 2026`) प्रदर्शित होता है। | ✅ पूर्ण (v1.4) |
-| 4 | **कैलेंडर बीती हुई तारीखें (रेड संपन्न + स्लॉट आइकन)** | कैलेंडर में बीती बुक तारीखों का बैकग्राउंड न्यूट्रल ग्रे रहता है, किंतु "संपन्न" का टेक्स्ट स्पष्ट लाल (`text-red-600 font-black`) में स्लॉट आइकन (`☀️ दिन संपन्न` / `🌙 रात संपन्न` / `🔴 पूर्ण संपन्न`) के साथ दिखता है। | ✅ पूर्ण (v1.4) |
-| 5 | **इन-ऐप डायरेक्ट APK शेयरिंग** | ऐप के टॉप हेडर (📲 आइकन) और एडमिन हब में 1-क्लिक शेयरिंग। यह सीधे फोन के बेस APK को कॉपी कर Android FileProvider के ज़रिए WhatsApp या ब्लूटूथ पर शेयर कर देता है। | ✅ पूर्ण (v1.4) |
-| 6 | **रसीद व टेबल मात्रा कटिंग समाधान** | सुविधाओं, बर्तन सूची के हेडर और पेमेंट टेबल में वर्टिकल पैडिंग (`pb-2.5`, `py-2.5`, `leading-relaxed`) बढ़ाई गई, जिससे पड़ी लाइनें देवनागरी की निचली मात्राओं (`ु`, `ू`, `ृ`, `्`, `()`) को बिल्कुल नहीं काटतीं। | ✅ पूर्ण (v1.4) |
-| 7 | **OTA ज़ीरो-डिस्टॉर्शन आर्किटेक्चर** | OTA अपडेट आने पर Tailwind CSS और Firebase स्क्रिप्ट्स न मिलने से UI बिगड़ने की समस्या का 4-स्तरीय समाधान: 1) Native `shouldInterceptRequest`, 2) `copyAssetsToFilesDir`, 3) HTML `<base href="file:///android_asset/">`, 4) इंस्टेंट CDN फॉलबैक। | ✅ पूर्ण (v1.3) |
-| 2 | **क्लीन APK अपग्रेड प्रोटेक्शन** | जब भी नया APK इनस्टॉल होता है, तो पुराना दूषित OTA बंडल स्वतः वाइप हो जाता है ताकि ऐप हमेशा फ्रेश और सही स्टेट में खुले। | ✅ पूर्ण (v1.3) |
-| 3 | **क्लाउड ऑपरेटर ऑथेंटिकेशन** | नया खाता बनने पर सीधे फायरबेस क्लाउड API से लाइव सत्यापन, जिससे नया खाता तुरंत लॉगिन हो सकता है। | ✅ पूर्ण (v1.2) |
-| 2 | **स्मार्ट सिंगल नोटिफिकेशन** | ऐप खुली होने पर डुप्लिकेट नोटिफिकेशन की समस्या दूर की गई; केवल 1 साफ़ अलर्ट आता है। | ✅ पूर्ण (v1.2) |
-| 3 | **कैलेंडर एवं बुकिंग प्रबंधन** | मासिक इंटरएक्टिव कैलेंडर, दिनांक चयन, समय स्लॉट (दिन, रात, पूरा दिन), तारीख क्लैश सुरक्षा। | ✅ पूर्ण |
-| 4 | **प्रामाणिक रसीद बिल (Hall Slip)** | भारतीय शैली रसीद (`श्री गणेशाय नमः`), आवंटित सामान, बर्तन सूची, नियम व शर्तें, बकाया राशि। | ✅ पूर्ण |
-| 5 | **सिंगल पेमेंट क्लीन रसीद** | केवल 1 पेमेंट होने पर रसीद व फॉर्म पर टेबल स्वतः छिप जाती है। | ✅ पूर्ण |
-| 6 | **स्लिप एक्शन बार (Overflow Fix)** | 2-स्तरीय कार्ड: ऊपर वापस व रसीद सं., नीचे 4-बटन ग्रिड (भुगतान, शेयर, एडिट, डिलीट) बिना किसी ओवरफ्लो के। | ✅ पूर्ण |
-| 7 | **रसीद शेयरिंग (PNG)** | बिना किसी अतिरिक्त टेक्स्ट या कैप्शन के साफ़, उच्च-रिज़ॉल्यूशन रसीद इमेज शेयरिंग। | ✅ पूर्ण |
-| 8 | **अनसेव्ड चेंजेस प्रोटेक्शन** | बुकिंग फॉर्म में बदलाव करके बैक जाने पर सेव/कैंसल का सुरक्षित कन्फर्मेशन डायलॉग। | ✅ पूर्ण |
-| 9 | **कोल्ड लॉन्च लेआउट फिक्स** | ऐप रीसेंट से हटाने के बाद पहली बार खुलने पर कैलेंडर नीचे जाने की समस्या का स्थायी समाधान (`display: none !important`, `scrollRestoration = manual`)। | ✅ पूर्ण |
-| 10 | **स्मार्ट 2-तरफ़ा सिंक** | टाइमस्टैम्प आधारित सुरक्षित मिलान; क्लाउड और लोकल डेटा का बिना किसी ओवरराइट के समन्वय। | ✅ पूर्ण |
-| 11 | **स्टाफ एवं दैनिक खर्च लेज़र** | कर्मचारियों की दैनिक हाजिरी, वेंडर भुगतान, दैनिक खर्च हिसाब और बैलेंस ट्रैकिंग। | ✅ पूर्ण |
-| 12 | **मल्टी-ऑपरेटर व सुरक्षा** | 4-अंकों का पिन लॉगिन, 'मुझे याद रखें', मालिक बनाम ऑपरेटर अनुमतियां, बिना पुराने पासवर्ड के रीसेट। | ✅ पूर्ण |
-| 13 | **डेटा बैकअप एवं रीस्टोर** | 1-क्लिक JSON डेटा बैकअप, फ़ाइल से 1-क्लिक रीस्टोर, और एक्सेल (CSV) डाउनलोड (एडमिन हब में)। | ✅ पूर्ण |
-| 14 | **2-चैनल OTA ऑटो-अपडेट** | टेस्टिंग बनाम लाइव चैनल, 1-क्लिक एडमिन लाइव रिलीज़, रोलबैक, मूल फाइल्स पर रीसेट। | ✅ पूर्ण |
-| 15 | **शुद्ध वर्तनी एवं पता** | "अशन्हारा" को शुद्ध करके **"असनहरा"** किया गया (`ग्राम असनहरा, निकट अंकित धर्मकांटा, जिला बस्ती`)। | ✅ पूर्ण |
-| 16 | **वर्जन डिस्प्ले एवं पॉलिसी** | हेडर में स्पष्ट बैज (`v1.2`), माइनर सुधार (`1.1 ➔ 1.2`), मेजर सुधार (`2.0`)। | ✅ पूर्ण |
-
----
-
-## 🔒 4. हैंडओवर एवं डेटा सुरक्षा ऑडिट (Handover & Data Safety Guide)
-
-> [!CAUTION]
-> **पापा जी को हैंडओवर करने से पहले यह अत्यंत महत्वपूर्ण चेकलिस्ट पूरी करें:**
-
-### ① Firebase Firestore रूल्स (30-Day Test Mode Trap):
-* जब फायरबेस प्रोजेक्ट बनाया जाता है, तो डिफ़ॉल्ट रूप से **"Test Mode"** में 30 दिनों की एक्सपायरी डेट लग जाती है:
-  ```javascript
-  // ⚠️ खतरनाक: 30 दिन बाद यह डेटा सेव करना बंद कर देगा!
-  allow read, write: if request.time < timestamp.date(2026, ...);
-  ```
-* **आवश्यक कार्रवाई:**
-  1. [Firebase Console](https://console.firebase.google.com/) खोलें।
-  2. प्रोजेक्ट `verma-marriage-hall` चुनें ➔ **Firestore Database** ➔ **Rules** टैब पर जाएं।
-  3. नियमों को बदलकर स्थायी कर दें:
-     ```javascript
-     rules_version = '2';
-     service cloud.firestore {
-       match /databases/{database}/documents {
-         match /{document=**} {
-           allow read, write: if true;
-         }
-       }
-     }
-     ```
-  4. **Publish** बटन पर क्लिक करें। इससे डेटा सेविंग कभी बंद नहीं होगी।
-
-### ② क्या Firebase का फ्री प्लान (Spark Plan) कभी डेटा डिलीट करता है?
-* **बिल्कुल नहीं!** गूगल फायरबेस के फ्री प्लान में डेटा कभी स्वतः डिलीट या गायब नहीं होता।
-* **फ्री लिमिट्स:** 
-  - 1 GB क्लाउड स्टोरेज (1 मैरिज हॉल के लिए 10 लाख से अधिक बुकिंग्स के बराबर)।
-  - प्रतिदिन 50,000 रीड और 20,000 राइट। (वर्मा मैरिज हॉल में रोज़ाना 10-50 राइट ही होंगे)।
-  - इसलिए यह सेवा 100% मुफ़्त रहेगी और कभी कोई कोटा समाप्त नहीं होगा।
-
-### ③ डुअल-स्टोरेज सुरक्षा (Dual Persistence):
-* ऐप में सेव की गई हर बुकिंग **पहले फोन के इंटरनल स्टोरेज (`localStorage`) में राइट होती है**, और उसके बाद फायरबेस पर जाती है।
-* यदि इंटरनेट बंद भी हो या फोन में सिम न हो, तब भी बुकिंग फोन के अंदर स्थायी रूप से सुरक्षित रहती है।
-
-### ④ बैकअप की अच्छी आदत (1-Tap Monthly Backup):
-* एडमिन हब में **"💾 डेटा सुरक्षा एवं बैकअप"** के अंदर **`डेटा बैकअप (JSON)`** बटन दिया गया है।
-* महीने में एक बार इस पर क्लिक करके फाइल को अपने व्हाट्सएप या गूगल ड्राइव पर सहेज लें। फोन चोरी होने या पानी में गिर जाने पर भी 2 सेकंड में सारा डेटा नए फोन पर वापस आ जाएगा।
-
-### ⑤ पापा जी के फोन की चैनल सेटिंग:
-* पापा जी के फोन में ऐप खोलकर एडमिन पैनल में चेक कर लें कि चैनल **`[🌐 प्रोडक्शन चैनल]`** पर सेट है।
-* अपने फोन को **`[🧪 टेस्टिंग चैनल]`** पर रखें। इससे आप हर नए बदलाव की टेस्टिंग पहले खुद कर पाएंगे।
-
----
-
-## 🔮 5. भावी विस्तार एवं पेंडिंग संभावनाएँ (Future Scope)
-1. **WhatsApp Cloud API बॉट:** बुकिंग होते ही कस्टमर को बिना WhatsApp खोले ऑटोमैटिक PDF रसीद जाना।
-2. **Native Android PDF Generation:** PNG इमेज के साथ-साथ डायरेक्ट A4 प्रिंटेबल PDF डाउनलोड।
-3. **SMS गेटवे एकीकरण:** बकाया राशि रिमाइंडर के लिए ऑटोमैटिक SMS अलर्ट।
-4. **रसीद पर QR कोड:** रसीद स्कैन करते ही ग्राहक को अपनी लाइव बुकिंग स्थिति दिखना।
-
----
-
-## 📂 6. फाइल डायरेक्टरी संरचना (Project Structure)
 ```
 karya-apk-project/
 ├── app/
-│   ├── build.gradle              (versionCode 3, versionName "1.2")
+│   ├── build.gradle              (versionCode 14, versionName "1.1")
 │   └── src/
 │       └── main/
-│           ├── AndroidManifest.xml (Permissions, Foreground Service)
+│           ├── AndroidManifest.xml (Clean Minimal Permissions: INTERNET, NETWORK_STATE, VIBRATE, POST_NOTIFICATIONS)
 │           ├── assets/
-│           │   └── index.html    (Core App Logic, Tailwind CSS, OTA Engine v1.2)
+│           │   ├── app.js        (Service worker & cache handling)
+│           │   ├── html2canvas.min.js
+│           │   ├── icon.svg
+│           │   ├── index.html    (Core App Logic, Tailwind CSS, OTA Engine v1.1)
+│           │   ├── jspdf.umd.min.js
+│           │   ├── manifest.json
+│           │   ├── qrcode.min.js
+│           │   ├── styles.css
+│           │   ├── sw.js
+│           │   └── tailwind.min.js
 │           └── java/com/karya/business/
-│               ├── MainActivity.java            (WebView Wrapper & OTA Bridge)
-│               ├── NotificationSyncService.java (Background Sync & WakeLock)
-│               └── BootReceiver.java            (Auto-start on Phone Reboot)
+│               └── MainActivity.java (Clean WebView & Native Android Share Intent)
 ├── build.gradle
 ├── settings.gradle
 ├── .gitignore                    (Excludes build, gradle caches, APKs)
-└── AI.md                         (Complete Project Documentation & Handover Guide)
+└── ai.md                         (Complete Project Documentation & AI Instructions)
 ```

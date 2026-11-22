@@ -34,14 +34,20 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import android.content.SharedPreferences;
+import android.content.ContentValues;
+import android.content.ClipData;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.os.Environment;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.content.pm.ResolveInfo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             window.setStatusBarColor(Color.parseColor("#78350f"));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 window.setNavigationBarColor(Color.parseColor("#ffffff"));
@@ -98,17 +105,8 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Error initializing hardware device_id", e);
         }
 
-        // Start background native sync service for closed app & lock-screen notifications
-        try {
-            Intent serviceIntent = new Intent(this, NotificationSyncService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ContextCompat.startForegroundService(this, serviceIntent);
-            } else {
-                startService(serviceIntent);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to start NotificationSyncService", e);
-        }
+        // Dismiss any previous sticky foreground sync notifications and ensure background service is stopped
+
 
         webView = new WebView(this);
         setContentView(webView);
@@ -120,11 +118,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDefaultTextEncodingName("UTF-8");
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowContentAccess(true);
-        webSettings.setAllowFileAccessFromFileURLs(true);
-        webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setUseWideViewPort(false);
         webSettings.setLoadWithOverviewMode(false);
-        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         // Native Android Bridge to JavaScript
@@ -191,6 +186,19 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("WebViewConsole", consoleMessage.message() + " -- Line "
                         + consoleMessage.lineNumber() + " of "
                         + consoleMessage.sourceId());
+                return true;
+            }
+
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message, android.webkit.JsResult result) {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                result.confirm();
+                return true;
+            }
+
+            @Override
+            public boolean onJsConfirm(WebView view, String url, String message, android.webkit.JsResult result) {
+                result.cancel();
                 return true;
             }
         });
@@ -332,47 +340,22 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public void shareApk() {
-            runOnUiThread(() -> {
-                try {
-                    String apkPath = mContext.getApplicationInfo().sourceDir;
-                    File srcApk = new File(apkPath);
-                    if (!srcApk.exists()) {
-                        Toast.makeText(mContext, "APK फ़ाइल नहीं मिली!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+            try {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "वर्मा मैरिज हॉल - आधिकारिक डिजिटल ऐप");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "🏛️ वर्मा मैरिज हॉल (Verma Marriage Hall)\nडिजिटल बिलिंग, रसीद कट्टा एवं विवाह बुकिंग प्रबंधन ऐप।\nस्थान: ग्राम असनहरा, बस्ती (उ.प्र.)");
+                Intent chooser = Intent.createChooser(shareIntent, "वर्मा मैरिज हॉल ऐप शेयर करें");
+                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(chooser);
+            } catch (Exception e) {
+                Log.e(TAG, "Error sharing app", e);
+            }
+        }
 
-                    File shareFolder = new File(mContext.getCacheDir(), "shared_apk");
-                    if (!shareFolder.exists()) shareFolder.mkdirs();
-                    File dstApk = new File(shareFolder, "VermaMarriageHall.apk");
-
-                    try (InputStream in = new FileInputStream(srcApk);
-                         OutputStream out = new FileOutputStream(dstApk)) {
-                        byte[] buffer = new byte[8192];
-                        int len;
-                        while ((len = in.read(buffer)) != -1) {
-                            out.write(buffer, 0, len);
-                        }
-                        out.flush();
-                    }
-
-                    Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileprovider", dstApk);
-
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("application/vnd.android.package-archive");
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "वर्मा मैरिज हॉल - आधिकारिक डिजिटल ऐप");
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, "🏛️ वर्मा मैरिज हॉल (Verma Marriage Hall)\nडिजिटल बिलिंग, रसीद कट्टा एवं विवाह बुकिंग प्रबंधन ऐप।\nस्थान: ग्राम असनहरा, बस्ती (उ.प्र.)\n\nइस APK को इंस्टॉल करें और उपयोग करें।");
-                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                    Intent chooser = Intent.createChooser(shareIntent, "वर्मा मैरिज हॉल ऐप शेयर करें (WhatsApp / Share)");
-                    chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(chooser);
-
-                } catch (Exception e) {
-                    Log.e(TAG, "Error sharing APK", e);
-                    Toast.makeText(mContext, "APK शेयर करने में त्रुटि: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+        @JavascriptInterface
+        public void saveApkToDownloads() {
+            shareApk();
         }
 
         @JavascriptInterface
@@ -592,7 +575,7 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public String getNativeAppVersion() {
-            return "1.5";
+            return "1.0";
         }
 
         @JavascriptInterface

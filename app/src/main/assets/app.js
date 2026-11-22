@@ -1,4 +1,4 @@
-﻿const DEFAULT_SERVER = 'https://occur-competition-raleigh-wallace.trycloudflare.com';
+const DEFAULT_SERVER = 'https://occur-competition-raleigh-wallace.trycloudflare.com';
 let serverBase = localStorage.getItem('karya_server_url') || (window.location.origin.startsWith('http') ? window.location.origin : DEFAULT_SERVER);
 
 function getServerUrl(path) {

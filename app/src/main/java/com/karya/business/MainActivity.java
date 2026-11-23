@@ -42,6 +42,7 @@ import android.os.Environment;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.content.pm.ResolveInfo;
+import com.google.firebase.messaging.FirebaseMessaging;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -103,6 +104,32 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Hardware device_id initialized: " + hardwareId);
         } catch (Exception e) {
             Log.e(TAG, "Error initializing hardware device_id", e);
+        }
+
+        // Initialize Firebase Cloud Messaging for instant push notifications
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic("all_devices")
+                    .addOnCompleteListener(task -> Log.d(TAG, "Subscribed to FCM topic all_devices: " + task.isSuccessful()));
+            FirebaseMessaging.getInstance().subscribeToTopic("vmh_bookings")
+                    .addOnCompleteListener(task -> Log.d(TAG, "Subscribed to FCM topic vmh_bookings: " + task.isSuccessful()));
+
+            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    String token = task.getResult();
+                    Log.d(TAG, "FCM Token retrieved on app start: " + token);
+                    getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE)
+                            .edit()
+                            .putString("fcm_token", token)
+                            .apply();
+                    runOnUiThread(() -> {
+                        if (webView != null) {
+                            webView.evaluateJavascript("window.onFcmTokenReceived ? window.onFcmTokenReceived('" + token + "') : null;", null);
+                        }
+                    });
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing Firebase Cloud Messaging", e);
         }
 
         // Dismiss any previous sticky foreground sync notifications and ensure background service is stopped
@@ -399,6 +426,16 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void saveApkToDownloads() {
             shareApk();
+        }
+
+        @JavascriptInterface
+        public String getFcmToken() {
+            try {
+                return mContext.getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE)
+                        .getString("fcm_token", "");
+            } catch (Exception e) {
+                return "";
+            }
         }
 
         @JavascriptInterface

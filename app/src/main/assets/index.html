@@ -7105,6 +7105,41 @@
     }
     syncNativeState();
 
+    // Sync FCM Token to Firestore collection `vmh_fcm_tokens/{myDeviceId}`
+    async function registerFcmToken(token) {
+      if (!token || typeof token !== 'string') return;
+      localStorage.setItem('vmh_fcm_token', token);
+      const tokenPayload = {
+        deviceId: myDeviceId,
+        fcmToken: token,
+        platform: window.AndroidApp ? 'android' : 'web',
+        updatedAt: Date.now()
+      };
+      if (firestoreDb) {
+        try {
+          await firestoreDb.collection('vmh_fcm_tokens').doc(myDeviceId).set(tokenPayload, { merge: true });
+          console.log("FCM token registered in Firestore for device:", myDeviceId);
+        } catch (e) {
+          console.warn("Error registering FCM token in Firestore:", e);
+        }
+      }
+    }
+
+    window.onFcmTokenReceived = function(token) {
+      registerFcmToken(token);
+    };
+
+    setTimeout(() => {
+      try {
+        if (window.AndroidApp && typeof window.AndroidApp.getFcmToken === 'function') {
+          const t = window.AndroidApp.getFcmToken();
+          if (t) registerFcmToken(t);
+        }
+      } catch (e) {
+        console.warn("Error querying native FCM token:", e);
+      }
+    }, 2000);
+
     async function sendBroadcastAlert(category, title, message) {
       const ts = Date.now();
       const alertId = 'alt_' + ts + '_' + Math.random().toString(36).substring(2, 8);
@@ -8013,7 +8048,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.2.4";
+    const APP_VERSION = "1.3.0";
     window.APP_VERSION = APP_VERSION;
     let otaReleaseState = {
       betaVersion: APP_VERSION,

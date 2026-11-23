@@ -172,7 +172,7 @@
         <p id="headerAppSubtitle" class="text-xs text-amber-200 font-semibold opacity-95 leading-tight flex items-center justify-center gap-2">
           <span id="headerAppSubLoc">ग्राम असनहरा, बस्ती</span>
           <span class="text-amber-300/60">•</span>
-          <span id="headerAppVersionBadge" class="text-[10px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-2 py-0.5 rounded-md font-bold">v1.2.3</span>
+          <span id="headerAppVersionBadge" class="text-[10px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-2 py-0.5 rounded-md font-bold">v1.2.4</span>
         </p>
       </div>
 
@@ -4685,7 +4685,8 @@
         payments: existingPayments,
         createdBy: originalCreator,
         updatedBy: operatorName,
-        isPendingSync: true
+        isPendingSync: true,
+        updatedAt: Date.now()
       };
 
       if (editingBookingId) {
@@ -7340,6 +7341,40 @@
       }
     }
 
+    // Smart Booking Change Detection: Only trigger UI re-renders if core data actually changed
+    function haveBookingsChanged(localList, cloudList) {
+      if (!localList || !cloudList) return true;
+      if (localList.length !== cloudList.length) return true;
+
+      const localMap = new Map();
+      for (const b of localList) {
+        if (b && b.id) localMap.set(b.id, b);
+      }
+
+      for (const cb of cloudList) {
+        if (!cb || !cb.id) continue;
+        const lb = localMap.get(cb.id);
+        if (!lb) return true; // new booking
+
+        // Compare updatedAt timestamp
+        if (Number(cb.updatedAt || 0) !== Number(lb.updatedAt || 0)) return true;
+
+        // Compare payments array count
+        const cbPayLen = Array.isArray(cb.payments) ? cb.payments.length : 0;
+        const lbPayLen = Array.isArray(lb.payments) ? lb.payments.length : 0;
+        if (cbPayLen !== lbPayLen) return true;
+
+        // Compare financial totals
+        if (Number(cb.advancePaid || 0) !== Number(lb.advancePaid || 0)) return true;
+        if (Number(cb.balanceDue || 0) !== Number(lb.balanceDue || 0)) return true;
+        if (Number(cb.totalRent || 0) !== Number(lb.totalRent || 0)) return true;
+
+        // Compare event & party specifics
+        if (cb.partyName !== lb.partyName || cb.eventDate !== lb.eventDate || cb.slotType !== lb.slotType) return true;
+      }
+      return false;
+    }
+
     // Fast REST Polling & Foreground Resume Engine
     async function syncBookingsFromCloudFast() {
       try {
@@ -7375,37 +7410,45 @@
               updatedByDevice: f.updatedByDevice?.stringValue || ''
             };
           }
-          if (item && item.id) cloudBookings.push(item);
+          if (item && item.id) {
+            item.isPendingSync = false;
+            delete item.isPendingSync;
+            cloudBookings.push(item);
+          }
         });
 
-        // 1. Upload any pending offline bookings to cloud FIRST
+        const cloudMap = new Map();
+        cloudBookings.forEach(item => { if (item && item.id) cloudMap.set(item.id, item); });
+
+        // 1. Upload any pending offline bookings ONLY IF local is genuinely newer or not in cloud
         const pendingOffline = realMarriageBookings.filter(b => b && b.isPendingSync);
         if (pendingOffline.length > 0) {
           for (const pb of pendingOffline) {
-            try {
-              await syncBookingToCloud(pb);
-            } catch(e) {}
+            const cloudMatch = cloudMap.get(pb.id);
+            if (!cloudMatch) {
+              try { await syncBookingToCloud(pb); } catch(e) {}
+            } else if (Number(pb.updatedAt || 0) > Number(cloudMatch.updatedAt || 0)) {
+              try { await syncBookingToCloud(pb); } catch(e) {}
+            } else {
+              pb.isPendingSync = false;
+            }
           }
         }
 
-        // 2. Protect offline created bookings from being wiped out by cloud pull
-        const cloudMap = new Map();
-        cloudBookings.forEach(item => { if (item && item.id) cloudMap.set(item.id, item); });
+        // 2. Protect offline created bookings (not yet in cloud) from being wiped out
         realMarriageBookings.forEach(localB => {
           if (localB && localB.isPendingSync && !cloudMap.has(localB.id)) {
             cloudMap.set(localB.id, localB);
           }
         });
 
-        // Cloud is master truth (with offline pending bookings fully protected)
         const sortedCloud = Array.from(cloudMap.values()).sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
-        const cloudJson = JSON.stringify(sortedCloud);
-        const localJson = JSON.stringify(realMarriageBookings);
 
-        if (cloudJson !== localJson) {
-          console.log("Fast REST Sync detected cloud change! Cloud count:", sortedCloud.length);
+        // Smart diff: ONLY update UI and localStorage if data genuinely changed
+        if (haveBookingsChanged(realMarriageBookings, sortedCloud)) {
+          console.log("Fast REST Sync detected cloud data change. Updating UI calmly...");
           realMarriageBookings = sortedCloud;
-          localStorage.setItem('vmh_bookings', cloudJson);
+          saveRealBookingsToStorage();
           updateDashboardKPIs();
           renderCalendar();
           renderUpcomingBookingsList();
@@ -7448,12 +7491,14 @@
       if (cloudHeartbeatTimer) clearInterval(cloudHeartbeatTimer);
       syncBookingsFromCloudFast();
       checkAlertsFromCloudFast();
+      // Gentle polling interval: 30s when real-time WebSocket is active, 15s if REST-only
+      const interval = firestoreDb ? 30000 : 15000;
       cloudHeartbeatTimer = setInterval(() => {
         if (!document.hidden) {
           syncBookingsFromCloudFast();
           checkAlertsFromCloudFast();
         }
-      }, 3500);
+      }, interval);
     }
 
     // Auto-resync when device unlocks, app foregrounds, or tab focuses
@@ -7484,10 +7529,16 @@
         const remoteBookings = [];
         snapshot.forEach(doc => {
           const d = doc.data();
+          let item = null;
           if (d && d.rawJson) {
-            try { remoteBookings.push(JSON.parse(d.rawJson)); } catch(e) { remoteBookings.push(d); }
+            try { item = JSON.parse(d.rawJson); } catch(e) { item = d; }
           } else if (d) {
-            remoteBookings.push(d);
+            item = d;
+          }
+          if (item && item.id) {
+            item.isPendingSync = false;
+            delete item.isPendingSync;
+            remoteBookings.push(item);
           }
         });
 
@@ -7511,14 +7562,20 @@
         }
 
         isInitialCloudSnapshot = false;
-        realMarriageBookings = remoteBookings.sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
-        localStorage.setItem('vmh_bookings', JSON.stringify(realMarriageBookings));
-        updateDashboardKPIs();
-        renderCalendar();
-        renderUpcomingBookingsList();
-        renderAllBookingsList();
-        if (currentActiveScreen === 'hall-slip' && selectedBookingId) {
-          loadBookingIntoSlip(selectedBookingId);
+        const sortedRemote = remoteBookings.sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
+
+        // Smart diff check: ONLY re-render DOM if data actually changed
+        if (haveBookingsChanged(realMarriageBookings, sortedRemote)) {
+          console.log("Realtime Firestore push detected change. Updating UI calmly...");
+          realMarriageBookings = sortedRemote;
+          saveRealBookingsToStorage();
+          updateDashboardKPIs();
+          renderCalendar();
+          renderUpcomingBookingsList();
+          renderAllBookingsList();
+          if (currentActiveScreen === 'hall-slip' && selectedBookingId) {
+            loadBookingIntoSlip(selectedBookingId);
+          }
         }
         updateCloudSyncStatusBadge('online');
       }, (err) => {
@@ -7628,6 +7685,8 @@
         updatedByDevice: myDeviceId,
         updatedAt: Date.now()
       };
+      delete bPayload.isPendingSync; // NEVER upload isPendingSync to cloud!
+
       if (firestoreDb) {
         try {
           await firestoreDb.collection('vmh_bookings').doc(b.id).set({
@@ -7652,6 +7711,9 @@
             eventDate: { stringValue: b.eventDate || '' },
             slotType: { stringValue: b.slotType || '' },
             occasion: { stringValue: b.occasion || '' },
+            totalRent: { integerValue: String(Math.round(Number(b.totalRent || 0))) },
+            advancePaid: { integerValue: String(Math.round(Number(b.advancePaid || 0))) },
+            balanceDue: { integerValue: String(Math.round(Number(b.balanceDue || 0))) },
             updatedByDevice: { stringValue: myDeviceId },
             updatedAt: { integerValue: String(bPayload.updatedAt) },
             rawJson: { stringValue: JSON.stringify(bPayload) }
@@ -7853,18 +7915,30 @@
           }
         }
 
-        // 1. Upload any pending offline bookings to cloud FIRST
+        const cloudMap = new Map();
+        remoteBookings.forEach(item => {
+          if (item && item.id) {
+            item.isPendingSync = false;
+            delete item.isPendingSync;
+            cloudMap.set(item.id, item);
+          }
+        });
+
+        // 1. Upload any pending offline bookings ONLY IF local is genuinely newer or not in cloud
         const pendingOffline = realMarriageBookings.filter(b => b && b.isPendingSync);
         if (pendingOffline.length > 0) {
           for (const pb of pendingOffline) {
-            try {
-              await syncBookingToCloud(pb);
-            } catch(e) {}
+            const cloudMatch = cloudMap.get(pb.id);
+            if (!cloudMatch) {
+              try { await syncBookingToCloud(pb); } catch(e) {}
+            } else if (Number(pb.updatedAt || 0) > Number(cloudMatch.updatedAt || 0)) {
+              try { await syncBookingToCloud(pb); } catch(e) {}
+            } else {
+              pb.isPendingSync = false;
+            }
           }
         }
 
-        const cloudMap = new Map();
-        remoteBookings.forEach(item => { if (item && item.id) cloudMap.set(item.id, item); });
         realMarriageBookings.forEach(localB => {
           if (localB && localB.isPendingSync && !cloudMap.has(localB.id)) {
             cloudMap.set(localB.id, localB);
@@ -7939,7 +8013,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.2.3";
+    const APP_VERSION = "1.2.4";
     window.APP_VERSION = APP_VERSION;
     let otaReleaseState = {
       betaVersion: APP_VERSION,
@@ -8613,8 +8687,9 @@
       const totalPaid = b.payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
       b.advancePaid = totalPaid;
       b.balanceDue = Math.max(0, (parseFloat(b.totalRent) || 0) - totalPaid);
-      b.updatedAt = new Date().toISOString();
+      b.updatedAt = Date.now();
       b.updatedBy = receiverName;
+      b.isPendingSync = false;
 
       try {
         saveRealBookingsToStorage();
@@ -8803,6 +8878,8 @@
       const totalPaid = b.payments.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
       b.advancePaid = totalPaid;
       b.balanceDue = Math.max(0, (parseFloat(b.totalRent) || 0) - totalPaid);
+      b.updatedAt = Date.now();
+      b.isPendingSync = false;
 
       // If first payment updated, sync advanceMode as well
       if (index === 0) {
@@ -8861,6 +8938,8 @@
       const totalPaid = b.payments.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
       b.advancePaid = totalPaid;
       b.balanceDue = Math.max(0, (parseFloat(b.totalRent) || 0) - totalPaid);
+      b.updatedAt = Date.now();
+      b.isPendingSync = false;
 
       // Update storage and cloud
       saveRealBookingsToStorage();

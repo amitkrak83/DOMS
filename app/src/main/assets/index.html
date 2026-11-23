@@ -7140,12 +7140,135 @@
       }
     }, 2000);
 
+    // -------------------------------------------------------------
+    // FCM V1 PUSH NOTIFICATION DISPATCHER (WEB & MOBILE)
+    // -------------------------------------------------------------
+    const FCM_NOTIFIER_SA = {
+      client_email: "vmh-push-notifier@verma-marriage-hall.iam.gserviceaccount.com",
+      private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDFgZOTQCAzNlXJ\nC6UUYGb9OkizA4IdmGAkKpwUvW5q1spSLsU/4sgZJpoeqWUNItM8SvAHT8UJALjb\nZn3OOhjSqf2uVd8D4YccQPaEl+JYt7mAC6VrR4HC8uWYJwDM6o6ox8un91sntJO9\nLmSbbnBZEJXhrMmFrgwrZc6lPEAfLo1hV7+HwJW+Vfv/19OeFTQR/WjAafHwZlx4\n3HED0r2dzH9vhX4QjoNdzmG3dqKhtdVK81MDTRDOkn4beQIBTC780Cdqq3mjelrh\nWO0TqI/gSScn+2Xy2/XMs5819IPfp0l9K1eaNVMDaqiIp0qP0fkl+z0ozxs7QVyO\neII/bh+XAgMBAAECggEACguG5cMqABYgMyXy+EArl28lRGmGGXA8WjU1Pql1xLGg\n6ktzqnCjzFerbf91OBT7LlgCBjUskxfPebp9j9q3lCX41NWMOVEj7drF+ZoUn9N+\n9+q1DT7pSXDQyYtuSH3DfK+7Wr3DYUJsuH9JYaMHzBfXr6R56WEf6v3LY+8BCd+I\nC/UoAly9u+Pt9vn+GUvyUW7MgbyJGy7NDInVbAnRpyLB+Q+JlttIDWrEd0+3/T36\nThmIGp/7Ywo8vKyRY3qsGoimIVQREH86sci6c+SdrDX8IDNpK3JNYr13JPR3WSH9\nH9Bt+Oec3VACmBm5iF/UkJ3ng1MxrgxHQKHWlxMeQQKBgQD9DU7tKfA9V3nlDhb0\nuSPDzi/AQPaOCb90lZMOQeNH4m3Rm03uqRT1uRHlqY3j+V50uEMAKcnrdP3UWKQp\ni08bouG7zGTyJMXiuxXel5sKd4hkUVQGHQbHs0+biCrFyR1m8FJF9cY7mQQ5mWwx\nI1fb839B8hNdOQAEsdoUL+EdVwKBgQDHzpxQMgDt3WGPaxtTt2HVByhhh0TIStzN\n5u5ZxL7uR22y2RSaWBXoRQOdKd1HJBm2grNUNRGT5QIwkkfhTXG7+Jn5imtdbVmv\nbzS25/T6LViNAqWUVDCkBzmnM0pNOuEdSCfScgtKME7CYtwyq/qMK4Xq3NGN3BzQ\nDcq90L9nwQKBgD9+Y1tmtnztwgwTKPdmrO6ogZq/sh2ZnIxoK2ncZmbXDa8WRMup\naTTupur1TEDzhRvMUCNuWNfXlwj85NP3vHW2vOUeOAX57B0jzCz55VEPBQ4Gygpu\nphDdkQ/5bqIKAHKfwkUDkiXKEyFQubDqqVTrF/c4AlvVvYdwCMQf72ApAoGAb0xd\nsiZIcjdxEsycykNKUbnM+pa478ETwfYzKvn3SQ+swYU+fsM2YM2gt7kMM4aedBXW\nAsAU7IcScy/ork3PXt+aFXDPYZl57clKWeBXi8wamWGyDi/fcF899C8T4nU71G3P\nEODJ/Sdvl8Qt2GQICnBsBmm+qQDFY/dqydUv6YECgYAP8Kqr1RtQ3tCOtpA0j3yb\nZe9CfoeMsl/hTjiAQu1iz03GPkUE0q6LNvA75yV3GQO3Y/3ugsRfTmeU2ZdAmquf\nChlD+7D5Cn9jW50PuCEPOEtn2xXToyKD1r7FJC65X2V2k1KWPvLk9CNGNtEQKxte\nxShsJttDfzCbaL7M0Pz7ZQ==\n-----END PRIVATE KEY-----\n"
+    };
+
+    let _fcmCachedAccessToken = null;
+    let _fcmTokenExpiryTime = 0;
+
+    function _fcmPemToBinary(pem) {
+      const b64 = pem.replace(/-----[^\n]+-----/g, '').replace(/\s+/g, '');
+      const binary = atob(b64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return bytes.buffer;
+    }
+
+    function _fcmBase64UrlEncode(bytesOrString) {
+      let b64;
+      if (typeof bytesOrString === 'string') {
+        b64 = btoa(unescape(encodeURIComponent(bytesOrString)));
+      } else {
+        let binary = '';
+        const bytes = new Uint8Array(bytesOrString);
+        for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+        b64 = btoa(binary);
+      }
+      return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    async function _getFcmAccessToken() {
+      if (_fcmCachedAccessToken && Date.now() < _fcmTokenExpiryTime - 60000) {
+        return _fcmCachedAccessToken;
+      }
+      try {
+        const binaryDer = _fcmPemToBinary(FCM_NOTIFIER_SA.private_key);
+        const cryptoKey = await window.crypto.subtle.importKey(
+          "pkcs8",
+          binaryDer,
+          { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+          false,
+          ["sign"]
+        );
+
+        const now = Math.floor(Date.now() / 1000);
+        const header = _fcmBase64UrlEncode(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+        const claim = _fcmBase64UrlEncode(JSON.stringify({
+          iss: FCM_NOTIFIER_SA.client_email,
+          scope: "https://www.googleapis.com/auth/firebase.messaging",
+          aud: "https://oauth2.googleapis.com/token",
+          exp: now + 3600,
+          iat: now
+        }));
+
+        const signInput = new TextEncoder().encode(header + "." + claim);
+        const signatureBytes = await window.crypto.subtle.sign(
+          "RSASSA-PKCS1-v1_5",
+          cryptoKey,
+          signInput
+        );
+        const signature = _fcmBase64UrlEncode(signatureBytes);
+        const jwt = header + "." + claim + "." + signature;
+
+        const res = await fetch("https://oauth2.googleapis.com/token", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + jwt
+        });
+        const data = await res.json();
+        if (data.access_token) {
+          _fcmCachedAccessToken = data.access_token;
+          _fcmTokenExpiryTime = Date.now() + ((data.expires_in || 3600) * 1000);
+          return _fcmCachedAccessToken;
+        }
+      } catch (err) {
+        console.warn("FCM token fetch note:", err);
+      }
+      return null;
+    }
+
+    async function dispatchFcmPush(category, title, message) {
+      try {
+        const accessToken = await _getFcmAccessToken();
+        if (!accessToken) return;
+
+        const fcmPayload = {
+          message: {
+            topic: "all_devices",
+            notification: {
+              title: title || "🏛️ वर्मा मैरिज हॉल",
+              body: message || "नया अपडेट"
+            },
+            data: {
+              title: title || "🏛️ वर्मा मैरिज हॉल",
+              body: message || "नया अपडेट",
+              category: category || "booking",
+              senderDeviceId: myDeviceId
+            },
+            android: {
+              priority: "HIGH"
+            }
+          }
+        };
+
+        await fetch("https://fcm.googleapis.com/v1/projects/verma-marriage-hall/messages:send", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + accessToken,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(fcmPayload)
+        });
+        console.log("FCM push dispatched successfully to all_devices!");
+      } catch (err) {
+        console.warn("FCM dispatch note:", err);
+      }
+    }
+
     async function sendBroadcastAlert(category, title, message) {
       const ts = Date.now();
       const alertId = 'alt_' + ts + '_' + Math.random().toString(36).substring(2, 8);
       lastProcessedAlertId = alertId;
       localStorage.setItem('vmh_last_alert_id', alertId);
       syncNativeState();
+
+      // Dispatch FCM Push Notification to all locked/background Android devices!
+      dispatchFcmPush(category, title, message);
 
       const payload = {
         alertId: alertId,

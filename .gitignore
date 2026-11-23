@@ -21,3 +21,8 @@ local.properties
 # Temporary files
 *.tmp
 *.bak
+
+# Service account secrets & credentials
+*serviceaccount*.json
+*push-notifier*.json
+*adminsdk*.json

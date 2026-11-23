@@ -750,7 +750,7 @@
               <span class="font-bold text-slate-700" style="font-size: 13.5px; font-weight: 800; color: #334155;">बकाया राशि (Balance Due)</span>
               <div class="flex items-center gap-1.5">
                 <span id="slipBalanceDue" class="font-black text-red-600 font-mono" style="color: #dc2626 !important; font-size: 20px; font-weight: 900; line-height: 1.3; display: inline-block; padding: 0 0 4px 0; margin: 0;">₹ 0</span>
-                <span id="slipFullyPaidBadge" class="hidden text-xs font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-400">🟢 पूरा भुगतान (Paid)</span>
+                <span id="slipFullyPaidBadge" class="hidden text-sm font-black text-emerald-700 tracking-wide">(पूर्ण भुगतान प्राप्त)</span>
               </div>
             </div>
 
@@ -2087,7 +2087,7 @@
     </div>
 
     <!-- UNIVERSAL CUSTOM APP CONFIRMATION MODAL -->
-    <div id="genericConfirmModal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeGenericConfirmModal(false)">
+    <div id="genericConfirmModal" style="z-index: 99999;" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeGenericConfirmModal(false)">
       <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-3.5 shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
         <div id="genericConfirmIconContainer" class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mx-auto shadow-inner">
           <span id="genericConfirmIcon">⚠️</span>
@@ -2645,15 +2645,17 @@
       try {
         const list = JSON.parse(stored);
         if (Array.isArray(list) && list.length > 0) {
-          let updated = false;
-          list.forEach(op => {
+          // Clean out any stale papa/chacha that might linger in old browser caches
+          const cleaned = list.filter(op => op.id !== 'op_papa' && op.id !== 'op_chacha' && op.email !== 'papa@vermamarriage.com' && op.email !== 'chacha@vermamarriage.com');
+          let updated = cleaned.length !== list.length;
+          cleaned.forEach(op => {
             if (op.isOwner && (op.name === 'सुशील वर्मा' || op.email === 'vermamarriagehall@gmail.com')) {
               op.name = 'वर्मा मैरिज हॉल';
               updated = true;
             }
           });
-          if (updated) localStorage.setItem('vmh_operators', JSON.stringify(list));
-          return list;
+          if (updated) localStorage.setItem('vmh_operators', JSON.stringify(cleaned));
+          return cleaned.length > 0 ? cleaned : DEFAULT_OPERATORS;
         }
       } catch(e) {}
       localStorage.setItem('vmh_operators', JSON.stringify(DEFAULT_OPERATORS));
@@ -2877,12 +2879,18 @@
       if (document.getElementById('changePassConfirm')) document.getElementById('changePassConfirm').value = '';
 
       const m = document.getElementById('modalUserProfile');
-      if (m) m.classList.remove('hidden');
+      if (m) {
+        m.classList.remove('hidden');
+        m.style.display = 'flex';
+      }
     }
 
     function closeUserProfileModal() {
       const m = document.getElementById('modalUserProfile');
-      if (m) m.classList.add('hidden');
+      if (m) {
+        m.classList.add('hidden');
+        m.style.display = 'none';
+      }
     }
 
     function toggleChangePasswordBox() {
@@ -3432,6 +3440,13 @@
         return true;
       }
 
+      // 0.1 If generic confirmation modal is open, dismiss it smoothly
+      const genConfirm = document.getElementById('genericConfirmModal');
+      if (genConfirm && !genConfirm.classList.contains('hidden') && genConfirm.style.display !== 'none') {
+        closeGenericConfirmModal(false);
+        return true;
+      }
+
       // 1. If three-dot payment dropdown modal is open, remove it!
       const pModal = document.getElementById('paymentActionDropdownModal');
       if (pModal) {
@@ -3441,6 +3456,7 @@
 
       // 2. Close any open modal first
       const modals = [
+        'genericConfirmModal',
         'shareAppModal',
         'modalUserProfile',
         'modalAddNewOperator',
@@ -4653,7 +4669,8 @@
         utensils: chosenUtensils,
         payments: existingPayments,
         createdBy: originalCreator,
-        updatedBy: operatorName
+        updatedBy: operatorName,
+        isPendingSync: true
       };
 
       if (editingBookingId) {
@@ -6924,13 +6941,19 @@
           }
         }
 
-        if (modal) modal.classList.remove('hidden');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.style.display = 'flex';
+        }
       });
     }
 
     function closeGenericConfirmModal(confirmed) {
       const modal = document.getElementById('genericConfirmModal');
-      if (modal) modal.classList.add('hidden');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }
       if (pendingGenericConfirmResolve) {
         const resolve = pendingGenericConfirmResolve;
         pendingGenericConfirmResolve = null;
@@ -7327,8 +7350,27 @@
           if (item && item.id) cloudBookings.push(item);
         });
 
-        // Cloud is master truth: if cloud is empty or different, update local state
-        const sortedCloud = cloudBookings.sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
+        // 1. Upload any pending offline bookings to cloud FIRST
+        const pendingOffline = realMarriageBookings.filter(b => b && b.isPendingSync);
+        if (pendingOffline.length > 0) {
+          for (const pb of pendingOffline) {
+            try {
+              await syncBookingToCloud(pb);
+            } catch(e) {}
+          }
+        }
+
+        // 2. Protect offline created bookings from being wiped out by cloud pull
+        const cloudMap = new Map();
+        cloudBookings.forEach(item => { if (item && item.id) cloudMap.set(item.id, item); });
+        realMarriageBookings.forEach(localB => {
+          if (localB && localB.isPendingSync && !cloudMap.has(localB.id)) {
+            cloudMap.set(localB.id, localB);
+          }
+        });
+
+        // Cloud is master truth (with offline pending bookings fully protected)
+        const sortedCloud = Array.from(cloudMap.values()).sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
         const cloudJson = JSON.stringify(sortedCloud);
         const localJson = JSON.stringify(realMarriageBookings);
 
@@ -7564,6 +7606,8 @@
             ...bPayload,
             rawJson: JSON.stringify(bPayload)
           });
+          b.isPendingSync = false;
+          saveRealBookingsToStorage();
           updateCloudSyncStatusBadge('online');
           return;
         } catch(e) {
@@ -7586,9 +7630,13 @@
           }
         });
         await fetch(url, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: body });
+        b.isPendingSync = false;
+        saveRealBookingsToStorage();
         updateCloudSyncStatusBadge('online');
       } catch (err) {
         console.warn("Cloud sync write note (offline):", err);
+        b.isPendingSync = true;
+        saveRealBookingsToStorage();
         updateCloudSyncStatusBadge('offline');
       }
     }
@@ -7777,8 +7825,26 @@
           }
         }
 
-        // Cloud is master source of truth
-        realMarriageBookings = remoteBookings.sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
+        // 1. Upload any pending offline bookings to cloud FIRST
+        const pendingOffline = realMarriageBookings.filter(b => b && b.isPendingSync);
+        if (pendingOffline.length > 0) {
+          for (const pb of pendingOffline) {
+            try {
+              await syncBookingToCloud(pb);
+            } catch(e) {}
+          }
+        }
+
+        const cloudMap = new Map();
+        remoteBookings.forEach(item => { if (item && item.id) cloudMap.set(item.id, item); });
+        realMarriageBookings.forEach(localB => {
+          if (localB && localB.isPendingSync && !cloudMap.has(localB.id)) {
+            cloudMap.set(localB.id, localB);
+          }
+        });
+
+        // Cloud is master source of truth (with offline pending bookings fully protected)
+        realMarriageBookings = Array.from(cloudMap.values()).sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
         saveRealBookingsToStorage();
         updateDashboardKPIs();
         renderCalendar();
@@ -7788,20 +7854,14 @@
           loadBookingIntoSlip(selectedBookingId);
         }
 
-        // 5. Also sync Hall Config and Operator Accounts (2-Way Pull & Merge!)
+        // 5. Also sync Hall Config and Operator Accounts (Cloud is Single Source of Truth!)
         await syncHallConfigToCloud();
         try {
           const cloudOps = await fetchOperatorsFromCloud();
           if (Array.isArray(cloudOps) && cloudOps.length > 0) {
-            const localOps = getOperatorsList();
-            const mergedMap = new Map();
-            cloudOps.forEach(op => mergedMap.set(op.id, op));
-            localOps.forEach(op => { if (!mergedMap.has(op.id)) mergedMap.set(op.id, op); });
-            const merged = Array.from(mergedMap.values());
-            localStorage.setItem('vmh_operators', JSON.stringify(merged));
-            await syncOperatorsToCloud(merged);
-          } else {
-            await syncOperatorsToCloud();
+            // Cloud is single master source of truth for operator accounts
+            // Never re-upload deleted operators from local storage!
+            localStorage.setItem('vmh_operators', JSON.stringify(cloudOps));
           }
         } catch(opErr) {
           console.warn("Operator sync notice:", opErr);
@@ -7851,7 +7911,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.2.1";
+    const APP_VERSION = "1.2.2";
     window.APP_VERSION = APP_VERSION;
     let otaReleaseState = {
       betaVersion: APP_VERSION,

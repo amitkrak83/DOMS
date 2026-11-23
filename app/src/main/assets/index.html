@@ -169,13 +169,10 @@
         <h1 id="headerAppTitle" class="text-base font-black tracking-wide leading-tight text-amber-50 truncate">
           वर्मा मैरिज हॉल
         </h1>
-        <p id="headerAppSubtitle" class="text-[11px] text-amber-200 font-semibold opacity-95 leading-tight truncate flex items-center justify-center gap-1.5">
-          <span id="headerAppSubLoc">असनहरा, बस्ती</span>
-          <span id="headerAppVersionBadge" class="text-[9.5px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-1.5 py-0.5 rounded-md font-bold">v1.2.1</span>
-          <button type="button" onclick="manualForceSyncCloud()" title="क्लाउड सिंक स्थिति (टैप करके तुरंत सिंक करें)" class="inline-flex items-center gap-1 text-[9.5px] bg-amber-950/70 text-emerald-300 border border-emerald-400/40 px-1.5 py-0.5 rounded-md font-bold btn-tactile">
-            <span id="headerSyncDot" class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span id="headerSyncStatus">2-फोन सिंक ☁️</span>
-          </button>
+        <p id="headerAppSubtitle" class="text-xs text-amber-200 font-semibold opacity-95 leading-tight flex items-center justify-center gap-2">
+          <span id="headerAppSubLoc">ग्राम असनहरा, बस्ती</span>
+          <span class="text-amber-300/60">•</span>
+          <span id="headerAppVersionBadge" class="text-[10px] bg-amber-950/70 text-amber-200 border border-amber-400/50 px-2 py-0.5 rounded-md font-bold">v1.2.3</span>
         </p>
       </div>
 
@@ -2132,6 +2129,24 @@
           </div>
           <h3 id="userProfileName" class="text-base font-black text-amber-950">वर्मा मैरिज हॉल</h3>
           <p id="userProfileEmail" class="text-xs font-mono font-bold text-slate-600">vermamarriagehall@gmail.com</p>
+        </div>
+
+        <!-- Cloud Sync & Device Status Card (Reshuffled from Header) -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-black text-slate-800 flex items-center gap-1.5">
+              <span>☁️</span>
+              <span>2-फोन क्लाउड सिंक</span>
+            </span>
+            <span id="profileCloudSyncStatus" class="text-[10.5px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>सक्रिय (Online)</span>
+            </span>
+          </div>
+          <button type="button" onclick="manualForceSyncCloud()" class="w-full py-2 px-3 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-xl shadow-2xs btn-tactile flex items-center justify-center gap-1.5">
+            <span>🔄</span>
+            <span>तुरंत 2-तरफ़ा सिंक करें (Sync Now)</span>
+          </button>
         </div>
 
         <!-- Change Password Section (Toggleable, Available for All Operators) -->
@@ -6530,7 +6545,7 @@
       
       // Header
       safeText('headerAppTitle', isHi ? "वर्मा मैरिज हॉल" : "Verma Marriage Hall");
-      safeText('headerAppSubLoc', isHi ? "असनहरा, बस्ती" : "Asnahara, Basti");
+      safeText('headerAppSubLoc', isHi ? "ग्राम असनहरा, बस्ती" : "Asnahara, Basti");
       if (typeof updateCloudSyncStatusBadge === 'function') { 
         updateCloudSyncStatusBadge(cloudSyncState); 
       } else { 
@@ -7159,6 +7174,7 @@
       const dot = document.getElementById('headerSyncDot');
       const text = document.getElementById('headerSyncStatus');
       const adminStatus = document.getElementById('adminCloudStatusText');
+      const profileStatus = document.getElementById('profileCloudSyncStatus');
 
       if (state === 'online') {
         if (dot) dot.className = "inline-block w-2 h-2 rounded-full bg-emerald-400 shadow-sm animate-pulse";
@@ -7169,6 +7185,10 @@
         if (adminStatus) {
           adminStatus.innerHTML = `<span class="text-emerald-700 bg-emerald-100 text-[11px] font-black px-2 py-0.5 rounded-full border border-emerald-300">🟢 सिंक सक्रिय</span>`;
         }
+        if (profileStatus) {
+          profileStatus.innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>${currentLang === 'hi' ? 'सक्रिय (Online)' : 'Connected'}</span>`;
+          profileStatus.className = "text-[10.5px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1";
+        }
       } else if (state === 'connecting') {
         if (dot) dot.className = "inline-block w-2 h-2 rounded-full bg-amber-400";
         if (text) {
@@ -7178,6 +7198,10 @@
         if (adminStatus) {
           adminStatus.innerHTML = `<span class="text-amber-700 bg-amber-100 text-[11px] font-black px-2 py-0.5 rounded-full border border-amber-300">🟡 कनेक्ट हो रहा है...</span>`;
         }
+        if (profileStatus) {
+          profileStatus.innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span><span>${currentLang === 'hi' ? 'सिंक हो रहा है...' : 'Syncing...'}</span>`;
+          profileStatus.className = "text-[10.5px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full flex items-center gap-1";
+        }
       } else {
         if (dot) dot.className = "inline-block w-2 h-2 rounded-full bg-slate-400";
         if (text) {
@@ -7186,6 +7210,10 @@
         }
         if (adminStatus) {
           adminStatus.innerHTML = `<span class="text-slate-600 bg-slate-100 text-[11px] font-bold px-2 py-0.5 rounded-full border border-slate-300">🟠 ऑफ़लाइन</span>`;
+        }
+        if (profileStatus) {
+          profileStatus.innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-400"></span><span>${currentLang === 'hi' ? 'ऑफ़लाइन (लोकल)' : 'Offline'}</span>`;
+          profileStatus.className = "text-[10.5px] font-bold text-slate-600 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded-full flex items-center gap-1";
         }
       }
     }
@@ -7911,7 +7939,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.2.2";
+    const APP_VERSION = "1.2.3";
     window.APP_VERSION = APP_VERSION;
     let otaReleaseState = {
       betaVersion: APP_VERSION,

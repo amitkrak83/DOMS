@@ -376,7 +376,13 @@
             <label id="labelCustName" class="text-xs font-bold text-slate-700 block mb-1">
               पार्टी / वर / वधु पक्ष का नाम (Party Name) *
             </label>
-            <input type="text" id="hallCustName" oninput="onCustomerDetailsChanged()" placeholder="पार्टी / वर-वधु पक्ष का नाम" class="w-full text-sm font-bold p-3 bg-white border-2 border-slate-300 text-slate-950 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all">
+            <div class="flex items-center gap-2">
+              <input type="text" id="hallCustName" oninput="onCustomerDetailsChanged()" placeholder="पार्टी / वर-वधु पक्ष का नाम" class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-300 text-slate-950 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all">
+              <button type="button" onclick="startVoiceInput('hallCustName')" id="micBtn-hallCustName" title="बोलकर लिखें (Voice Input)" class="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border-2 border-emerald-400 text-emerald-800 flex flex-col items-center justify-center shrink-0 btn-tactile shadow-2xs transition-all">
+                <span class="text-lg leading-none">🎙️</span>
+                <span class="text-[8px] font-black leading-tight mt-0.5">बोलें</span>
+              </button>
+            </div>
           </div>
 
           <div>
@@ -390,7 +396,13 @@
             <label id="labelCustAddress" class="text-xs font-black text-slate-800 block mb-1">
               पार्टी का पता (गाँव / कस्बा / शहर)
             </label>
-            <input type="text" id="hallCustAddress" placeholder="उदा. ग्राम असनहरा, बस्ती या शहर का नाम" class="w-full text-sm font-bold p-3 bg-white border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all text-slate-950">
+            <div class="flex items-center gap-2">
+              <input type="text" id="hallCustAddress" placeholder="उदा. ग्राम असनहरा, बस्ती या शहर का नाम" class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all text-slate-950">
+              <button type="button" onclick="startVoiceInput('hallCustAddress')" id="micBtn-hallCustAddress" title="बोलकर लिखें (Voice Input)" class="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border-2 border-emerald-400 text-emerald-800 flex flex-col items-center justify-center shrink-0 btn-tactile shadow-2xs transition-all">
+                <span class="text-lg leading-none">🎙️</span>
+                <span class="text-[8px] font-black leading-tight mt-0.5">बोलें</span>
+              </button>
+            </div>
           </div>
 
           <!-- CUSTOM OCCASION SELECTOR (TOUCH CHIPS - DYNAMIC CRUD) -->
@@ -862,9 +874,13 @@
           </div>
         </div>
 
-        <!-- SEARCH INPUT -->
-        <div>
-          <input type="text" id="hallSearchInput" oninput="renderAllBookingsList()" placeholder="🔍 पार्टी का नाम या मोबाइल नंबर खोजें..." class="w-full text-sm font-bold p-3 bg-white border-2 border-slate-400 rounded-xl outline-none focus:border-amber-800 shadow-xs text-slate-950 placeholder-slate-500">
+        <!-- SEARCH & EXPORT ROW -->
+        <div class="flex items-center gap-2">
+          <input type="text" id="hallSearchInput" oninput="renderAllBookingsList()" placeholder="🔍 पार्टी का नाम या मोबाइल नंबर खोजें..." class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-400 rounded-xl outline-none focus:border-amber-800 shadow-xs text-slate-950 placeholder-slate-500">
+          <button type="button" onclick="openExcelExportModal()" title="एक्सेल एक्सपोर्ट (Excel Export)" class="p-3 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-900 border-2 border-emerald-400 rounded-xl flex items-center justify-center gap-1.5 btn-tactile shadow-2xs shrink-0 font-black text-xs">
+            <span class="text-base">📊</span>
+            <span class="hidden sm:inline">एक्सेल</span>
+          </button>
         </div>
 
         <!-- 4 FILTER PILLS (UPCOMING, PAST, HAS DUE, ALL) -->
@@ -1445,9 +1461,9 @@
             </div>
 
             <div class="space-y-2 text-xs">
-              <button type="button" onclick="exportBookingsToCSV()" class="w-full py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-950 font-black rounded-xl border border-emerald-300 flex items-center justify-center gap-2 btn-tactile shadow-2xs">
+              <button type="button" onclick="openExcelExportModal()" class="w-full py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-950 font-black rounded-xl border border-emerald-300 flex items-center justify-center gap-2 btn-tactile shadow-2xs">
                 <span>📊</span>
-                <span>एक्सेल (CSV) फाइल डाउनलोड करें</span>
+                <span>स्मार्ट एक्सेल एक्सपोर्ट (तारीख व बकाया फ़िल्टर)</span>
               </button>
               <div class="grid grid-cols-2 gap-2">
                 <button type="button" onclick="exportBackupJSON()" class="w-full py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-950 font-black rounded-xl border border-blue-300 flex items-center justify-center gap-1.5 btn-tactile shadow-2xs">
@@ -2408,6 +2424,90 @@
     </div>
 
     <!-- ============================================================== -->
+    <!-- MODAL: SMART EXCEL EXPORT (तारीख दायरा व बकाया फ़िल्टर)       -->
+    <!-- ============================================================== -->
+    <div id="modalExcelExport" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3.5 hidden" onclick="closeExcelExportModal()">
+      <div class="bg-white w-full max-w-md rounded-3xl p-5 space-y-4 shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl shrink-0 font-bold">
+              📊
+            </div>
+            <div>
+              <h4 class="text-sm font-black text-slate-900">स्मार्ट एक्सेल एक्सपोर्ट</h4>
+              <p class="text-[10px] text-slate-500 font-bold">तारीख व बकाया फ़िल्टर अनुसार डाउनलोड करें</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeExcelExportModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-black btn-tactile">✕</button>
+        </div>
+
+        <!-- 1. DATE RANGE PRESETS & INPUTS -->
+        <div class="space-y-2">
+          <label class="text-xs font-black text-slate-800 flex items-center justify-between">
+            <span>📅 कार्यक्रम तारीख (Date Range)</span>
+            <span class="text-[10px] text-amber-800 font-bold font-mono" id="exportDateRangeBadge">सभी तारीखें</span>
+          </label>
+          <div class="grid grid-cols-4 gap-1.5">
+            <button type="button" onclick="setExportDatePreset('all')" id="expPreset-all" class="py-1.5 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-amber-800 text-white border-amber-800 shadow-2xs">सभी</button>
+            <button type="button" onclick="setExportDatePreset('this_month')" id="expPreset-this_month" class="py-1.5 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-slate-100 text-slate-700 border-slate-300">यह महीना</button>
+            <button type="button" onclick="setExportDatePreset('next_month')" id="expPreset-next_month" class="py-1.5 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-slate-100 text-slate-700 border-slate-300">अगला महीना</button>
+            <button type="button" onclick="setExportDatePreset('custom')" id="expPreset-custom" class="py-1.5 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-slate-100 text-slate-700 border-slate-300">कस्टम</button>
+          </div>
+          <div id="exportCustomDateRow" class="grid grid-cols-2 gap-2 pt-1 hidden">
+            <div>
+              <span class="text-[10px] text-slate-600 font-bold block mb-0.5">कब से (From Date)</span>
+              <input type="date" id="exportFromDate" onchange="updateExportSummary()" class="w-full text-xs font-bold p-2.5 bg-slate-50 border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600">
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-600 font-bold block mb-0.5">कब तक (To Date)</span>
+              <input type="date" id="exportToDate" onchange="updateExportSummary()" class="w-full text-xs font-bold p-2.5 bg-slate-50 border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600">
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. PAYMENT STATUS FILTER -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-black text-slate-800 block">💰 भुगतान स्थिति (Payment Filter)</label>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button type="button" onclick="setExportPayFilter('all')" id="expPay-all" class="py-2 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-amber-800 text-white border-amber-800 shadow-2xs">
+              सभी बुकिंग्स
+            </button>
+            <button type="button" onclick="setExportPayFilter('due')" id="expPay-due" class="py-2 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-slate-100 text-slate-700 border-slate-300">
+              🔴 केवल बकाया
+            </button>
+            <button type="button" onclick="setExportPayFilter('paid')" id="expPay-paid" class="py-2 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-slate-100 text-slate-700 border-slate-300">
+              🟢 पूरी चुकता
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. LIVE MATCHING SUMMARY -->
+        <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex items-center justify-between text-xs">
+          <div>
+            <span class="text-[10px] text-amber-900 font-bold block">चयनित बुकिंग्स:</span>
+            <span class="text-sm font-black text-slate-900" id="exportPreviewCount">0 रिकॉर्ड्स</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-red-700 font-bold block">कुल बकाया रकम:</span>
+            <span class="text-sm font-black text-red-600 font-mono" id="exportPreviewDue">₹ 0</span>
+          </div>
+        </div>
+
+        <!-- 4. ACTIONS -->
+        <div class="flex items-center gap-2 pt-1">
+          <button type="button" onclick="executeSmartExcelExport()" class="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-2xl flex items-center justify-center gap-2 btn-tactile shadow-xs">
+            <span>📥</span>
+            <span>एक्सेल फाइल डाउनलोड करें</span>
+          </button>
+          <button type="button" onclick="closeExcelExportModal()" class="py-3 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs rounded-2xl btn-tactile">
+            रद्द करें
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
     <!-- MODAL: EDIT PAYMENT LINE ITEM ENTRY (संशोधित भुगतान)           -->
     <!-- ============================================================== -->
     <div id="modalEditPaymentEntry" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
@@ -3154,7 +3254,7 @@
       if (!ok) return;
       const updated = ops.filter(o => o.id !== opId);
       localStorage.setItem('vmh_operators', JSON.stringify(updated));
-      try { syncOperatorsToCloud(updated); } catch(e) {}
+      try { syncOperatorsToCloud(updated, true); } catch(e) {}
       renderAdminOperatorsList();
       showToast("खाता हटा दिया गया!");
     }
@@ -3898,6 +3998,24 @@
                   </button>
                 ` : ''}
               </div>
+            </div>
+
+            <!-- QUICK 1-TOUCH CALL & WHATSAPP BUTTONS -->
+            <div class="flex items-center gap-2 pt-1.5 border-t border-slate-100">
+              <button type="button" 
+                      onclick="event.stopPropagation(); dialCustomer('${escapeHtml(b.partyPhone)}')" 
+                      title="ग्राहक को कॉल लगाएं"
+                      class="flex-1 py-1.5 px-2 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-900 border border-emerald-300 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 btn-tactile shadow-2xs transition-all">
+                <span>📞</span>
+                <span>कॉल करें</span>
+              </button>
+              <button type="button" 
+                      onclick="event.stopPropagation(); chatCustomerWhatsApp('${escapeHtml(b.partyPhone)}')" 
+                      title="व्हाट्सएप चैट खोलें (सीधी चैट)"
+                      class="flex-1 py-1.5 px-2 bg-green-50 hover:bg-green-100 active:bg-green-200 text-green-900 border border-green-300 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 btn-tactile shadow-2xs transition-all">
+                <span>💬</span>
+                <span>व्हाट्सएप</span>
+              </button>
             </div>
           </div>
         `;
@@ -6101,6 +6219,24 @@
                   : `<button type="button" onclick="event.stopPropagation(); openReceivePaymentModal('${b.id}')" class="text-[10px] font-black text-emerald-900 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2 py-0.5 rounded-md btn-tactile shadow-2xs">💰 भुगतान लें</button>`}
               </div>
             </div>
+
+            <!-- QUICK 1-TOUCH CALL & WHATSAPP BUTTONS -->
+            <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+              <button type="button" 
+                      onclick="event.stopPropagation(); dialCustomer('${escapeHtml(b.partyPhone)}')" 
+                      title="ग्राहक को कॉल लगाएं"
+                      class="flex-1 py-1.5 px-2 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-900 border border-emerald-300 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 btn-tactile shadow-2xs transition-all">
+                <span>📞</span>
+                <span>कॉल करें</span>
+              </button>
+              <button type="button" 
+                      onclick="event.stopPropagation(); chatCustomerWhatsApp('${escapeHtml(b.partyPhone)}')" 
+                      title="व्हाट्सएप चैट खोलें (सीधी चैट)"
+                      class="flex-1 py-1.5 px-2 bg-green-50 hover:bg-green-100 active:bg-green-200 text-green-900 border border-green-300 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 btn-tactile shadow-2xs transition-all">
+                <span>💬</span>
+                <span>व्हाट्सएप</span>
+              </button>
+            </div>
           </div>
         `;
       }).join('');
@@ -7722,10 +7858,22 @@
         isInitialCloudSnapshot = false;
         const sortedRemote = remoteBookings.sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
 
+        // PENDING OFFLINE SAFETY GUARD:
+        // Never allow remote snapshot to wipe locally queued offline bookings!
+        const pendingOffline = (realMarriageBookings || []).filter(b => b && b.isPendingSync);
+        const remoteIds = new Set(sortedRemote.map(b => b.id));
+        const mergedBookings = [...sortedRemote];
+        for (const pb of pendingOffline) {
+          if (!remoteIds.has(pb.id)) {
+            mergedBookings.push(pb);
+          }
+        }
+        mergedBookings.sort((a,b) => new Date(a.eventDate) - new Date(b.eventDate));
+
         // Smart diff check: ONLY re-render DOM if data actually changed
-        if (haveBookingsChanged(realMarriageBookings, sortedRemote)) {
+        if (haveBookingsChanged(realMarriageBookings, mergedBookings)) {
           console.log("Realtime Firestore push detected change. Updating UI calmly...");
-          realMarriageBookings = sortedRemote;
+          realMarriageBookings = mergedBookings;
           saveRealBookingsToStorage();
           updateDashboardKPIs();
           renderCalendar();
@@ -7797,7 +7945,7 @@
       // 4. EVENT-DRIVEN REAL-TIME OPERATOR ACCOUNTS (ZERO POLLING, 2-PHONE SYNC!)
       firestoreDb.collection('vmh_settings').doc('operators').onSnapshot((doc) => {
         if (!doc.exists) {
-          syncOperatorsToCloud();
+          console.warn("Operators document does not exist yet in Firestore. Waiting for authoritative initialization.");
           return;
         }
         const d = doc.data();
@@ -7927,7 +8075,8 @@
             try { remoteCfg = d.rawJson ? JSON.parse(d.rawJson) : d; } catch(e) { remoteCfg = d; }
             if (remoteCfg) {
               isCloudConfigLoaded = true;
-              hallConfig = { ...remoteCfg, ...hallConfig };
+              // Authoritative cloud config takes precedence over local initial defaults
+              hallConfig = { ...hallConfig, ...remoteCfg };
               localStorage.setItem('vmh_config', JSON.stringify(hallConfig));
             }
           }
@@ -7967,10 +8116,54 @@
       }
     }
 
-    async function syncOperatorsToCloud(opsList) {
-      const ops = opsList || getOperatorsList();
+    async function syncOperatorsToCloud(opsList, isExplicitDelete = false) {
+      let localOps = opsList || getOperatorsList() || [];
+      if (!Array.isArray(localOps) || localOps.length === 0) {
+        localOps = DEFAULT_OPERATORS;
+      }
+
+      // PULL-BEFORE-PUSH & SMART UNION MERGE GUARD:
+      // Prevents empty local cache, fresh app boots, or logout states from wiping cloud accounts!
+      try {
+        const cloudOps = await fetchOperatorsFromCloud();
+        if (Array.isArray(cloudOps) && cloudOps.length > 0) {
+          if (!isExplicitDelete) {
+            // Auto-merge cloud and local operators so existing accounts are NEVER wiped
+            const mergedMap = new Map();
+            // 1. Seed with cloud operators (authoritative remote)
+            cloudOps.forEach(op => {
+              if (op && (op.id || op.email)) {
+                const key = String(op.id || op.email).toLowerCase();
+                mergedMap.set(key, op);
+              }
+            });
+            // 2. Layer local modifications or newly created accounts
+            localOps.forEach(op => {
+              if (op && (op.id || op.email)) {
+                const key = String(op.id || op.email).toLowerCase();
+                if (mergedMap.has(key)) {
+                  mergedMap.set(key, { ...mergedMap.get(key), ...op });
+                } else {
+                  mergedMap.set(key, op);
+                }
+              }
+            });
+            localOps = Array.from(mergedMap.values());
+            localStorage.setItem('vmh_operators', JSON.stringify(localOps));
+          } else {
+            // Explicit delete confirmed by master owner: verify owner remains present
+            const hasOwner = localOps.some(o => o.isOwner || o.id === 'op_owner');
+            if (!hasOwner) {
+              localOps.unshift(DEFAULT_OPERATORS[0]);
+            }
+          }
+        }
+      } catch (mergeErr) {
+        console.warn("Pull-before-push operator guard warning:", mergeErr);
+      }
+
       const payload = {
-        operators: ops,
+        operators: localOps,
         updatedByDevice: myDeviceId,
         updatedAt: Date.now()
       };
@@ -8171,7 +8364,7 @@
     // =============================================================
     // OTA (OVER-THE-AIR) 2-CHANNEL UPDATE & RELEASE ENGINE
     // =============================================================
-    const APP_VERSION = "1.3.0";
+    const APP_VERSION = "1.4.0";
     window.APP_VERSION = APP_VERSION;
     let otaReleaseState = {
       betaVersion: APP_VERSION,
@@ -8832,15 +9025,16 @@
       const currentUser = getCurrentUser();
       const receiverName = currentUser ? currentUser.name : 'वर्मा मैरिज हॉल';
 
-      const nextPayId = 'PAY-' + (b.payments.length + 1);
-      b.payments.push({
+      const nextPayId = 'PAY-' + (b.payments.length + 1) + '-' + Date.now().toString().slice(-4);
+      const newPayItem = {
         id: nextPayId,
         date: `${dateStr} ${timeStr}`,
         amount: amt,
         mode: currentPayModalMode,
         note: note || `भुगतान #${b.payments.length + 1}`,
         receivedBy: receiverName
-      });
+      };
+      b.payments.push(newPayItem);
 
       const totalPaid = b.payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
       b.advancePaid = totalPaid;
@@ -8855,8 +9049,14 @@
         console.error("Storage error:", e);
       }
 
+      // ATOMIC CONCURRENT PAYMENT SAFETY:
+      // Appends payment via Firestore runTransaction so two devices never overwrite each other!
       try {
-        syncBookingToCloud(b);
+        if (firestoreDb) {
+          syncPaymentAtomicallyToCloud(b.id, newPayItem);
+        } else {
+          syncBookingToCloud(b);
+        }
       } catch (e) {
         console.error("Sync error:", e);
       }
@@ -9121,6 +9321,361 @@
       renderUpcomingBookingsList();
       renderAllBookingsList();
       showToast("🗑️ पेमेंट एंट्री हटा दी गई!");
+    }
+
+    // -------------------------------------------------------------
+    // QUICK 1-TOUCH CALL & WHATSAPP CHAT (DIRECT, NO PREFILLED MSG)
+    // -------------------------------------------------------------
+    function dialCustomer(phone) {
+      if (!phone) {
+        showToast("⚠️ ग्राहक का मोबाइल नंबर उपलब्ध नहीं है!");
+        return;
+      }
+      const clean = String(phone).replace(/\D/g, '');
+      if (!clean) {
+        showToast("⚠️ अमान्य मोबाइल नंबर!");
+        return;
+      }
+      if (window.AndroidApp && typeof window.AndroidApp.dialPhone === 'function') {
+        window.AndroidApp.dialPhone(clean);
+      } else {
+        window.location.href = `tel:${clean}`;
+      }
+    }
+
+    function chatCustomerWhatsApp(phone) {
+      if (!phone) {
+        showToast("⚠️ ग्राहक का मोबाइल नंबर उपलब्ध नहीं है!");
+        return;
+      }
+      let clean = String(phone).replace(/\D/g, '');
+      if (clean.length === 10) clean = '91' + clean;
+      if (!clean) {
+        showToast("⚠️ अमान्य मोबाइल नंबर!");
+        return;
+      }
+      if (window.AndroidApp && typeof window.AndroidApp.openWhatsAppChat === 'function') {
+        window.AndroidApp.openWhatsAppChat(clean);
+      } else {
+        window.open(`https://wa.me/${clean}`, '_blank');
+      }
+    }
+
+    // -------------------------------------------------------------
+    // DEDICATED VOICE INPUT ASSISTANT (MIC FOR PAPA JI, HINDI hi-IN)
+    // -------------------------------------------------------------
+    let activeSpeechRecognition = null;
+
+    function startVoiceInput(targetInputId) {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        showToast("⚠️ आपके ब्राउज़र या फोन में वॉयस इनपुट समर्थित नहीं है।");
+        return;
+      }
+
+      const micBtn = document.getElementById('micBtn-' + targetInputId);
+      const targetInp = document.getElementById(targetInputId);
+      if (!targetInp) return;
+
+      if (activeSpeechRecognition) {
+        try { activeSpeechRecognition.stop(); } catch(e) {}
+        activeSpeechRecognition = null;
+        if (micBtn) {
+          micBtn.classList.remove('bg-red-600', 'text-white', 'border-red-600', 'animate-pulse');
+          micBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-400');
+        }
+        return;
+      }
+
+      try {
+        const recognition = new SpeechRec();
+        recognition.lang = 'hi-IN';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        if (micBtn) {
+          micBtn.classList.remove('bg-emerald-50', 'text-emerald-800', 'border-emerald-400');
+          micBtn.classList.add('bg-red-600', 'text-white', 'border-red-600', 'animate-pulse');
+        }
+        showToast("🎙️ बोलिए, सुन रहे हैं... (जैसे: रामेश्वर वर्मा, ग्राम असनहरा)");
+
+        recognition.onresult = (event) => {
+          if (event.results && event.results[0] && event.results[0][0]) {
+            const transcript = event.results[0][0].transcript;
+            if (transcript) {
+              targetInp.value = transcript.trim();
+              targetInp.dispatchEvent(new Event('input', { bubbles: true }));
+              showToast(`✅ लिखा गया: "${transcript.trim()}"`);
+            }
+          }
+        };
+
+        recognition.onerror = (err) => {
+          console.warn("Speech recognition notice:", err);
+          if (err.error === 'not-allowed') {
+            showToast("⚠️ कृपया माइक्रोफोन (माइक) की अनुमति दें!");
+          } else {
+            showToast("⚠️ आवाज़ स्पष्ट नहीं आई, कृपया दोबारा बोलें।");
+          }
+        };
+
+        recognition.onend = () => {
+          activeSpeechRecognition = null;
+          if (micBtn) {
+            micBtn.classList.remove('bg-red-600', 'text-white', 'border-red-600', 'animate-pulse');
+            micBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-400');
+          }
+        };
+
+        activeSpeechRecognition = recognition;
+        recognition.start();
+      } catch (err) {
+        console.error("Speech init error:", err);
+        showToast("⚠️ माइक शुरू करने में त्रुटि हुई।");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // ATOMIC CONCURRENT PAYMENT SYNC (FIRESTORE TRANSACTION)
+    // -------------------------------------------------------------
+    async function syncPaymentAtomicallyToCloud(bookingId, paymentItem) {
+      if (!firestoreDb) return;
+      try {
+        const docRef = firestoreDb.collection('vmh_bookings').doc(bookingId);
+        await firestoreDb.runTransaction(async (transaction) => {
+          const snap = await transaction.get(docRef);
+          if (!snap.exists) return;
+          const d = snap.data();
+          let curB = null;
+          try { curB = d.rawJson ? JSON.parse(d.rawJson) : d; } catch(e) { curB = d; }
+          const curPayments = Array.isArray(curB.payments) ? [...curB.payments] : [];
+          if (!curPayments.some(p => p.id === paymentItem.id)) {
+            curPayments.push(paymentItem);
+          }
+          const totalPaid = curPayments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+          const totalRent = parseFloat(curB.totalRent) || 0;
+          const balDue = Math.max(0, totalRent - totalPaid);
+
+          const updatedPayload = {
+            ...curB,
+            payments: curPayments,
+            advancePaid: totalPaid,
+            balanceDue: balDue,
+            updatedAt: Date.now(),
+            updatedByDevice: myDeviceId
+          };
+          delete updatedPayload.isPendingSync;
+
+          transaction.set(docRef, {
+            ...updatedPayload,
+            rawJson: JSON.stringify(updatedPayload)
+          }, { merge: true });
+        });
+      } catch (txErr) {
+        console.warn("Atomic transaction payment note, falling back to standard sync:", txErr);
+        const b = realMarriageBookings.find(x => x.id === bookingId);
+        if (b) syncBookingToCloud(b);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // SMART EXCEL EXPORT (DATE-RANGE & PAYMENT STATUS FILTERS)
+    // -------------------------------------------------------------
+    let exportCurrentDatePreset = 'all';
+    let exportCurrentPayFilter = 'all';
+
+    function openExcelExportModal() {
+      const modal = document.getElementById('modalExcelExport');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      setExportDatePreset(exportCurrentDatePreset || 'all');
+      setExportPayFilter(exportCurrentPayFilter || 'all');
+      updateExportSummary();
+    }
+
+    function closeExcelExportModal() {
+      const modal = document.getElementById('modalExcelExport');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function setExportDatePreset(preset) {
+      exportCurrentDatePreset = preset;
+      const presets = ['all', 'this_month', 'next_month', 'custom'];
+      presets.forEach(p => {
+        const btn = document.getElementById('expPreset-' + p);
+        if (btn) {
+          if (p === preset) {
+            btn.className = "py-1.5 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-amber-800 text-white border-amber-800 shadow-2xs";
+          } else {
+            btn.className = "py-1.5 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-slate-100 text-slate-700 border-slate-300";
+          }
+        }
+      });
+
+      const customRow = document.getElementById('exportCustomDateRow');
+      const badge = document.getElementById('exportDateRangeBadge');
+      const now = new Date();
+
+      if (preset === 'all') {
+        if (customRow) customRow.classList.add('hidden');
+        if (badge) badge.innerText = "सभी तारीखें";
+      } else if (preset === 'this_month') {
+        if (customRow) customRow.classList.add('hidden');
+        const y = now.getFullYear();
+        const m = now.getMonth();
+        const first = new Date(y, m, 1);
+        const last = new Date(y, m + 1, 0);
+        const fStr = first.toISOString().split('T')[0];
+        const lStr = last.toISOString().split('T')[0];
+        if (document.getElementById('exportFromDate')) document.getElementById('exportFromDate').value = fStr;
+        if (document.getElementById('exportToDate')) document.getElementById('exportToDate').value = lStr;
+        if (badge) badge.innerText = `${fStr} से ${lStr}`;
+      } else if (preset === 'next_month') {
+        if (customRow) customRow.classList.add('hidden');
+        const y = now.getFullYear();
+        const m = now.getMonth() + 1;
+        const first = new Date(y, m, 1);
+        const last = new Date(y, m + 1, 0);
+        const fStr = first.toISOString().split('T')[0];
+        const lStr = last.toISOString().split('T')[0];
+        if (document.getElementById('exportFromDate')) document.getElementById('exportFromDate').value = fStr;
+        if (document.getElementById('exportToDate')) document.getElementById('exportToDate').value = lStr;
+        if (badge) badge.innerText = `${fStr} से ${lStr}`;
+      } else if (preset === 'custom') {
+        if (customRow) customRow.classList.remove('hidden');
+        if (badge) badge.innerText = "कस्टम दायरा";
+      }
+      updateExportSummary();
+    }
+
+    function setExportPayFilter(filter) {
+      exportCurrentPayFilter = filter;
+      const filters = ['all', 'due', 'paid'];
+      filters.forEach(f => {
+        const btn = document.getElementById('expPay-' + f);
+        if (btn) {
+          if (f === filter) {
+            btn.className = "py-2 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-amber-800 text-white border-amber-800 shadow-2xs";
+          } else {
+            btn.className = "py-2 px-1 rounded-xl text-[10.5px] font-black border transition-all btn-tactile bg-slate-100 text-slate-700 border-slate-300";
+          }
+        }
+      });
+      updateExportSummary();
+    }
+
+    function getFilteredExportBookings() {
+      if (!realMarriageBookings || realMarriageBookings.length === 0) return [];
+      const from = document.getElementById('exportFromDate')?.value || '';
+      const to = document.getElementById('exportToDate')?.value || '';
+
+      return realMarriageBookings.filter(b => {
+        if (!b) return false;
+        // Date range filter
+        if (exportCurrentDatePreset !== 'all') {
+          if (from && b.eventDate < from) return false;
+          if (to && b.eventDate > to) return false;
+        }
+        // Payment filter
+        const due = parseFloat(b.balanceDue) || 0;
+        if (exportCurrentPayFilter === 'due' && due <= 0) return false;
+        if (exportCurrentPayFilter === 'paid' && due > 0) return false;
+
+        return true;
+      });
+    }
+
+    function updateExportSummary() {
+      const list = getFilteredExportBookings();
+      const countEl = document.getElementById('exportPreviewCount');
+      const dueEl = document.getElementById('exportPreviewDue');
+      if (countEl) countEl.innerText = `${list.length} रिकॉर्ड्स`;
+      if (dueEl) {
+        const totalDue = list.reduce((sum, b) => sum + (parseFloat(b.balanceDue) || 0), 0);
+        dueEl.innerText = `₹ ${totalDue.toLocaleString('en-IN')}`;
+      }
+    }
+
+    function executeSmartExcelExport() {
+      const list = getFilteredExportBookings();
+      if (list.length === 0) {
+        showToast("⚠️ चयनित फ़िल्टर अनुसार कोई बुकिंग रिकॉर्ड नहीं मिला!");
+        return;
+      }
+
+      const headers = [
+        "रसीद सं. (Slip No)",
+        "पार्टी का नाम (Party Name)",
+        "मोबाइल नंबर (Mobile)",
+        "गाँव / पता (Village/Address)",
+        "कार्यक्रम आयोजन (Occasion)",
+        "कार्यक्रम तारीख (Event Date)",
+        "समय स्लॉट (Timing Slot)",
+        "कुल तय किराया (Total Rent ₹)",
+        "प्राप्त रकम (Paid ₹)",
+        "शेष बकाया राशि (Balance Due ₹)",
+        "भुगतान स्थिति (Status)",
+        "एडवांस मोड (Advance Mode)",
+        "किश्तें (Payments Count)",
+        "चयनित सुविधाएं (Amenities)",
+        "बर्तन व सामान (Utensils)"
+      ];
+
+      const escapeCSV = (val) => {
+        if (val === null || val === undefined) return '""';
+        const s = String(val).replace(/"/g, '""');
+        return `"${s}"`;
+      };
+
+      const rows = list.map(b => {
+        const slotText = b.slotType === 'night_wedding' ? 'रात का कार्यक्रम (शाम 4 से सुबह 8)' : 'दिन का कार्यक्रम (सुबह 10 से शाम 4)';
+        const bal = parseFloat(b.balanceDue) || 0;
+        const statusText = bal <= 0 ? 'पूरा भुगतान (Paid)' : `बकाया ₹${bal}`;
+        const amText = (b.amenities || []).join(', ');
+        const utText = (b.utensils || []).map(u => `${u.qty} ${u.name}`).join(', ');
+        const payCount = (b.payments && Array.isArray(b.payments)) ? b.payments.length : 1;
+
+        return [
+          escapeCSV(b.id),
+          escapeCSV(b.partyName),
+          escapeCSV(b.partyPhone),
+          escapeCSV(b.partyAddress || 'असनहरा बाज़ार / स्थानीय'),
+          escapeCSV(b.occasion || 'विवाह समारोह'),
+          escapeCSV(b.eventDate),
+          escapeCSV(slotText),
+          escapeCSV(b.totalRent),
+          escapeCSV(b.advancePaid),
+          escapeCSV(b.balanceDue),
+          escapeCSV(statusText),
+          escapeCSV(b.advanceMode === 'cash' ? 'नकद (Cash)' : 'ऑनलाइन यूपीआई (UPI)'),
+          escapeCSV(payCount),
+          escapeCSV(amText),
+          escapeCSV(utText)
+        ].join(',');
+      });
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+      const todayStr = new Date().toISOString().split('T')[0];
+      const filename = `VMH_Bookings_${exportCurrentPayFilter}_${todayStr}.csv`;
+
+      // Android Native File Sharing or Web Download
+      if (window.AndroidApp && typeof window.AndroidApp.shareCsv === 'function') {
+        window.AndroidApp.shareCsv(csvContent, filename, "वर्मा मैरिज हॉल - बुकिंग्स एक्सेल डेटा");
+        closeExcelExportModal();
+        showToast("✅ एक्सेल फाइल तैयार! शेयर या सेव करें।");
+      } else {
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        closeExcelExportModal();
+        showToast("✅ एक्सेल (CSV) फाइल सफलतापूर्वक डाउनलोड हो गई!");
+      }
     }
 
     // =============================================================

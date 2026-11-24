@@ -195,6 +195,41 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url != null && (url.startsWith("tel:") || url.startsWith("mailto:") || url.startsWith("whatsapp:") || url.contains("wa.me/"))) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        return true;
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error handling URL scheme: " + url, e);
+                        return true;
+                    }
+                }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (request != null && request.getUrl() != null) {
+                    String url = request.getUrl().toString();
+                    if (url.startsWith("tel:") || url.startsWith("mailto:") || url.startsWith("whatsapp:") || url.contains("wa.me/")) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            return true;
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error handling URL scheme: " + url, e);
+                            return true;
+                        }
+                    }
+                }
+                return super.shouldOverrideUrlLoading(view, request);
+            }
+
+            @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 if (failingUrl != null && failingUrl.contains("ota_index.html")) {
                     Log.w(TAG, "OTA bundle failed to load, falling back to asset index.html");
@@ -426,6 +461,60 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void saveApkToDownloads() {
             shareApk();
+        }
+
+        @JavascriptInterface
+        public void dialPhone(String phone) {
+            try {
+                if (phone == null || phone.isEmpty()) return;
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+            } catch (Exception e) {
+                Log.e(TAG, "Error dialing phone: " + phone, e);
+            }
+        }
+
+        @JavascriptInterface
+        public void openWhatsAppChat(String phone) {
+            try {
+                if (phone == null || phone.isEmpty()) return;
+                String clean = phone.replaceAll("[^0-9]", "");
+                if (clean.length() == 10) clean = "91" + clean;
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + clean));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+            } catch (Exception e) {
+                Log.e(TAG, "Error opening WhatsApp chat for: " + phone, e);
+            }
+        }
+
+        @JavascriptInterface
+        public void shareCsv(String csvContent, String filename, String title) {
+            try {
+                File cacheDir = new File(mContext.getCacheDir(), "shared_docs");
+                if (!cacheDir.exists()) cacheDir.mkdirs();
+                File file = new File(cacheDir, filename != null && !filename.isEmpty() ? filename : "VMH_Bookings.csv");
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write(csvContent.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                fos.flush();
+                fos.close();
+
+                Uri contentUri = FileProvider.getUriForFile(mContext,
+                        mContext.getPackageName() + ".fileprovider", file);
+
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/csv");
+                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, title != null ? title : "वर्मा मैरिज हॉल - बुकिंग्स डेटा");
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                Intent chooser = Intent.createChooser(shareIntent, title != null ? title : "एक्सेल फाइल शेयर या सेव करें");
+                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(chooser);
+            } catch (Exception e) {
+                Log.e(TAG, "Error sharing CSV", e);
+            }
         }
 
         @JavascriptInterface

@@ -376,8 +376,12 @@
             <label id="labelCustName" class="text-xs font-bold text-slate-700 block mb-1">
               पार्टी / वर / वधु पक्ष का नाम (Party Name) *
             </label>
-            <div class="flex items-center gap-2">
-              <input type="text" id="hallCustName" oninput="onCustomerDetailsChanged()" placeholder="पार्टी / वर-वधु पक्ष का नाम" class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-300 text-slate-950 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all">
+            <div class="flex items-center gap-1.5">
+              <input type="text" id="hallCustName" oninput="onCustomerDetailsChanged(); updateClearBtnVisibility('hallCustName');" placeholder="पार्टी / वर-वधु पक्ष का नाम" class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-300 text-slate-950 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all">
+              <button type="button" onclick="clearVoiceInput('hallCustName')" id="clearBtn-hallCustName" title="साफ़ करें (Clear)" class="hidden w-10 h-12 rounded-xl bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-700 border border-slate-300 flex flex-col items-center justify-center shrink-0 btn-tactile transition-all">
+                <span class="text-base leading-none">✕</span>
+                <span class="text-[7.5px] font-black leading-tight mt-0.5">साफ़</span>
+              </button>
               <button type="button" onclick="startVoiceInput('hallCustName')" id="micBtn-hallCustName" title="बोलकर लिखें (Voice Input)" class="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border-2 border-emerald-400 text-emerald-800 flex flex-col items-center justify-center shrink-0 btn-tactile shadow-2xs transition-all">
                 <span class="text-lg leading-none">🎙️</span>
                 <span class="text-[8px] font-black leading-tight mt-0.5">बोलें</span>
@@ -389,15 +393,29 @@
             <label id="labelCustPhone" class="text-xs font-black text-slate-800 block mb-1">
               मोबाइल नंबर (Contact Mobile) *
             </label>
-            <input type="tel" id="hallCustPhone" maxlength="10" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" placeholder="10 अंकों का मोबाइल नंबर" class="w-full text-sm font-bold p-3 bg-white border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all text-slate-950">
+            <div class="flex items-center gap-1.5">
+              <input type="tel" id="hallCustPhone" maxlength="10" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10); updateClearBtnVisibility('hallCustPhone');" placeholder="10 अंकों का मोबाइल नंबर" class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all text-slate-950">
+              <button type="button" onclick="clearVoiceInput('hallCustPhone')" id="clearBtn-hallCustPhone" title="साफ़ करें (Clear)" class="hidden w-10 h-12 rounded-xl bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-700 border border-slate-300 flex flex-col items-center justify-center shrink-0 btn-tactile transition-all">
+                <span class="text-base leading-none">✕</span>
+                <span class="text-[7.5px] font-black leading-tight mt-0.5">साफ़</span>
+              </button>
+              <button type="button" onclick="startVoiceInput('hallCustPhone')" id="micBtn-hallCustPhone" title="बोलकर नंबर लिखें (Voice Input)" class="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border-2 border-emerald-400 text-emerald-800 flex flex-col items-center justify-center shrink-0 btn-tactile shadow-2xs transition-all">
+                <span class="text-lg leading-none">🎙️</span>
+                <span class="text-[8px] font-black leading-tight mt-0.5">बोलें</span>
+              </button>
+            </div>
           </div>
 
           <div>
             <label id="labelCustAddress" class="text-xs font-black text-slate-800 block mb-1">
               पार्टी का पता (गाँव / कस्बा / शहर)
             </label>
-            <div class="flex items-center gap-2">
-              <input type="text" id="hallCustAddress" placeholder="उदा. ग्राम असनहरा, बस्ती या शहर का नाम" class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all text-slate-950">
+            <div class="flex items-center gap-1.5">
+              <input type="text" id="hallCustAddress" oninput="updateClearBtnVisibility('hallCustAddress')" placeholder="उदा. ग्राम असनहरा, बस्ती या शहर का नाम" class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-300 rounded-xl outline-none focus:border-amber-600 focus:bg-white transition-all text-slate-950">
+              <button type="button" onclick="clearVoiceInput('hallCustAddress')" id="clearBtn-hallCustAddress" title="साफ़ करें (Clear)" class="hidden w-10 h-12 rounded-xl bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-700 border border-slate-300 flex flex-col items-center justify-center shrink-0 btn-tactile transition-all">
+                <span class="text-base leading-none">✕</span>
+                <span class="text-[7.5px] font-black leading-tight mt-0.5">साफ़</span>
+              </button>
               <button type="button" onclick="startVoiceInput('hallCustAddress')" id="micBtn-hallCustAddress" title="बोलकर लिखें (Voice Input)" class="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border-2 border-emerald-400 text-emerald-800 flex flex-col items-center justify-center shrink-0 btn-tactile shadow-2xs transition-all">
                 <span class="text-lg leading-none">🎙️</span>
                 <span class="text-[8px] font-black leading-tight mt-0.5">बोलें</span>
@@ -411,7 +429,7 @@
               <label id="labelEventOccasion" class="text-xs font-black text-slate-800">
                 कार्यक्रम आयोजन (Event Occasion) *
               </label>
-              <button type="button" onclick="showScreen('hall-admin'); openAdminSubView('occasions');" class="text-[10px] text-amber-700 font-bold hover:underline">
+              <button type="button" onclick="showScreen('admin-settings'); openAdminSubView('occasions');" class="text-[10px] text-amber-700 font-bold hover:underline">
                 ⚙️ आयोजन प्रबंध
               </button>
             </div>
@@ -875,9 +893,17 @@
         </div>
 
         <!-- SEARCH & EXPORT ROW -->
-        <div class="flex items-center gap-2">
-          <input type="text" id="hallSearchInput" oninput="renderAllBookingsList()" placeholder="🔍 पार्टी का नाम या मोबाइल नंबर खोजें..." class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-400 rounded-xl outline-none focus:border-amber-800 shadow-xs text-slate-950 placeholder-slate-500">
-          <button type="button" onclick="openExcelExportModal()" title="एक्सेल एक्सपोर्ट (Excel Export)" class="p-3 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-900 border-2 border-emerald-400 rounded-xl flex items-center justify-center gap-1.5 btn-tactile shadow-2xs shrink-0 font-black text-xs">
+        <div class="flex items-center gap-1.5">
+          <input type="text" id="hallSearchInput" oninput="renderAllBookingsList(); updateClearBtnVisibility('hallSearchInput');" placeholder="🔍 नाम या मोबाइल नंबर खोजें..." class="flex-1 min-w-0 text-sm font-bold p-3 bg-white border-2 border-slate-400 rounded-xl outline-none focus:border-amber-800 shadow-xs text-slate-950 placeholder-slate-500">
+          <button type="button" onclick="clearVoiceInput('hallSearchInput')" id="clearBtn-hallSearchInput" title="साफ़ करें (Clear)" class="hidden w-10 h-12 rounded-xl bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-700 border border-slate-300 flex flex-col items-center justify-center shrink-0 btn-tactile transition-all">
+            <span class="text-base leading-none">✕</span>
+            <span class="text-[7.5px] font-black leading-tight mt-0.5">साफ़</span>
+          </button>
+          <button type="button" onclick="startVoiceInput('hallSearchInput')" id="micBtn-hallSearchInput" title="बोलकर खोजें (Voice Search)" class="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border-2 border-emerald-400 text-emerald-800 flex flex-col items-center justify-center shrink-0 btn-tactile shadow-2xs transition-all">
+            <span class="text-lg leading-none">🎙️</span>
+            <span class="text-[8px] font-black leading-tight mt-0.5">बोलें</span>
+          </button>
+          <button type="button" onclick="openExcelExportModal()" title="एक्सेल एक्सपोर्ट (Excel Export)" class="h-12 px-3 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-900 border-2 border-emerald-400 rounded-xl flex items-center justify-center gap-1.5 btn-tactile shadow-2xs shrink-0 font-black text-xs">
             <span class="text-base">📊</span>
             <span class="hidden sm:inline">एक्सेल</span>
           </button>
@@ -1089,7 +1115,7 @@
                 <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center text-xl shrink-0">📦</div>
                 <div>
                   <h4 class="text-xs font-black text-slate-900">सॉफ्टवेयर अपडेट एवं सिस्टम स्थिति</h4>
-                  <p class="text-[10px] text-slate-500 font-semibold">वर्जन v2.0.0 (स्टेबल प्रोडक्शन) — नवीनतम अपडेट जांचें</p>
+                  <p class="text-[10px] text-amber-700 font-semibold">वर्जन v2.1.0 (बीटा टेस्टिंग) — नवीनतम फीचर्स</p>
                 </div>
               </div>
               <span class="text-xs font-black text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-lg">अपडेट</span>
@@ -1547,8 +1573,8 @@
                 <h4 class="text-xs font-black text-slate-900">वर्तमान ऐप वर्जन</h4>
                 <p class="text-[10px] text-slate-500">वर्मा मैरिज हॉल आधिकारिक ऐप</p>
               </div>
-              <span id="otaActiveVerBadge" class="text-xs font-black px-2.5 py-1 bg-emerald-100 text-emerald-950 border border-emerald-300 rounded-xl">
-                v2.0.0 (स्टेबल)
+              <span id="otaActiveVerBadge" class="text-xs font-black px-2.5 py-1 bg-amber-100 text-amber-950 border border-amber-300 rounded-xl">
+                v2.1.0 (बीटा)
               </span>
             </div>
 
@@ -2894,6 +2920,7 @@
         try { renderUpcomingBookingsList(); } catch(e) {}
         try { populateAdminSettings(); } catch(e) {}
         try { updateSlotTimes(); } catch(e) {}
+        try { renderFormOccasionChips(); } catch(e) {}
         try { initFirebaseCloud(); } catch(e) {}
 
         showToast(`नमस्ते ${matched.name}! सफलतापूर्वक लॉगिन हुआ।`);
@@ -4304,12 +4331,16 @@
       document.getElementById('hallCustName').value = "";
       document.getElementById('hallCustPhone').value = "";
       if (document.getElementById('hallCustAddress')) document.getElementById('hallCustAddress').value = "";
+      updateClearBtnVisibility('hallCustName');
+      updateClearBtnVisibility('hallCustPhone');
+      updateClearBtnVisibility('hallCustAddress');
       
       const todayStr = new Date().toISOString().split('T')[0];
       const targetDate = prefillDate || todayStr;
       document.getElementById('hallEventDate').value = targetDate;
       updateEventDateDisplay(targetDate);
       
+      renderFormOccasionChips("विवाह समारोह");
       selectOccasion("विवाह समारोह");
       document.getElementById('inputTotalRent').value = "";
       document.getElementById('inputAdvancePaid').value = "";
@@ -5938,9 +5969,13 @@
         document.getElementById('hallFormSubtitle').innerText = isHi ? "विवरण में बदलाव करें व सुरक्षित करें" : "Modify details & save";
       }
 
-      document.getElementById('hallCustName').value = b.partyName;
-      document.getElementById('hallCustPhone').value = b.partyPhone;
+      document.getElementById('hallCustName').value = b.partyName || '';
+      document.getElementById('hallCustPhone').value = b.partyPhone || '';
       document.getElementById('hallCustAddress').value = b.partyAddress || '';
+      updateClearBtnVisibility('hallCustName');
+      updateClearBtnVisibility('hallCustPhone');
+      updateClearBtnVisibility('hallCustAddress');
+      renderFormOccasionChips(b.occasion || "विवाह समारोह");
       selectOccasion(b.occasion || "विवाह समारोह");
       document.getElementById('hallEventDate').value = b.eventDate;
       updateEventDateDisplay(b.eventDate);
@@ -6208,6 +6243,8 @@
       renderAdminAmenitiesList();
       renderAdminUtensilsList();
       renderAdminTermsList();
+      renderAdminOccasionsList();
+      renderFormOccasionChips();
     }
 
     function renderAdminAmenitiesList() {
@@ -7070,6 +7107,11 @@
     }
 
     function showDeleteConfirmForCurrentSlip() {
+      const u = getCurrentUser();
+      if (u && !u.isOwner && u.permissions && u.permissions.canDelete === false) {
+        showToast("⛔ आपको बुकिंग डिलीट/कैंसिल करने की अनुमति नहीं है!");
+        return;
+      }
       if (selectedBookingId) {
         showDeleteConfirmModal(selectedBookingId);
       }
@@ -7104,6 +7146,11 @@
 
     // BULK DELETE CONFIRMATION
     function promptBulkDelete() {
+      const u = getCurrentUser();
+      if (u && !u.isOwner && u.permissions && u.permissions.canDelete === false) {
+        showToast("⛔ आपको बुकिंग डिलीट/कैंसिल करने की अनुमति नहीं है!");
+        return;
+      }
       const count = selectedBookingIds.size;
       if (count === 0) return;
 
@@ -7709,6 +7756,7 @@
     }
 
     async function checkAlertsFromCloudFast() {
+      if (!getCurrentUser()) return;
       try {
         const url = `${FIRESTORE_BASE_URL}/vmh_alerts/active_alert?key=${FIREBASE_API_KEY}`;
         const res = await fetch(url, { cache: 'no-store' });
@@ -7716,17 +7764,10 @@
         const data = await res.json();
         const f = data.fields || {};
         const alertId = f.alertId?.stringValue || '';
-        const senderId = f.senderDeviceId?.stringValue || '';
-        const title = f.title?.stringValue || 'वर्मा मैरिज हॉल अलर्ट';
-        const message = f.message?.stringValue || '';
-        const category = f.category?.stringValue || 'newBooking';
-
-        if (alertId && alertId !== lastProcessedAlertId && senderId !== myDeviceId) {
-          console.log("Fast REST alert detected:", alertId, title);
+        if (alertId) {
           lastProcessedAlertId = alertId;
           localStorage.setItem('vmh_last_alert_id', alertId);
           syncNativeState();
-          triggerMultiDeviceAlert(category, title, message, `🔔 ${title}`);
         }
       } catch(e) {}
     }
@@ -7844,11 +7885,14 @@
       let isInitialAlertSnapshot = true;
 
       firestoreDb.collection('vmh_alerts').doc('active_alert').onSnapshot((doc) => {
+        if (!getCurrentUser()) return; // Never alert unauthenticated fresh installs
         if (!doc.exists) return;
         const alert = doc.data();
         if (!alert) return;
 
-        const senderId = alert.senderDeviceId || alert.fields?.senderDeviceId?.stringValue || '';
+        const rawSender = alert.senderDeviceId || alert.fields?.senderDeviceId?.stringValue || '';
+        const cleanSender = String(rawSender).replace(/^android_|^web_/, '').trim();
+        const cleanMyId = String(myDeviceId || '').replace(/^android_|^web_/, '').trim();
         const aId = alert.alertId || alert.fields?.alertId?.stringValue || String(alert.timestamp || alert.fields?.timestamp?.integerValue || '');
         const title = alert.title || alert.fields?.title?.stringValue || 'वर्मा मैरिज हॉल अलर्ट';
         const msg = alert.message || alert.fields?.message?.stringValue || '';
@@ -7864,7 +7908,12 @@
           return;
         }
 
-        if (senderId && senderId !== myDeviceId && aId && aId !== lastProcessedAlertId) {
+        // Suppress self-notifications
+        if (cleanSender && cleanSender === cleanMyId) {
+          return;
+        }
+
+        if (aId && aId !== lastProcessedAlertId) {
           lastProcessedAlertId = aId;
           localStorage.setItem('vmh_last_alert_id', aId);
           syncNativeState();
@@ -9302,11 +9351,48 @@
     }
 
     // -------------------------------------------------------------
-    // DEDICATED VOICE INPUT ASSISTANT (MIC FOR PAPA JI, HINDI hi-IN)
+    // DEDICATED VOICE INPUT & QUICK CLEAR ASSISTANT (HINDI hi-IN)
     // -------------------------------------------------------------
     let activeSpeechRecognition = null;
 
+    function updateClearBtnVisibility(targetInputId) {
+      const inp = document.getElementById(targetInputId);
+      const btn = document.getElementById('clearBtn-' + targetInputId);
+      if (!inp || !btn) return;
+      if (inp.value && String(inp.value).trim().length > 0) {
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
+    }
+
+    function clearVoiceInput(targetInputId) {
+      const inp = document.getElementById(targetInputId);
+      if (!inp) return;
+      inp.value = '';
+      inp.dispatchEvent(new Event('input', { bubbles: true }));
+      updateClearBtnVisibility(targetInputId);
+      if (targetInputId === 'hallCustName' || targetInputId === 'hallCustPhone') {
+        if (typeof onCustomerDetailsChanged === 'function') onCustomerDetailsChanged();
+      }
+      if (targetInputId === 'hallSearchInput' && typeof renderAllBookingsList === 'function') {
+        renderAllBookingsList();
+      }
+      inp.focus();
+    }
+
     function startVoiceInput(targetInputId) {
+      // 1. Android Native Runtime Permission check
+      if (window.AndroidApp && typeof window.AndroidApp.hasAudioPermission === 'function') {
+        if (!window.AndroidApp.hasAudioPermission()) {
+          if (typeof window.AndroidApp.requestAudioPermission === 'function') {
+            window.AndroidApp.requestAudioPermission();
+          }
+          showToast("🎙️ कृपया स्क्रीन पर आने वाली माइक अनुमति (Allow) पर क्लिक करें।");
+          return;
+        }
+      }
+
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRec) {
         showToast("⚠️ आपके ब्राउज़र या फोन में वॉयस इनपुट समर्थित नहीं है।");
@@ -9341,11 +9427,36 @@
 
         recognition.onresult = (event) => {
           if (event.results && event.results[0] && event.results[0][0]) {
-            const transcript = event.results[0][0].transcript;
+            let transcript = event.results[0][0].transcript;
             if (transcript) {
-              targetInp.value = transcript.trim();
+              transcript = transcript.trim();
+              if (targetInputId === 'hallCustPhone') {
+                // Strip spaces, dashes, parentheses and non-digits
+                let cleanDigits = transcript.replace(/\D/g, '');
+                // Keep last 10 digits if user spoke country code +91 or 0 prefix
+                if (cleanDigits.length > 10) {
+                  cleanDigits = cleanDigits.slice(-10);
+                }
+                targetInp.value = cleanDigits;
+                showToast(`✅ मोबाइल नंबर लिखा गया: "${cleanDigits}"`);
+              } else {
+                // APPEND logic with space if text already exists
+                const existingVal = targetInp.value ? targetInp.value.trim() : '';
+                if (existingVal) {
+                  targetInp.value = existingVal + ' ' + transcript;
+                } else {
+                  targetInp.value = transcript;
+                }
+                showToast(`✅ जोड़ा गया: "${transcript}"`);
+              }
               targetInp.dispatchEvent(new Event('input', { bubbles: true }));
-              showToast(`✅ लिखा गया: "${transcript.trim()}"`);
+              updateClearBtnVisibility(targetInputId);
+              if (targetInputId === 'hallCustName' || targetInputId === 'hallCustPhone') {
+                if (typeof onCustomerDetailsChanged === 'function') onCustomerDetailsChanged();
+              }
+              if (targetInputId === 'hallSearchInput' && typeof renderAllBookingsList === 'function') {
+                renderAllBookingsList();
+              }
             }
           }
         };
@@ -9353,6 +9464,9 @@
         recognition.onerror = (err) => {
           console.warn("Speech recognition notice:", err);
           if (err.error === 'not-allowed') {
+            if (window.AndroidApp && typeof window.AndroidApp.requestAudioPermission === 'function') {
+              window.AndroidApp.requestAudioPermission();
+            }
             showToast("⚠️ कृपया माइक्रोफोन (माइक) की अनुमति दें!");
           } else {
             showToast("⚠️ आवाज़ स्पष्ट नहीं आई, कृपया दोबारा बोलें।");

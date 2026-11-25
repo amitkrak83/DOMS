@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
             if (hardwareId == null || hardwareId.isEmpty()) {
                 hardwareId = "vmh_" + Build.MANUFACTURER + "_" + Build.MODEL.replaceAll("\\s+", "");
             }
+            if (!hardwareId.startsWith("android_")) {
+                hardwareId = "android_" + hardwareId;
+            }
             SharedPreferences nativePrefs = getSharedPreferences("VMH_PREFS", Context.MODE_PRIVATE);
             nativePrefs.edit().putString("device_id", hardwareId).apply();
             Log.d(TAG, "Hardware device_id initialized: " + hardwareId);
@@ -369,13 +372,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checkAndRequestNotificationPermission() {
+        java.util.List<String> perms = new java.util.ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        NOTIFICATION_PERMISSION_CODE);
+                perms.add(Manifest.permission.POST_NOTIFICATIONS);
             }
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            perms.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (!perms.isEmpty()) {
+            ActivityCompat.requestPermissions(this,
+                    perms.toArray(new String[0]),
+                    NOTIFICATION_PERMISSION_CODE);
         }
     }
 
@@ -384,6 +395,20 @@ public class MainActivity extends AppCompatActivity {
 
         WebAppInterface(Context c) {
             mContext = c;
+        }
+
+        @JavascriptInterface
+        public boolean hasAudioPermission() {
+            return ContextCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        @JavascriptInterface
+        public void requestAudioPermission() {
+            runOnUiThread(() -> {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, 2002);
+                }
+            });
         }
 
         @JavascriptInterface

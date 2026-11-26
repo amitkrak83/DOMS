@@ -1,0 +1,1103 @@
+﻿<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>वर्मा राइस मिल — कोका-कोला एवं हल्दीराम नमकीन डिस्ट्रीब्यूटर (स्क्रीन सिमुलेटर)</title>
+    <script src="tailwind.min.js"></script>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script>
+    if (!window.tailwind) {
+      document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700;800&family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Mukta', 'Segoe UI', system-ui, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #0f172a;
+    }
+    .font-num { font-family: 'Montserrat', sans-serif; }
+    .screen-view { display: none !important; opacity: 0; transition: opacity 0.15s ease-in-out; }
+    .screen-view.active { display: block !important; opacity: 1; }
+    .btn-tactile:active { transform: scale(0.96); }
+    ::-webkit-scrollbar { width: 0px; height: 0px; display: none; }
+    
+    /* Native Print Styles */
+    @media print {
+      body { background: #fff !important; }
+      header, nav, #appScreenSwitcher, .no-print { display: none !important; }
+      #screen-slip { display: block !important; opacity: 1 !important; }
+      #fmcgReceiptSlip { border: 2px solid #000 !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
+    }
+  
+    /* ========================================================= */
+    /* STANDALONE & OFFLINE COMPLETE FALLBACK CSS STYLES         */
+    /* ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; }
+    .flex { display: flex !important; }
+    .inline-flex { display: inline-flex !important; }
+    .flex-col { flex-direction: column !important; }
+    .flex-1 { flex: 1 1 0% !important; }
+    .items-center { align-items: center !important; }
+    .items-start { align-items: flex-start !important; }
+    .items-end { align-items: flex-end !important; }
+    .justify-between { justify-content: space-between !important; }
+    .justify-center { justify-content: center !important; }
+    .justify-around { justify-content: space-around !important; }
+    .justify-start { justify-content: flex-start !important; }
+    .shrink-0 { flex-shrink: 0 !important; }
+    
+    .grid { display: grid !important; }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+    .col-span-2 { grid-column: span 2 / span 2 !important; }
+    .gap-0\.5 { gap: 0.125rem !important; }
+    .gap-1 { gap: 0.25rem !important; }
+    .gap-1\.5 { gap: 0.375rem !important; }
+    .gap-2 { gap: 0.5rem !important; }
+    .gap-2\.5 { gap: 0.625rem !important; }
+    .gap-3 { gap: 0.75rem !important; }
+    
+    .space-y-1 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.25rem !important; }
+    .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.375rem !important; }
+    .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem !important; }
+    .space-y-2\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.625rem !important; }
+    .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem !important; }
+    .space-y-3\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.875rem !important; }
+    
+    .w-full { width: 100% !important; }
+    .w-1\.5 { width: 0.375rem !important; }
+    .h-1\.5 { height: 0.375rem !important; }
+    .w-5 { width: 1.25rem !important; }
+    .h-5 { height: 1.25rem !important; }
+    .w-6 { width: 1.5rem !important; }
+    .h-6 { height: 1.5rem !important; }
+    .w-7 { width: 1.75rem !important; }
+    .h-7 { height: 1.75rem !important; }
+    .w-8 { width: 2rem !important; }
+    .h-8 { height: 2rem !important; }
+    .w-9 { width: 2.25rem !important; }
+    .h-9 { height: 2.25rem !important; }
+    .w-10 { width: 2.5rem !important; }
+    .h-10 { height: 2.5rem !important; }
+    .w-12 { width: 3rem !important; }
+    .h-12 { height: 3rem !important; }
+    .min-h-screen { min-height: 100vh !important; }
+    .max-w-md { max-width: 28rem !important; margin-left: auto !important; margin-right: auto !important; }
+    
+    .p-0 { padding: 0 !important; }
+    .p-1 { padding: 0.25rem !important; }
+    .p-1\.5 { padding: 0.375rem !important; }
+    .p-2 { padding: 0.5rem !important; }
+    .p-2\.5 { padding: 0.625rem !important; }
+    .p-3 { padding: 0.75rem !important; }
+    .p-3\.5 { padding: 0.875rem !important; }
+    .p-4 { padding: 1rem !important; }
+    .px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+    .px-2\.5 { padding-left: 0.625rem !important; padding-right: 0.625rem !important; }
+    .px-3 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+    .px-3\.5 { padding-left: 0.875rem !important; padding-right: 0.875rem !important; }
+    .py-0\.5 { padding-top: 0.125rem !important; padding-bottom: 0.125rem !important; }
+    .py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+    .py-1\.5 { padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; }
+    .py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+    .py-2\.5 { padding-top: 0.625rem !important; padding-bottom: 0.625rem !important; }
+    .py-3 { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
+    .pt-1 { padding-top: 0.25rem !important; }
+    .pt-2 { padding-top: 0.5rem !important; }
+    .pt-3 { padding-top: 0.75rem !important; }
+    .pb-1 { padding-bottom: 0.25rem !important; }
+    .pb-2 { padding-bottom: 0.5rem !important; }
+    .pb-2\.5 { padding-bottom: 0.625rem !important; }
+    .pb-20 { padding-bottom: 5rem !important; }
+    
+    .bg-white { background-color: #ffffff !important; }
+    .bg-white\/10 { background-color: rgba(255, 255, 255, 0.1) !important; }
+    .bg-white\/20 { background-color: rgba(255, 255, 255, 0.2) !important; }
+    .bg-white\/95 { background-color: rgba(255, 255, 255, 0.95) !important; }
+    .bg-slate-50 { background-color: #f8fafc !important; }
+    .bg-slate-100 { background-color: #f1f5f9 !important; }
+    .bg-slate-200 { background-color: #e2e8f0 !important; }
+    .bg-slate-700 { background-color: #334155 !important; }
+    .bg-slate-800 { background-color: #1e293b !important; }
+    .bg-slate-900 { background-color: #0f172a !important; }
+    .bg-red-50 { background-color: #fef2f2 !important; }
+    .bg-red-600 { background-color: #dc2626 !important; }
+    .bg-red-700 { background-color: #b91c1c !important; }
+    .bg-amber-50 { background-color: #fffbeb !important; }
+    .bg-amber-100 { background-color: #fef3c7 !important; }
+    .bg-amber-500 { background-color: #f59e0b !important; }
+    .bg-emerald-50 { background-color: #ecfdf5 !important; }
+    .bg-emerald-100 { background-color: #d1fae5 !important; }
+    .bg-emerald-500 { background-color: #10b981 !important; }
+    .bg-emerald-600 { background-color: #059669 !important; }
+    .bg-blue-50 { background-color: #eff6ff !important; }
+    .bg-blue-700 { background-color: #1d4ed8 !important; }
+    .bg-rose-50 { background-color: #fff1f2 !important; }
+    .bg-rose-600 { background-color: #e11d48 !important; }
+    .bg-gradient-to-r { background-image: linear-gradient(to right, #b91c1c, #991b1b, #78350f) !important; }
+    .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fffbeb, #ffedd5) !important; }
+    
+    .border { border: 1px solid #e2e8f0 !important; }
+    .border-0 { border: none !important; }
+    .border-2 { border-width: 2px !important; }
+    .border-t { border-top: 1px solid #e2e8f0 !important; }
+    .border-b { border-bottom: 1px solid #e2e8f0 !important; }
+    .border-slate-200 { border-color: #e2e8f0 !important; }
+    .border-slate-300 { border-color: #cbd5e1 !important; }
+    .border-slate-700 { border-color: #334155 !important; }
+    .border-red-200 { border-color: #fecaca !important; }
+    .border-red-600 { border-color: #dc2626 !important; }
+    .border-amber-200 { border-color: #fde68a !important; }
+    .border-amber-300 { border-color: #fcd34d !important; }
+    .border-amber-500 { border-color: #f59e0b !important; }
+    .border-emerald-200 { border-color: #a7f3d0 !important; }
+    .border-emerald-400 { border-color: #34d399 !important; }
+    .border-white\/20 { border-color: rgba(255, 255, 255, 0.2) !important; }
+    .border-white\/30 { border-color: rgba(255, 255, 255, 0.3) !important; }
+    
+    .rounded-md { border-radius: 0.375rem !important; }
+    .rounded-lg { border-radius: 0.5rem !important; }
+    .rounded-xl { border-radius: 0.75rem !important; }
+    .rounded-2xl { border-radius: 1rem !important; }
+    .rounded-full { border-radius: 9999px !important; }
+    
+    .text-white { color: #ffffff !important; }
+    .text-slate-400 { color: #94a3b8 !important; }
+    .text-slate-500 { color: #64748b !important; }
+    .text-slate-600 { color: #475569 !important; }
+    .text-slate-700 { color: #334155 !important; }
+    .text-slate-800 { color: #1e293b !important; }
+    .text-slate-900 { color: #0f172a !important; }
+    .text-slate-950 { color: #020617 !important; }
+    .text-red-100 { color: #fee2e2 !important; }
+    .text-red-700 { color: #b91c1c !important; }
+    .text-red-800 { color: #991b1b !important; }
+    .text-amber-200 { color: #fde68a !important; }
+    .text-amber-300 { color: #fcd34d !important; }
+    .text-amber-400 { color: #fbbf24 !important; }
+    .text-amber-600 { color: #d97706 !important; }
+    .text-amber-800 { color: #92400e !important; }
+    .text-amber-950 { color: #451a03 !important; }
+    .text-emerald-400 { color: #34d399 !important; }
+    .text-emerald-600 { color: #059669 !important; }
+    .text-emerald-700 { color: #047857 !important; }
+    .text-emerald-800 { color: #065f46 !important; }
+    .text-blue-700 { color: #1d4ed8 !important; }
+    .text-rose-600 { color: #e11d48 !important; }
+    .text-rose-700 { color: #be123c !important; }
+    
+    .text-\[9px\] { font-size: 9px !important; }
+    .text-\[9\.5px\] { font-size: 9.5px !important; }
+    .text-\[10px\] { font-size: 10px !important; }
+    .text-\[10\.5px\] { font-size: 10.5px !important; }
+    .text-\[11px\] { font-size: 11px !important; }
+    .text-xs { font-size: 0.75rem !important; line-height: 1rem !important; }
+    .text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
+    .text-base { font-size: 1rem !important; line-height: 1.5rem !important; }
+    .text-lg { font-size: 1.125rem !important; line-height: 1.75rem !important; }
+    .text-xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+    
+    .font-normal { font-weight: 400 !important; }
+    .font-medium { font-weight: 500 !important; }
+    .font-semibold { font-weight: 600 !important; }
+    .font-bold { font-weight: 700 !important; }
+    .font-extrabold { font-weight: 800 !important; }
+    .font-black { font-weight: 900 !important; }
+    
+    .relative { position: relative !important; }
+    .absolute { position: absolute !important; }
+    .top-0 { top: 0 !important; }
+    .bottom-0 { bottom: 0 !important; }
+    .left-0 { left: 0 !important; }
+    .right-0 { right: 0 !important; }
+    .z-30 { z-index: 30 !important; }
+    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important; }
+    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important; }
+    .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; }
+    .overflow-hidden { overflow: hidden !important; }
+    .overflow-y-auto { overflow-y: auto !important; }
+    .overflow-x-auto { overflow-x: auto !important; }
+    .cursor-pointer { cursor: pointer !important; }
+    .text-right { text-align: right !important; }
+    .text-center { text-align: center !important; }
+    .block { display: block !important; }
+    .inline-block { display: inline-block !important; }
+    
+    @media (min-width: 640px) {
+      .sm\:p-4 { padding: 1rem !important; }
+      .sm\:rounded-2xl { border-radius: 1rem !important; }
+      .sm\:rounded-\[36px\] { border-radius: 36px !important; }
+      .sm\:min-h-\[860px\] { min-height: 860px !important; }
+      .sm\:max-h-\[890px\] { max-height: 890px !important; }
+      .sm\:border-8 { border-width: 8px !important; }
+      .sm\:border-slate-800 { border-color: #1e293b !important; }
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-start min-h-screen p-0 sm:p-4 text-slate-900">
+
+  <!-- TOP DEV / REVIEW SWITCHER (HELPS PREVIEW EACH SCREEN INSTANTLY) -->
+  <div id="appScreenSwitcher" class="no-print w-full max-w-md bg-slate-800 text-white p-2 rounded-b-2xl sm:rounded-2xl mb-2 flex items-center justify-between text-xs font-bold shadow-lg border border-slate-700">
+    <div class="flex items-center gap-1.5 overflow-x-auto py-1">
+      <span class="text-amber-400 text-[11px] whitespace-nowrap pl-1">📺 स्क्रीन स्विच करें:</span>
+      <button onclick="showScreen('dashboard')" class="nav-switch-btn px-2 py-1 bg-amber-500 text-slate-950 rounded-lg text-[10px] font-black whitespace-nowrap">डैशबोर्ड</button>
+      <button onclick="showScreen('billing-pos')" class="nav-switch-btn px-2 py-1 bg-slate-700 text-white rounded-lg text-[10px] font-black whitespace-nowrap">⚡ POS बिल</button>
+      <button onclick="showScreen('billing-stepper')" class="nav-switch-btn px-2 py-1 bg-slate-700 text-white rounded-lg text-[10px] font-black whitespace-nowrap">📝 नॉर्मल बिल</button>
+      <button onclick="showScreen('orders-track')" class="nav-switch-btn px-2 py-1 bg-slate-700 text-white rounded-lg text-[10px] font-black whitespace-nowrap">🚚 डिलीवरी</button>
+      <button onclick="showScreen('slip')" class="nav-switch-btn px-2 py-1 bg-slate-700 text-white rounded-lg text-[10px] font-black whitespace-nowrap">🧾 पर्ची</button>
+      <button onclick="showScreen('customer-ledger')" class="nav-switch-btn px-2 py-1 bg-slate-700 text-white rounded-lg text-[10px] font-black whitespace-nowrap">📖 उधारी खाता</button>
+      <button onclick="showScreen('product-master')" class="nav-switch-btn px-2 py-1 bg-slate-700 text-white rounded-lg text-[10px] font-black whitespace-nowrap">📦 सामान मास्टर</button>
+    </div>
+  </div>
+
+  <!-- MAIN MOBILE PHONE WRAPPER -->
+  <div class="w-full max-w-md bg-slate-50 min-h-screen sm:min-h-[860px] sm:max-h-[890px] sm:rounded-[36px] shadow-2xl flex flex-col relative overflow-hidden border-0 sm:border-8 sm:border-slate-800">
+
+    <!-- ============================================================== -->
+    <!-- TOP APP HEADER                                                 -->
+    <!-- ============================================================== -->
+    <header class="bg-gradient-to-r from-red-700 via-red-800 to-amber-900 text-white px-3.5 pt-3 pb-2.5 shadow-md shrink-0 z-30">
+      <div class="flex items-center justify-between">
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-xl shadow-inner">
+            🥤
+          </div>
+          <div>
+            <h1 class="text-base font-black leading-tight text-white tracking-wide">
+              वर्मा राइस मिल
+            </h1>
+            <p class="text-[10.5px] text-amber-200 font-extrabold leading-tight">
+              कोका-कोला एवं हल्दीराम नमकीन डिस्ट्रीब्यूटर
+            </p>
+            <p class="text-[9.5px] text-red-100 font-semibold opacity-90">
+              असनहरा बाजार, बस्ती • 9918802425
+            </p>
+          </div>
+        </div>
+
+        <!-- Role Badge & Online Status -->
+        <div class="flex flex-col items-end gap-1">
+          <span class="text-[9px] font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            <span>ऑनलाइन</span>
+          </span>
+          <span class="text-[9px] font-bold bg-white/20 text-white border border-white/30 px-2 py-0.5 rounded-md">
+            👑 मालिक
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================================== -->
+    <!-- SCROLLABLE SCREEN CONTENT AREA                                 -->
+    <!-- ============================================================== -->
+    <main class="flex-1 overflow-y-auto relative w-full pb-20">
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 1: MAIN DASHBOARD                                     -->
+      <!-- ============================================================ -->
+      <section id="screen-dashboard" class="screen-view active p-3.5 space-y-3.5">
+        
+        <!-- TOP 4 METRICS CARDS -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+            <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">आज कुल डिलीवरी</span>
+            <p class="text-xl font-black text-blue-700 mt-0.5 font-num">32 पेटी • 14 लरी</p>
+            <p class="text-[10px] text-emerald-600 font-bold mt-0.5">🎁 +18 बोतल स्कीम फ्री</p>
+          </div>
+
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+            <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">आज नकद/UPI वसूली</span>
+            <p class="text-xl font-black text-emerald-600 mt-0.5 font-num">₹ 28,450</p>
+            <p class="text-[10px] text-slate-500 mt-0.5 font-bold">100% बहीखाता सिंक</p>
+          </div>
+
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+            <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">गाड़ी पर (बाकी)</span>
+            <p class="text-xl font-black text-amber-600 mt-0.5 font-num">04 ऑर्डर</p>
+            <p class="text-[10px] text-slate-500 mt-0.5 font-bold">डिलीवरी प्रगति पर</p>
+          </div>
+
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+            <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">बाजार कुल उधारी</span>
+            <p class="text-xl font-black text-rose-600 mt-0.5 font-num">₹ 1,48,500</p>
+            <p class="text-[10px] text-rose-600 font-bold mt-0.5">24 दुकानदार बाकी</p>
+          </div>
+        </div>
+
+        <!-- QUICK ACTION BUTTONS -->
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="showScreen('billing-pos')" class="py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-black text-xs rounded-2xl shadow-md flex items-center justify-center gap-1.5 btn-tactile">
+            <span>⚡ नया POS बिल (1-टैप)</span>
+          </button>
+          <button onclick="showScreen('billing-stepper')" class="py-3 bg-white border border-slate-300 text-slate-800 font-black text-xs rounded-2xl shadow-2xs flex items-center justify-center gap-1.5 btn-tactile">
+            <span>📝 नॉर्मल बिलिंग फॉर्म</span>
+          </button>
+        </div>
+
+        <!-- RECENT LIVE FEED -->
+        <div class="space-y-2 pt-1">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-black text-slate-900 uppercase">ताज़ा डिलीवरी ऑर्डर्स (Live Feed):</p>
+            <button onclick="showScreen('orders-track')" class="text-xs font-bold text-red-700">सभी देखें →</button>
+          </div>
+
+          <!-- Order 1 -->
+          <div onclick="showScreen('slip')" class="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs flex items-center justify-between cursor-pointer btn-tactile">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-base font-bold border border-amber-200 shrink-0">
+                ⏳
+              </div>
+              <div>
+                <h4 class="text-xs font-black text-slate-900">रमेश किराना स्टोर</h4>
+                <p class="text-[10px] text-slate-500">6 पेटी (कोक, स्प्राइट) + 4 लरी भुजिया</p>
+                <p class="text-[9px] text-slate-400">10 मिनट पहले • ड्राइवर: रामू</p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-xs font-black text-slate-900 block font-num">₹ 4,200</span>
+              <span class="text-[9px] bg-amber-100 text-amber-800 font-extrabold px-2 py-0.5 rounded-full inline-block">
+                गाड़ी पर है
+              </span>
+            </div>
+          </div>
+
+          <!-- Order 2 -->
+          <div onclick="showScreen('slip')" class="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs flex items-center justify-between cursor-pointer btn-tactile">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base font-bold border border-emerald-200 shrink-0">
+                ✅
+              </div>
+              <div>
+                <h4 class="text-xs font-black text-slate-900">गुप्ता जनरल स्टोर</h4>
+                <p class="text-[10px] text-slate-500">10 पेटी माज़ा + 2 टिन रसगुल्ला</p>
+                <p class="text-[9px] text-slate-400">45 मिनट पहले • नकद प्राप्त</p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-xs font-black text-slate-900 block font-num">₹ 6,800</span>
+              <span class="text-[9px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full inline-block">
+                डिलीवर हुआ
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 2: POS CATALOG GRID BILLING (FAST TOUCH ORDERING)      -->
+      <!-- ============================================================ -->
+      <section id="screen-billing-pos" class="screen-view p-3 space-y-2.5">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black uppercase text-emerald-600 tracking-wider">⚡ 1-टैप टच स्क्रीन</span>
+            <h3 class="text-sm font-black text-slate-900">POS कैटलॉग ग्रिड बिलिंग</h3>
+          </div>
+          <button onclick="showScreen('billing-stepper')" class="text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-xl btn-tactile">
+            नॉर्मल फॉर्म →
+          </button>
+        </div>
+
+        <!-- Shopkeeper Selector with Voice Mic -->
+        <div class="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="text-[10px] font-extrabold text-slate-500 uppercase">दुकानदार का नाम (Customer Shop):</label>
+            <span class="text-[9px] font-black text-red-600 bg-red-50 px-1.5 py-0.5 rounded">पुराना बकाया: ₹1,800</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1">
+              <input type="text" id="posCustomerInput" value="रमेश किराना स्टोर" class="w-full text-xs font-bold p-2 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-900">
+            </div>
+            <button type="button" title="आवाज़ से बोलें" class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-sm shrink-0 btn-tactile">
+              🎙️
+            </button>
+          </div>
+        </div>
+
+        <!-- SPLIT VIEW: LEFT BRAND RAIL & RIGHT PRODUCT GRID -->
+        <div class="flex gap-2">
+          
+          <!-- LEFT BRAND RAIL -->
+          <div class="w-24 shrink-0 bg-white rounded-2xl border border-slate-200 p-1 space-y-1 shadow-2xs text-[10.5px] font-black">
+            <button onclick="filterBrand('all', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl bg-red-600 text-white leading-tight shadow-xs">
+              सभी सामान
+            </button>
+            <button onclick="filterBrand('coke', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              Coca-Cola
+            </button>
+            <button onclick="filterBrand('sprite', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              Sprite
+            </button>
+            <button onclick="filterBrand('maaza', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              Maaza
+            </button>
+            <button onclick="filterBrand('thumsup', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              Thums Up
+            </button>
+            <button onclick="filterBrand('sting', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              Sting/Charge
+            </button>
+            <button onclick="filterBrand('water', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              पानी (Kinley)
+            </button>
+            <button onclick="filterBrand('haldiram_lari', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              हल्दीराम लरी
+            </button>
+            <button onclick="filterBrand('haldiram_namkeen', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              नमकीन (Kg)
+            </button>
+            <button onclick="filterBrand('haldiram_sweets', this)" class="brand-rail-btn w-full py-2 px-1 text-center rounded-xl text-slate-700 hover:bg-slate-100 leading-tight">
+              मिठाई टिन
+            </button>
+          </div>
+
+          <!-- RIGHT PRODUCT VARIANT GRID (2-COLS) -->
+          <div class="flex-1 grid grid-cols-1 gap-2 max-h-[460px] overflow-y-auto pr-0.5">
+            
+            <!-- Item 1: Coke 500ml -->
+            <div class="prod-item-card bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between" data-brand="coke">
+              <div>
+                <span class="text-[9px] font-black bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">पेटी (24 btl)</span>
+                <h4 class="text-xs font-black text-slate-900 mt-0.5">Coca-Cola 500ml</h4>
+                <p class="text-[10px] text-slate-500 font-num">₹480/पेटी</p>
+                <span class="text-[9px] font-bold text-emerald-600 block">🎁 +1 बोतल फ्री/पेटी</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="posChangeQty(this, -1)" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-sm flex items-center justify-center btn-tactile">-</button>
+                <span class="pos-qty-display text-xs font-black w-5 text-center font-num">0</span>
+                <button onclick="posChangeQty(this, 1)" class="w-7 h-7 rounded-lg bg-red-600 text-white font-black text-sm flex items-center justify-center btn-tactile">+</button>
+              </div>
+            </div>
+
+            <!-- Item 2: Maaza 600ml -->
+            <div class="prod-item-card bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between" data-brand="maaza">
+              <div>
+                <span class="text-[9px] font-black bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">पेटी (24 btl)</span>
+                <h4 class="text-xs font-black text-slate-900 mt-0.5">Maaza 600ml</h4>
+                <p class="text-[10px] text-slate-500 font-num">₹460/पेटी</p>
+                <span class="text-[9px] font-bold text-emerald-600 block">🎁 +1 बोतल फ्री/पेटी</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="posChangeQty(this, -1)" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-sm flex items-center justify-center btn-tactile">-</button>
+                <span class="pos-qty-display text-xs font-black w-5 text-center font-num">0</span>
+                <button onclick="posChangeQty(this, 1)" class="w-7 h-7 rounded-lg bg-red-600 text-white font-black text-sm flex items-center justify-center btn-tactile">+</button>
+              </div>
+            </div>
+
+            <!-- Item 3: Haldiram ₹5 Bhujia Lari (12 pkts) -->
+            <div class="prod-item-card bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between" data-brand="haldiram_lari">
+              <div>
+                <span class="text-[9px] font-black bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded">लरी (12 पैकेट)</span>
+                <h4 class="text-xs font-black text-slate-900 mt-0.5">₹5 भुजिया लरी</h4>
+                <p class="text-[10px] text-slate-500 font-num">₹50/लरी (MRP ₹60)</p>
+                <span class="text-[9px] font-bold text-slate-400 block">1 लरी = 12 पीस</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="posChangeQty(this, -1)" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-sm flex items-center justify-center btn-tactile">-</button>
+                <span class="pos-qty-display text-xs font-black w-5 text-center font-num">0</span>
+                <button onclick="posChangeQty(this, 1)" class="w-7 h-7 rounded-lg bg-red-600 text-white font-black text-sm flex items-center justify-center btn-tactile">+</button>
+              </div>
+            </div>
+
+            <!-- Item 4: Haldiram ₹5 Chips Lari -->
+            <div class="prod-item-card bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between" data-brand="haldiram_lari">
+              <div>
+                <span class="text-[9px] font-black bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded">लरी (12 पैकेट)</span>
+                <h4 class="text-xs font-black text-slate-900 mt-0.5">₹5 चिप्स लरी</h4>
+                <p class="text-[10px] text-slate-500 font-num">₹50/लरी (MRP ₹60)</p>
+                <span class="text-[9px] font-bold text-slate-400 block">1 लरी = 12 पीस</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="posChangeQty(this, -1)" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-sm flex items-center justify-center btn-tactile">-</button>
+                <span class="pos-qty-display text-xs font-black w-5 text-center font-num">0</span>
+                <button onclick="posChangeQty(this, 1)" class="w-7 h-7 rounded-lg bg-red-600 text-white font-black text-sm flex items-center justify-center btn-tactile">+</button>
+              </div>
+            </div>
+
+            <!-- Item 5: Haldiram 200g Namkeen (Kg wise) -->
+            <div class="prod-item-card bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between" data-brand="haldiram_namkeen">
+              <div>
+                <span class="text-[9px] font-black bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded">किलो (1Kg = 5 पैकेट)</span>
+                <h4 class="text-xs font-black text-slate-900 mt-0.5">200g नमकीन (किलो)</h4>
+                <p class="text-[10px] text-slate-500 font-num">₹220/किलो</p>
+                <span class="text-[9px] font-bold text-slate-400 block">5 पैकेट प्रति किलो</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="posChangeQty(this, -1)" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-sm flex items-center justify-center btn-tactile">-</button>
+                <span class="pos-qty-display text-xs font-black w-5 text-center font-num">0</span>
+                <button onclick="posChangeQty(this, 1)" class="w-7 h-7 rounded-lg bg-red-600 text-white font-black text-sm flex items-center justify-center btn-tactile">+</button>
+              </div>
+            </div>
+
+            <!-- Item 6: Rasgulla 1Kg Tin -->
+            <div class="prod-item-card bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between" data-brand="haldiram_sweets">
+              <div>
+                <span class="text-[9px] font-black bg-rose-50 text-rose-800 px-1.5 py-0.5 rounded">मिठाई 1Kg टिन</span>
+                <h4 class="text-xs font-black text-slate-900 mt-0.5">रसगुल्ला 1Kg टिन</h4>
+                <p class="text-[10px] text-slate-500 font-num">₹185/टिन</p>
+                <span class="text-[9px] font-bold text-slate-400 block">12 टिन पेटी</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="posChangeQty(this, -1)" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-800 font-black text-sm flex items-center justify-center btn-tactile">-</button>
+                <span class="pos-qty-display text-xs font-black w-5 text-center font-num">0</span>
+                <button onclick="posChangeQty(this, 1)" class="w-7 h-7 rounded-lg bg-red-600 text-white font-black text-sm flex items-center justify-center btn-tactile">+</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- STICKY BOTTOM CART BAR -->
+        <div class="bg-slate-900 text-white rounded-2xl p-3 shadow-xl flex items-center justify-between">
+          <div>
+            <p class="text-xs font-black">🛒 <span id="posCartItemCount">2 सामान</span> चयनित</p>
+            <p class="text-[10px] text-slate-400">कुल बिल: <strong class="text-emerald-400 text-xs font-num font-black">₹ 2,400</strong></p>
+          </div>
+          <button onclick="showScreen('slip')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl shadow btn-tactile flex items-center gap-1">
+            <span>पर्ची देखें →</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 3: NORMAL STEPPER BILLING FORM                        -->
+      <!-- ============================================================ -->
+      <section id="screen-billing-stepper" class="screen-view p-3.5 space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black uppercase text-blue-600 tracking-wider">📝 पारंपरिक मोड</span>
+            <h3 class="text-sm font-black text-slate-900">नॉर्मल बिलिंग फॉर्म (स्टेप-बाय-स्टेप)</h3>
+          </div>
+          <button onclick="showScreen('billing-pos')" class="text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-xl btn-tactile">
+            POS ग्रिड →
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs space-y-2.5">
+          <div>
+            <label class="text-[11px] font-black text-slate-700 block mb-1">दुकानदार / ग्राहक का नाम *</label>
+            <input type="text" value="रमेश किराना स्टोर (स्टेशन रोड)" class="w-full text-xs font-bold p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+          </div>
+
+          <div>
+            <label class="text-[11px] font-black text-slate-700 block mb-1">सामान चुनें (Product & Packaging) *</label>
+            <select class="w-full text-xs font-bold p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+              <option>Coca-Cola 500ml — ₹480/पेटी (🎁 +1 फ्री)</option>
+              <option>Sprite 500ml — ₹480/पेटी (🎁 +1 फ्री)</option>
+              <option>Maaza 600ml — ₹460/पेटी (🎁 +1 फ्री)</option>
+              <option>₹5 भुजिया लरी (12 पैकेट) — ₹50/लरी</option>
+              <option>200g नमकीन — ₹220/किलो (5 पैकेट)</option>
+              <option>रसगुल्ला 1Kg टिन — ₹185/टिन</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[11px] font-black text-slate-700 block mb-1">संख्या (पेटी / लरी / किलो) *</label>
+              <input type="number" value="5" class="w-full text-xs font-bold p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none font-num">
+            </div>
+            <div>
+              <label class="text-[11px] font-black text-slate-700 block mb-1">फ्री बोतल स्कीम</label>
+              <input type="text" readonly value="+5 बोतल फ्री" class="w-full text-xs font-bold p-2.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl outline-none">
+            </div>
+          </div>
+
+          <button type="button" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs rounded-xl btn-tactile">
+            ➕ बिल में आइटम जोड़ें (Add Item)
+          </button>
+        </div>
+
+        <button onclick="showScreen('slip')" class="w-full py-3.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-black text-xs rounded-xl shadow-md btn-tactile flex items-center justify-center gap-1.5">
+          <span>🧾 रिव्यू करें एवं पर्ची बनाएं</span>
+        </button>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 4: UNIFIED DIGITAL BILL / INVOICE SLIP (WHATSAPP)     -->
+      <!-- ============================================================ -->
+      <section id="screen-slip" class="screen-view p-3 space-y-3">
+        <div class="flex items-center justify-between pb-1 no-print">
+          <span class="text-xs font-black text-slate-600">डिजिटल पर्ची (WhatsApp / Print)</span>
+          <button onclick="showScreen('dashboard')" class="text-xs font-bold text-red-800 bg-red-50 px-2.5 py-1 rounded-xl border border-red-200 btn-tactile">
+            ← डैशबोर्ड
+          </button>
+        </div>
+
+        <!-- PRINTABLE SLIP CONTAINER -->
+        <div id="fmcgReceiptSlip" class="bg-white text-slate-900 border-2 border-slate-800 rounded-2xl p-4 shadow-xl text-[11px] leading-relaxed space-y-2.5">
+          <!-- Bill Header -->
+          <div class="text-center border-b-2 border-slate-800 pb-2">
+            <p class="text-[10px] font-bold tracking-widest text-red-800">|| श्री गणेशाय नमः ||</p>
+            <h2 class="text-xl font-black tracking-wide text-slate-950 mt-0.5">
+              वर्मा राइस मिल
+            </h2>
+            <p class="text-[10.5px] font-extrabold text-red-700">
+              कोका-कोला एवं हल्दीराम नमकीन डिस्ट्रीब्यूटर
+            </p>
+            <p class="text-[9.5px] font-semibold text-slate-700">
+              ग्राम असनहरा बाजार, निकट अंकित धर्मकांटा, जिला बस्ती (उ.प्र.)
+            </p>
+            <p class="text-[9.5px] font-bold text-slate-900 font-num">
+              मो.: 9918802425, 9936435350
+            </p>
+          </div>
+
+          <!-- Customer & Invoice Info -->
+          <div class="grid grid-cols-2 gap-x-2 text-[10px] border-b border-slate-200 pb-1.5 font-medium">
+            <div><strong>बिल सं.:</strong> <span class="font-num">VRM-2026-108</span></div>
+            <div class="text-right"><strong>दिनांक:</strong> <span class="font-num">26/11/2026</span></div>
+            <div><strong>दुकानदार:</strong> <span class="font-black text-slate-900">रमेश किराना स्टोर</span></div>
+            <div class="text-right"><strong>मोबाइल:</strong> <span class="font-num">9876543210</span></div>
+            <div class="col-span-2"><strong>पता:</strong> स्टेशन रोड, असनहरा बाजार</div>
+          </div>
+
+          <!-- Items Table (Both Cold Drinks + Haldiram in 1 table) -->
+          <div class="border border-slate-300 rounded-xl overflow-hidden text-[10px]">
+            <table class="w-full text-left">
+              <thead class="bg-slate-100 font-black border-b border-slate-300 text-[9px]">
+                <tr>
+                  <th class="p-1.5">सामान / यूनिट</th>
+                  <th class="p-1.5 text-center">मात्रा</th>
+                  <th class="p-1.5 text-center">स्कीम</th>
+                  <th class="p-1.5 text-right">रकम (₹)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td class="p-1.5 font-bold">Coca-Cola 500ml</td>
+                  <td class="p-1.5 text-center font-num">5 पेटी</td>
+                  <td class="p-1.5 text-center text-emerald-700 font-bold">+5 बोतल</td>
+                  <td class="p-1.5 text-right font-bold font-num">₹ 2,400</td>
+                </tr>
+                <tr>
+                  <td class="p-1.5 font-bold">Maaza 600ml</td>
+                  <td class="p-1.5 text-center font-num">2 पेटी</td>
+                  <td class="p-1.5 text-center text-emerald-700 font-bold">+2 बोतल</td>
+                  <td class="p-1.5 text-right font-bold font-num">₹ 920</td>
+                </tr>
+                <tr>
+                  <td class="p-1.5 font-bold">₹5 भुजिया लरी (12 pkts)</td>
+                  <td class="p-1.5 text-center font-num">4 लरी</td>
+                  <td class="p-1.5 text-center text-slate-400">—</td>
+                  <td class="p-1.5 text-right font-bold font-num">₹ 200</td>
+                </tr>
+                <tr>
+                  <td class="p-1.5 font-bold">रसगुल्ला 1Kg टिन</td>
+                  <td class="p-1.5 text-center font-num">2 टिन</td>
+                  <td class="p-1.5 text-center text-slate-400">—</td>
+                  <td class="p-1.5 text-right font-bold font-num">₹ 370</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Total Dues Calculation Box -->
+          <div class="bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-[10px] space-y-1">
+            <div class="flex justify-between font-bold">
+              <span>आज का माल बिल:</span>
+              <span class="font-num">₹ 3,890</span>
+            </div>
+            <div class="flex justify-between font-bold text-red-600">
+              <span>(+) पिछला बकाया उधारी:</span>
+              <span class="font-num">₹ 1,800</span>
+            </div>
+            <div class="flex justify-between font-black text-slate-900 border-t border-slate-200 pt-1">
+              <span>कुल देय धनराशि (Total Payable):</span>
+              <span class="font-num text-xs">₹ 5,690</span>
+            </div>
+            <div class="flex justify-between font-bold text-emerald-700">
+              <span>(-) आज प्राप्त धनराशि:</span>
+              <span class="font-num">₹ 3,000</span>
+            </div>
+            <div class="flex justify-between text-red-700 font-black text-[11px] border-t border-slate-300 pt-1">
+              <span>बाकी शेष उधारी (Net Due):</span>
+              <span class="font-num">₹ 2,690</span>
+            </div>
+          </div>
+
+          <!-- Dynamic UPI QR Box -->
+          <div class="p-2 border border-dashed border-slate-400 rounded-xl flex items-center justify-between bg-slate-50/50">
+            <div>
+              <p class="text-[9px] font-bold text-slate-800">ऑनलाइन भुगतान हेतु UPI QR:</p>
+              <p class="text-[8.5px] font-mono text-slate-600">9918802425@okbizicici</p>
+              <p class="text-[8px] text-slate-400">PhonePe / GPay / Paytm से स्कैन करें</p>
+            </div>
+            <div class="w-12 h-12 bg-white p-1 rounded-lg border border-slate-300 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 100 100" class="w-full h-full text-slate-900 fill-current">
+                <path d="M0,0 h30 v30 h-30 z M5,5 v20 h20 v-20 z M10,10 h10 v10 h-10 z" />
+                <path d="M70,0 h30 v30 h-30 z M75,5 v20 h20 v-20 z M80,10 h10 v10 h-10 z" />
+                <path d="M0,70 h30 v30 h-30 z M5,75 v20 h20 v-20 z M10,80 h10 v10 h-10 z" />
+                <circle cx="50" cy="50" r="10" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Signatures -->
+          <div class="flex justify-between items-end pt-2 text-[10px] font-bold">
+            <p>दुकानदार हस्ताक्षर: ....................</p>
+            <p>वर्मा राइस मिल (हस्ताक्षर)</p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2 no-print pt-1">
+          <button onclick="alert('WhatsApp पर पर्ची शेयर की जा रही है...')" class="py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 btn-tactile">
+            <span>📲 WhatsApp पर्ची भेजें</span>
+          </button>
+          <button onclick="window.print()" class="py-3 bg-slate-800 hover:bg-slate-900 text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 btn-tactile">
+            <span>🖨️ प्रिंट / PDF सेव</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 5: ORDER TRACKING & STATUS (DELIVERED / UNDO)         -->
+      <!-- ============================================================ -->
+      <section id="screen-orders-track" class="screen-view p-3.5 space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-black text-slate-900">डिलीवरी ट्रैकिंग (गाड़ी पर माल)</h3>
+            <p class="text-[10px] text-slate-500">डिलीवर मार्क करें या गलती होने पर Undo करें</p>
+          </div>
+          <button onclick="showScreen('dashboard')" class="text-xs font-bold text-slate-600 bg-white border border-slate-200 px-2.5 py-1 rounded-xl btn-tactile">
+            ← वापस
+          </button>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex gap-1.5 bg-slate-200/80 p-1 rounded-2xl text-xs font-black">
+          <button class="flex-1 py-1.5 rounded-xl bg-white text-red-700 shadow-2xs">सभी (6)</button>
+          <button class="flex-1 py-1.5 rounded-xl text-slate-600">⏳ गाड़ी पर (4)</button>
+          <button class="flex-1 py-1.5 rounded-xl text-slate-600">✅ डिलीवर (2)</button>
+        </div>
+
+        <!-- Order Card 1 (Pending on Vehicle) -->
+        <div class="bg-white rounded-2xl border-l-4 border-amber-500 border border-slate-200 p-3.5 shadow-2xs space-y-2">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-[9px] font-mono text-slate-400">VRM-2026-108</span>
+              <h4 class="text-xs font-black text-slate-900">रमेश किराना स्टोर (स्टेशन रोड)</h4>
+              <p class="text-[10px] text-slate-500">7 पेटी + 4 लरी भुजिया • ड्राइवर: रामू</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-black text-slate-900 block font-num">₹ 4,200</span>
+              <span class="text-[9px] font-extrabold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md">
+                ⏳ गाड़ी पर है
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-xs">
+            <button onclick="showScreen('slip')" class="text-[11px] font-bold text-slate-600 hover:text-slate-900">
+              पर्ची देखें
+            </button>
+            <button onclick="this.innerText='✅ डिलीवर हो गया (Undo करें)'; this.className='text-[11px] font-black text-white bg-emerald-600 px-3 py-1.5 rounded-xl shadow btn-tactile';" class="text-[11px] font-black text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-xl shadow btn-tactile">
+              माल डिलीवर मार्क करें →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 6: CUSTOMER UDHAR KHATA LEDGER                        -->
+      <!-- ============================================================ -->
+      <section id="screen-customer-ledger" class="screen-view p-3.5 space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-black text-slate-900">दुकानदार उधारी खाता (Khata)</h3>
+            <p class="text-[10px] text-slate-500">बाजार की कुल बकाया वसूली</p>
+          </div>
+          <button onclick="showScreen('dashboard')" class="text-xs font-bold text-slate-600 bg-white border border-slate-200 px-2.5 py-1 rounded-xl btn-tactile">
+            ← वापस
+          </button>
+        </div>
+
+        <!-- Big Total Udhar Box -->
+        <div class="bg-gradient-to-br from-rose-600 to-rose-700 text-white p-3.5 rounded-2xl shadow-md">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider opacity-90">बाजार में कुल बकाया उधारी:</span>
+          <p class="text-2xl font-black font-num mt-0.5">₹ 1,48,500</p>
+          <p class="text-[10px] font-bold opacity-90 mt-0.5">कुल 24 दुकानों पर बकाया</p>
+        </div>
+
+        <!-- Customer List -->
+        <div class="space-y-2">
+          <!-- Customer 1 -->
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs space-y-2">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-black text-slate-900">रमेश किराना स्टोर</h4>
+                <p class="text-[10px] text-slate-400 font-num">मो.: 9876543210 • स्टेशन रोड</p>
+              </div>
+              <span class="text-xs font-black text-red-600 font-num bg-red-50 px-2 py-0.5 rounded-md">
+                ₹2,840 बाकी
+              </span>
+            </div>
+            <div class="flex items-center justify-end gap-1.5 pt-1 border-t border-slate-100">
+              <a href="tel:9876543210" class="text-[10px] font-black bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">📞 कॉल</a>
+              <button onclick="alert('व्हाट्सएप तकादा भेजा गया!')" class="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg">💬 WhatsApp</button>
+              <button onclick="alert('भुगतान जमा मॉड्यूल खुला')" class="text-[10px] font-black bg-blue-600 text-white px-2.5 py-1 rounded-lg">💵 जमा लें</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 7: PRODUCT MASTER & SCHEME SETUP                      -->
+      <!-- ============================================================ -->
+      <section id="screen-product-master" class="screen-view p-3.5 space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-black text-slate-900">सामान, रेट व स्कीम मास्टर</h3>
+            <p class="text-[10px] text-slate-500">कोका-कोला व हल्दीराम उत्पाद सूची</p>
+          </div>
+          <button onclick="showScreen('dashboard')" class="text-xs font-bold text-slate-600 bg-white border border-slate-200 px-2.5 py-1 rounded-xl btn-tactile">
+            ← वापस
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs space-y-2 text-xs">
+          <p class="font-black text-red-700 border-b pb-1">🥤 कोल्ड ड्रिंक व पानी (कोका-कोला लाइन):</p>
+          <ul class="space-y-1 text-slate-700 text-[11px] font-medium">
+            <li>• <strong>कोका-कोला, स्प्राइट, थम्स अप, माज़ा, लिम्का, फैंटा</strong> (250ml, 500ml, 1.25L, 2.25L)</li>
+            <li>• <strong>चार्ज (Charged) एवं स्टिंग (Sting)</strong></li>
+            <li>• <strong>किनले पानी (Kinley) एवं हिमालय पानी (Himalayan)</strong></li>
+          </ul>
+
+                  <!-- INTERACTIVE SMART MARGIN ASSIST (1.14 / 1.16) -->
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border-2 border-amber-300 p-3.5 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-base">🧮</span>
+              <h4 class="text-xs font-black text-amber-950">स्मार्ट मार्जिन कैलकुलेटर (1.14 / 1.16)</h4>
+            </div>
+            <span class="text-[9px] font-black bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full uppercase">
+              एडमिन ऑटो-असिस्ट
+            </span>
+          </div>
+
+          <p class="text-[10px] text-amber-800 leading-tight">
+            200g व 400g नमकीन की अलग-अलग MRP होने पर, सीधे MRP से थोक दर (Wholesale Selling Rate) निकालें:
+          </p>
+
+          <!-- Input Controls -->
+          <div class="space-y-2 bg-white p-2.5 rounded-xl border border-amber-200">
+            <div>
+              <label class="block text-[10px] font-black text-slate-700 mb-1">पैकेट पर छपी MRP (₹):</label>
+              <input type="number" id="calc-mrp-input" value="120" oninput="runMarginCalculation()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-black font-num text-slate-900 focus:outline-none focus:border-red-600">
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-black text-slate-700 mb-1">मार्जिन फैक्टर चुनें (Margin Factor):</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="btn-factor-116" onclick="setMarginFactor(1.16)" class="py-1.5 px-2 rounded-lg text-xs font-black border-2 border-amber-500 bg-amber-500 text-slate-950 flex items-center justify-center gap-1 btn-tactile">
+                  <span>🔘 1.16</span>
+                  <span class="text-[9px] opacity-80">(~13.8% मार्जिन)</span>
+                </button>
+                <button type="button" id="btn-factor-114" onclick="setMarginFactor(1.14)" class="py-1.5 px-2 rounded-lg text-xs font-black border-2 border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center gap-1 btn-tactile">
+                  <span>⚪ 1.14</span>
+                  <span class="text-[9px] opacity-80">(~12.3% मार्जिन)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Calculation Output Result -->
+            <div class="p-2.5 bg-slate-900 text-white rounded-xl space-y-1 mt-2">
+              <div class="flex items-center justify-between text-[10px]">
+                <span class="text-slate-400">फॉर्मूला:</span>
+                <span id="calc-formula-display" class="font-bold text-amber-300 font-num">₹120 ÷ 1.16</span>
+              </div>
+              <div class="flex items-center justify-between border-t border-slate-700 pt-1">
+                <div>
+                  <span class="text-[10px] text-slate-400 block">सटीक दर (Raw Rate):</span>
+                  <span id="calc-raw-rate" class="text-sm font-black text-slate-200 font-num">₹ 103.45</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-emerald-400 font-black block">लागू होने वाली थोक दर:</span>
+                  <span id="calc-round-rate" class="text-base font-black text-emerald-300 font-num">₹ 103.50</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-1">
+              <button type="button" onclick="applyMarginToProductForm()" class="w-full py-2 bg-emerald-600 text-white font-black text-xs rounded-xl shadow-xs flex items-center justify-center gap-1 btn-tactile cursor-pointer">
+                <span>⚡ इस थोक दर को प्रोडक्ट फॉर्म में भरें</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product Add Form with Auto-Filled Rate -->
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200 space-y-2">
+            <p class="text-[10px] font-black text-slate-800 uppercase border-b pb-1">उत्पाद मास्टर फॉर्म (Add / Edit Product):</p>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">उत्पाद नाम:</label>
+                <input type="text" value="हल्दीराम भुजिया 400g" class="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs font-bold text-slate-800">
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">पैक साइज़ / यूनिट:</label>
+                <input type="text" value="400g (पैकेट वाइज़)" class="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs font-bold text-slate-800">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">छपी MRP (₹):</label>
+                <input type="text" id="demo-form-mrp" value="₹ 120" readonly class="w-full bg-slate-100 border border-slate-200 rounded px-2 py-1 text-xs font-black text-slate-800 font-num">
+              </div>
+              <div>
+                <label class="block text-[9px] font-black text-emerald-700 mb-0.5">थोक दर / Selling Rate (₹):</label>
+                <input type="text" id="demo-form-rate" value="₹ 103.50" class="w-full bg-emerald-50 border border-emerald-400 rounded px-2 py-1 text-xs font-black text-emerald-800 font-num">
+              </div>
+            </div>
+            <p class="text-[9px] text-slate-500 italic">
+              💡 फायदा: बिलिंग के समय कोई कैलकुलेशन नहीं करनी होगी, ऐप 100% तेज़ चलेगा और एडमिन का समय बचेगा!
+            </p>
+          </div>
+        </div>
+
+        <p class="font-black text-amber-800 border-b pt-2 pb-1">🍿 हल्दीराम नमकीन, चिप्स व मिठाई:</p>
+          <ul class="space-y-1 text-slate-700 text-[11px] font-medium">
+            <li>• <strong>MRP ₹5 नमकीन:</strong> लरी वाइज़ (1 लरी = 12 पैकेट)</li>
+            <li>• <strong>MRP ₹5 चिप्स:</strong> लरी वाइज़</li>
+            <li>• <strong>MRP ₹10 चिप्स:</strong> पैकेट/लरी वाइज़</li>
+            <li>• <strong>MRP ₹20 नमकीन & चिप्स:</strong> लरी वाइज़</li>
+            <li>• <strong>200g नमकीन:</strong> किलो वाइज़ (1 किलो = 5 पैकेट)</li>
+            <li>• <strong>400g नमकीन:</strong> पैकेट वाइज़</li>
+            <li>• <strong>सोन पापड़ी:</strong> 250 ग्राम एवं 1 किलोग्राम</li>
+            <li>• <strong>गुलाब जामुन:</strong> 1 किलोग्राम टिन</li>
+            <li>• <strong>रसगुल्ला:</strong> 1 किलोग्राम टिन</li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- BOTTOM NAVIGATION TABS                                         -->
+    <!-- ============================================================== -->
+    <nav class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-2 flex items-center justify-around text-[10px] font-black text-slate-500 z-30 shadow-lg no-print">
+      <button onclick="showScreen('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-0.5 text-red-700">
+        <span class="text-base">🏠</span>
+        <span>डैशबोर्ड</span>
+      </button>
+      <button onclick="showScreen('billing-pos')" id="nav-billing-pos" class="flex flex-col items-center gap-0.5 hover:text-red-700">
+        <span class="text-base">⚡</span>
+        <span>POS बिल</span>
+      </button>
+      <button onclick="showScreen('orders-track')" id="nav-orders-track" class="flex flex-col items-center gap-0.5 hover:text-red-700">
+        <span class="text-base">🚚</span>
+        <span>डिलीवरी</span>
+      </button>
+      <button onclick="showScreen('customer-ledger')" id="nav-customer-ledger" class="flex flex-col items-center gap-0.5 hover:text-red-700">
+        <span class="text-base">📖</span>
+        <span>खाता लेजर</span>
+      </button>
+      <button onclick="showScreen('product-master')" id="nav-product-master" class="flex flex-col items-center gap-0.5 hover:text-red-700">
+        <span class="text-base">📦</span>
+        <span>मास्टर</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('screen-' + screenId);
+      if (target) {
+        target.classList.add('active');
+        document.querySelector('main').scrollTop = 0;
+      }
+      
+      // Update top preview switcher
+      document.querySelectorAll('.nav-switch-btn').forEach(b => {
+        b.classList.remove('bg-amber-500', 'text-slate-950');
+        b.classList.add('bg-slate-700', 'text-white');
+      });
+      event?.target?.classList?.add('bg-amber-500', 'text-slate-950');
+    }
+
+    function filterBrand(brand, btn) {
+      document.querySelectorAll('.brand-rail-btn').forEach(b => {
+        b.classList.remove('bg-red-600', 'text-white');
+        b.classList.add('text-slate-700');
+      });
+      btn.classList.add('bg-red-600', 'text-white');
+      btn.classList.remove('text-slate-700');
+
+      document.querySelectorAll('.prod-item-card').forEach(c => {
+        if (brand === 'all' || c.getAttribute('data-brand') === brand) {
+          c.style.display = 'flex';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+
+    function posChangeQty(btn, delta) {
+      const parent = btn.closest('.prod-item-card');
+      const disp = parent.querySelector('.pos-qty-display');
+      let cur = parseInt(disp.innerText) || 0;
+      cur = Math.max(0, cur + delta);
+      disp.innerText = cur;
+    }
+    let currentMarginFactor = 1.16;
+
+    function setMarginFactor(factor) {
+      currentMarginFactor = factor;
+      const btn116 = document.getElementById('btn-factor-116');
+      const btn114 = document.getElementById('btn-factor-114');
+      if (factor === 1.16) {
+        btn116.className = "py-1.5 px-2 rounded-lg text-xs font-black border-2 border-amber-500 bg-amber-500 text-slate-950 flex items-center justify-center gap-1 btn-tactile";
+        btn116.innerHTML = "<span>🔘 1.16</span> <span class='text-[9px] opacity-80'>(~13.8% मार्जिन)</span>";
+        btn114.className = "py-1.5 px-2 rounded-lg text-xs font-black border-2 border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center gap-1 btn-tactile";
+        btn114.innerHTML = "<span>⚪ 1.14</span> <span class='text-[9px] opacity-80'>(~12.3% मार्जिन)</span>";
+      } else {
+        btn114.className = "py-1.5 px-2 rounded-lg text-xs font-black border-2 border-amber-500 bg-amber-500 text-slate-950 flex items-center justify-center gap-1 btn-tactile";
+        btn114.innerHTML = "<span>🔘 1.14</span> <span class='text-[9px] opacity-80'>(~12.3% मार्जिन)</span>";
+        btn116.className = "py-1.5 px-2 rounded-lg text-xs font-black border-2 border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center gap-1 btn-tactile";
+        btn116.innerHTML = "<span>⚪ 1.16</span> <span class='text-[9px] opacity-80'>(~13.8% मार्जिन)</span>";
+      }
+      runMarginCalculation();
+    }
+
+    function runMarginCalculation() {
+      const mrpInput = document.getElementById('calc-mrp-input');
+      const mrp = parseFloat(mrpInput ? mrpInput.value : 0) || 0;
+      const rawVal = mrp > 0 ? (mrp / currentMarginFactor).toFixed(2) : "0.00";
+      const roundVal = mrp > 0 ? (Math.round((mrp / currentMarginFactor) * 2) / 2).toFixed(2) : "0.00";
+      
+      const formulaEl = document.getElementById('calc-formula-display');
+      const rawEl = document.getElementById('calc-raw-rate');
+      const roundEl = document.getElementById('calc-round-rate');
+      
+      if (formulaEl) formulaEl.innerText = '₹' + mrp + ' ÷ ' + currentMarginFactor;
+      if (rawEl) rawEl.innerText = '₹ ' + rawVal;
+      if (roundEl) roundEl.innerText = '₹ ' + roundVal;
+    }
+
+    function applyMarginToProductForm() {
+      const mrpInput = document.getElementById('calc-mrp-input');
+      const mrp = parseFloat(mrpInput ? mrpInput.value : 0) || 0;
+      const roundVal = mrp > 0 ? (Math.round((mrp / currentMarginFactor) * 2) / 2).toFixed(2) : "0.00";
+      const formMrp = document.getElementById('demo-form-mrp');
+      const formRate = document.getElementById('demo-form-rate');
+      if (formMrp) formMrp.value = '₹ ' + mrp;
+      if (formRate) {
+        formRate.value = '₹ ' + roundVal;
+      }
+    }
+  </script>
+</body>
+</html>

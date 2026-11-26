@@ -43,6 +43,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.content.pm.ResolveInfo;
 import com.google.firebase.messaging.FirebaseMessaging;
+import androidx.annotation.NonNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -59,6 +60,39 @@ public class MainActivity extends AppCompatActivity {
 
     public static volatile boolean isAppInForeground = false;
     public static final int ALERT_NOTIFICATION_ID = 2026;
+    private String pendingDeepLinkJson = null;
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleNotificationIntent(intent);
+    }
+
+    private void handleNotificationIntent(Intent intent) {
+        if (intent == null) return;
+        String bookingId = intent.getStringExtra("bookingId");
+        String category = intent.getStringExtra("category");
+        String action = intent.getStringExtra("action");
+        if (bookingId != null && !bookingId.trim().isEmpty()) {
+            try {
+                org.json.JSONObject obj = new org.json.JSONObject();
+                obj.put("bookingId", bookingId.trim());
+                obj.put("category", category != null ? category.trim() : "booking");
+                obj.put("action", action != null ? action.trim() : "viewSlip");
+                final String jsonStr = obj.toString();
+                pendingDeepLinkJson = jsonStr;
+                Log.d(TAG, "Notification deep link received: " + jsonStr);
+                if (webView != null) {
+                    webView.post(() -> {
+                        webView.evaluateJavascript("window.handleDeepLinkNotification ? window.handleDeepLinkNotification(" + jsonStr + ") : null;", null);
+                    });
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error handling deep link intent", e);
+            }
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -109,12 +143,21 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Error initializing hardware device_id", e);
         }
 
-        // Initialize Firebase Cloud Messaging for instant push notifications
+        // Initialize Firebase Cloud Messaging with strict environment isolation
         try {
-            FirebaseMessaging.getInstance().subscribeToTopic("all_devices")
-                    .addOnCompleteListener(task -> Log.d(TAG, "Subscribed to FCM topic all_devices: " + task.isSuccessful()));
-            FirebaseMessaging.getInstance().subscribeToTopic("vmh_bookings")
-                    .addOnCompleteListener(task -> Log.d(TAG, "Subscribed to FCM topic vmh_bookings: " + task.isSuccessful()));
+            String activeAllTopic = BuildConfig.IS_BETA ? "beta_all_devices" : "all_devices";
+            String activeBookingsTopic = BuildConfig.IS_BETA ? "beta_vmh_bookings" : "vmh_bookings";
+            String inactiveAllTopic = BuildConfig.IS_BETA ? "all_devices" : "beta_all_devices";
+            String inactiveBookingsTopic = BuildConfig.IS_BETA ? "vmh_bookings" : "beta_vmh_bookings";
+
+            // Unsubscribe from opposite environment to ensure zero cross-talk
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(inactiveAllTopic);
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(inactiveBookingsTopic);
+
+            FirebaseMessaging.getInstance().subscribeToTopic(activeAllTopic)
+                    .addOnCompleteListener(task -> Log.d(TAG, "Subscribed to FCM topic " + activeAllTopic + ": " + task.isSuccessful()));
+            FirebaseMessaging.getInstance().subscribeToTopic(activeBookingsTopic)
+                    .addOnCompleteListener(task -> Log.d(TAG, "Subscribed to FCM topic " + activeBookingsTopic + ": " + task.isSuccessful()));
 
             FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -241,6 +284,17 @@ public class MainActivity extends AppCompatActivity {
                     view.loadUrl("file:///android_asset/index.html");
                 }
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (pendingDeepLinkJson != null) {
+                    final String jsonStr = pendingDeepLinkJson;
+                    view.postDelayed(() -> {
+                        view.evaluateJavascript("window.handleDeepLinkNotification ? window.handleDeepLinkNotification(" + jsonStr + ") : null;", null);
+                    }, 800);
+                }
+            }
         });
 
         webView.setWebChromeClient(new WebChromeClient() {
@@ -298,6 +352,9 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Loading from base asset: file:///android_asset/index.html");
             webView.loadUrl("file:///android_asset/index.html");
         }
+
+        // 4. Handle incoming notification deep link if app launched via notification tap
+        handleNotificationIntent(getIntent());
     }
 
     private void copyAssetsToFilesDir() {
@@ -390,6 +447,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 2002 || requestCode == NOTIFICATION_PERMISSION_CODE) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (Manifest.permission.RECORD_AUDIO.equals(permissions[i]) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    if (webView != null) {
+                        webView.post(() -> webView.evaluateJavascript(
+                            "if (typeof onNativeAudioPermissionGranted === 'function') onNativeAudioPermissionGranted();", null
+                        ));
+                    }
+                }
+            }
+        }
+    }
+
     public class WebAppInterface {
         Context mContext;
 
@@ -407,6 +480,10 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, 2002);
+                } else {
+                    if (webView != null) {
+                        webView.evaluateJavascript("if (typeof onNativeAudioPermissionGranted === 'function') onNativeAudioPermissionGranted();", null);
+                    }
                 }
             });
         }
@@ -438,7 +515,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "Source APK not found: " + srcApk.getAbsolutePath());
                     return;
                 }
-                File dstApk = new File(mContext.getCacheDir(), "VermaMarriageHall.apk");
+                String apkFileName = "VermaMarriageHall-" + (BuildConfig.IS_BETA ? "Beta" : "Production") + "-v" + BuildConfig.VERSION_NAME + ".apk";
+                File dstApk = new File(mContext.getCacheDir(), apkFileName);
 
                 // Copy APK if not existing or length differs
                 if (!dstApk.exists() || dstApk.length() != srcApk.length()) {
@@ -459,14 +537,15 @@ public class MainActivity extends AppCompatActivity {
                         dstApk
                 );
 
+                String appTitle = (BuildConfig.IS_BETA ? "वर्मा मैरिज हॉल (Beta Testing)" : "वर्मा मैरिज हॉल - आधिकारिक डिजिटल ऐप") + " (v" + BuildConfig.VERSION_NAME + ")";
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("application/vnd.android.package-archive");
                 shareIntent.putExtra(Intent.EXTRA_STREAM, apkUri);
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "वर्मा मैरिज हॉल - आधिकारिक डिजिटल ऐप");
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "🏛️ वर्मा मैरिज हॉल (Verma Marriage Hall)\nडिजिटल बिलिंग, रसीद कट्टा एवं विवाह बुकिंग प्रबंधन ऐप।\nस्थान: ग्राम असनहरा, बस्ती (उ.प्र.)");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, appTitle);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "🏛️ " + appTitle + "\nडिजिटल बिलिंग, रसीद कट्टा एवं विवाह बुकिंग प्रबंधन ऐप (वर्जन v" + BuildConfig.VERSION_NAME + ")।\nस्थान: ग्राम असनहरा, बस्ती (उ.प्र.)");
                 shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                Intent chooser = Intent.createChooser(shareIntent, "वर्मा मैरिज हॉल ऐप शेयर करें (APK File)");
+                Intent chooser = Intent.createChooser(shareIntent, appTitle + " शेयर करें (APK File)");
                 chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
@@ -574,11 +653,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
+        public String getPendingDeepLink() {
+            String p = pendingDeepLinkJson;
+            pendingDeepLinkJson = null;
+            return p != null ? p : "";
+        }
+
+        @JavascriptInterface
         public void showNotification(String title, String message) {
+            showNotification(title, message, null, null, null);
+        }
+
+        @JavascriptInterface
+        public void showNotification(String title, String message, String category, String bookingId, String action) {
             try {
                 Intent intent = new Intent(mContext, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
+                if (category != null && !category.isEmpty()) intent.putExtra("category", category);
+                if (bookingId != null && !bookingId.isEmpty()) intent.putExtra("bookingId", bookingId);
+                if (action != null && !action.isEmpty()) intent.putExtra("action", action);
+
+                int reqCode = (int) (System.currentTimeMillis() % 100000);
+                PendingIntent pendingIntent = PendingIntent.getActivity(mContext, reqCode, intent,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -607,7 +703,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (notificationManager != null) {
                     notificationManager.notify(ALERT_NOTIFICATION_ID, notificationBuilder.build());
-                    Log.d(TAG, "Notification posted (ID " + ALERT_NOTIFICATION_ID + "): " + title);
+                    Log.d(TAG, "Notification posted (ID " + ALERT_NOTIFICATION_ID + "): " + title + " (BookingId: " + bookingId + ")");
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error posting notification", e);
@@ -773,7 +869,17 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public String getNativeAppVersion() {
-            return BuildConfig.VERSION_NAME;
+            return BuildConfig.APP_VERSION_NAME;
+        }
+
+        @JavascriptInterface
+        public boolean isBetaEnvironment() {
+            return BuildConfig.IS_BETA;
+        }
+
+        @JavascriptInterface
+        public String getAppEnvironment() {
+            return BuildConfig.APP_ENV;
         }
 
         @JavascriptInterface

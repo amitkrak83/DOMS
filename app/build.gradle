@@ -11,8 +11,8 @@ android {
         applicationId "com.karya.business"
         minSdk 24
         targetSdk 34
-        versionCode 23
-        versionName "2.1.0-beta"
+        versionCode 29
+        versionName "2.1.2"
     }
 
     buildFeatures {
@@ -22,9 +22,20 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.debug
+            buildConfigField "boolean", "IS_BETA", "false"
+            buildConfigField "String", "APP_ENV", "\"production\""
+            buildConfigField "String", "APP_VERSION_NAME", "\"2.1.2\""
+            resValue "string", "app_name", "वर्मा मैरिज हॉल"
         }
         debug {
+            applicationIdSuffix ".beta"
+            versionNameSuffix "-beta"
             minifyEnabled false
+            buildConfigField "boolean", "IS_BETA", "true"
+            buildConfigField "String", "APP_ENV", "\"beta\""
+            buildConfigField "String", "APP_VERSION_NAME", "\"2.5.2-beta\""
+            resValue "string", "app_name", "VMH (Beta)"
         }
     }
     compileOptions {

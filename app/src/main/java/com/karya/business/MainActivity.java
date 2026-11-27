@@ -197,6 +197,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setLoadWithOverviewMode(false);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
+        // Lock text zoom to 100% so system font-size scaling (e.g. Motorola / Accessibility) does not alter app fonts
+        webSettings.setTextZoom(100);
 
         // Native Android Bridge to JavaScript
         webView.addJavascriptInterface(new WebAppInterface(this), "AndroidApp");

@@ -78,6 +78,12 @@
       --font-hindi: 'Mukta', 'Plus Jakarta Sans', system-ui, sans-serif;
     }
     
+    html, body {
+      -webkit-text-size-adjust: 100% !important;
+      text-size-adjust: 100% !important;
+      -ms-text-size-adjust: 100% !important;
+    }
+    
     body {
       font-family: var(--font-hindi);
       -webkit-tap-highlight-color: transparent;
@@ -734,20 +740,11 @@
             </div>
           </div>
 
-          <!-- Row 2: Action Buttons in an auto-fitting Grid -->
-                    <div id="slipActionButtonsGrid" class="grid grid-cols-4 gap-1.5 text-center">
-            <!-- 1. RECEIVE PAYMENT -->
-            <button id="btnSlipTopReceivePayment" onclick="openReceivePaymentModal(selectedBookingId)" title="शेष भुगतान / किश्त लें" class="py-2 px-1 text-[11px] font-black text-emerald-950 bg-emerald-100 hover:bg-emerald-200 border border-emerald-400 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
-              <svg class="w-3.5 h-3.5 text-emerald-800 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="5" width="20" height="14" rx="2"/>
-                <line x1="2" y1="10" x2="22" y2="10"/>
-                <circle cx="16" cy="14" r="1.5" fill="currentColor"/>
-              </svg>
-              <span>भुगतान</span>
-            </button>
-            <!-- 2. SHARE -->
-            <button onclick="openShareOptionsModal()" title="रसीद शेयर करें" class="py-2 px-1 text-[11px] font-black text-amber-950 bg-amber-100 hover:bg-amber-200 border border-amber-400 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
-              <svg class="w-3.5 h-3.5 text-amber-900 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Row 2: Action Buttons (Clean 3-Button Single Row: Share, Edit, Delete) -->
+          <div id="slipActionButtonsGrid" class="grid grid-cols-3 gap-2 text-center">
+            <!-- 1. DIRECT 1-STEP SHARE (PNG IMAGE TO WHATSAPP / SYSTEM SHARE) -->
+            <button onclick="shareSlipAsPhoto()" title="रसीद की फोटो सीधे शेयर करें (WhatsApp)" class="py-2.5 px-2 text-xs font-black text-amber-950 bg-amber-100 hover:bg-amber-200 border border-amber-400 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
+              <svg class="w-4 h-4 text-amber-900 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="18" cy="5" r="3"/>
                 <circle cx="6" cy="12" r="3"/>
                 <circle cx="18" cy="19" r="3"/>
@@ -756,22 +753,17 @@
               </svg>
               <span id="btnShareText">शेयर</span>
             </button>
-            <!-- 2.5 MANAGE VAS -->
-            <button onclick="openManageSlipVasModal(selectedBookingId)" title="अतिरिक्त सेवाएँ जोड़ें / संशोधित करें" class="py-2 px-1 text-[11px] font-black text-violet-950 bg-violet-100 hover:bg-violet-200 border border-violet-400 rounded-xl btn-tactile flex items-center justify-center gap-1 shadow-2xs">
-              <span class="text-xs">✨</span>
-              <span>सेवाएँ</span>
-            </button>
-            <!-- 3. EDIT -->
-            <button onclick="editLoadedBooking()" title="बदलाव (Edit) करें" class="py-2 px-1 text-[11px] font-black text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
-              <svg class="w-3.5 h-3.5 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- 2. EDIT -->
+            <button onclick="editLoadedBooking()" title="बुकिंग में बदलाव (Edit) करें" class="py-2.5 px-2 text-xs font-black text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
+              <svg class="w-4 h-4 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
               <span>एडिट</span>
             </button>
-            <!-- 4. DELETE -->
-            <button onclick="showDeleteConfirmForCurrentSlip()" title="बुकिंग डिलीट करें" class="py-2 px-1 text-[11px] font-black text-red-700 bg-red-50 hover:bg-red-100 border border-red-300 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
-              <svg class="w-3.5 h-3.5 text-red-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- 3. DELETE -->
+            <button onclick="showDeleteConfirmForCurrentSlip()" title="बुकिंग डिलीट करें" class="py-2.5 px-2 text-xs font-black text-red-700 bg-red-50 hover:bg-red-100 border border-red-300 rounded-xl btn-tactile flex items-center justify-center gap-1.5 shadow-2xs">
+              <svg class="w-4 h-4 text-red-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="3 6 5 6 21 6"/>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                 <line x1="10" y1="11" x2="10" y2="17"/>
@@ -5200,39 +5192,98 @@
 
       hallConfig.utensils.forEach((item, idx) => {
         let currentQty = item.qty;
+        let isChecked = true;
         if (allocatedUtensils) {
           const found = allocatedUtensils.find(u => u.name === item.name);
-          if (found) currentQty = found.qty;
+          if (found) {
+            currentQty = found.qty;
+            isChecked = (found.qty > 0);
+          } else {
+            isChecked = false;
+            currentQty = 0;
+          }
         }
 
         const row = document.createElement('div');
-        row.className = "flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200/80";
+        row.className = "flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200/80 transition-colors";
+        row.id = `bk_utensil_row_${idx}`;
         row.innerHTML = `
-          <span class="text-sm font-bold text-slate-800">${escapeHtml(item.name)}</span>
-          <div class="flex items-center">
-            <input type="number" id="bk_utensil_${idx}" value="${currentQty}" min="0" class="w-24 text-sm font-black p-2 bg-white border border-slate-300 rounded-lg text-center outline-none text-slate-900 shadow-2xs">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="bk_utensil_chk_${idx}" ${isChecked ? 'checked' : ''} onchange="toggleUtensilItem(${idx})" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500 cursor-pointer">
+            <span id="bk_utensil_lbl_${idx}" class="text-xs sm:text-sm font-bold ${isChecked ? 'text-slate-800' : 'text-slate-400 line-through'}">${escapeHtml(item.name)}</span>
+          </label>
+          <div class="flex items-center gap-1.5">
+            <input type="number" id="bk_utensil_${idx}" value="${currentQty}" min="0" ${isChecked ? '' : 'disabled'} class="w-20 text-xs sm:text-sm font-black p-1.5 bg-white border border-slate-300 rounded-lg text-center outline-none text-slate-900 shadow-2xs ${isChecked ? '' : 'opacity-40 bg-slate-100'}">
+            <span class="text-[11px] font-bold text-slate-500">${escapeHtml(item.unit || 'पीस')}</span>
           </div>
         `;
         container.appendChild(row);
       });
     }
 
+    function toggleUtensilItem(idx) {
+      const chk = document.getElementById(`bk_utensil_chk_${idx}`);
+      const inp = document.getElementById(`bk_utensil_${idx}`);
+      const lbl = document.getElementById(`bk_utensil_lbl_${idx}`);
+      if (!chk || !inp) return;
+      if (chk.checked) {
+        inp.disabled = false;
+        inp.classList.remove('opacity-40', 'bg-slate-100');
+        if (lbl) {
+          lbl.classList.remove('text-slate-400', 'line-through');
+          lbl.classList.add('text-slate-800');
+        }
+        if (parseInt(inp.value, 10) <= 0 && hallConfig.utensils[idx]) {
+          inp.value = hallConfig.utensils[idx].qty || 1;
+        }
+      } else {
+        inp.disabled = true;
+        inp.classList.add('opacity-40', 'bg-slate-100');
+        if (lbl) {
+          lbl.classList.add('text-slate-400', 'line-through');
+          lbl.classList.remove('text-slate-800');
+        }
+      }
+    }
+
     function setAllUtensilsDefault() {
       if (!hallConfig || !hallConfig.utensils) return;
       hallConfig.utensils.forEach((item, idx) => {
+        const chk = document.getElementById(`bk_utensil_chk_${idx}`);
         const inp = document.getElementById(`bk_utensil_${idx}`);
-        if (inp) inp.value = item.qty;
+        const lbl = document.getElementById(`bk_utensil_lbl_${idx}`);
+        if (chk) chk.checked = true;
+        if (inp) {
+          inp.disabled = false;
+          inp.classList.remove('opacity-40', 'bg-slate-100');
+          inp.value = item.qty;
+        }
+        if (lbl) {
+          lbl.classList.remove('text-slate-400', 'line-through');
+          lbl.classList.add('text-slate-800');
+        }
       });
-      showToast("✅ सभी बर्तन डिफ़ॉल्ट संख्या पर सेट किए गए!");
+      showToast("✅ सभी बर्तन शामिल व डिफ़ॉल्ट संख्या पर सेट किए गए!");
     }
 
     function clearAllUtensils() {
       if (!hallConfig || !hallConfig.utensils) return;
       hallConfig.utensils.forEach((item, idx) => {
+        const chk = document.getElementById(`bk_utensil_chk_${idx}`);
         const inp = document.getElementById(`bk_utensil_${idx}`);
-        if (inp) inp.value = 0;
+        const lbl = document.getElementById(`bk_utensil_lbl_${idx}`);
+        if (chk) chk.checked = false;
+        if (inp) {
+          inp.disabled = true;
+          inp.classList.add('opacity-40', 'bg-slate-100');
+          inp.value = 0;
+        }
+        if (lbl) {
+          lbl.classList.add('text-slate-400', 'line-through');
+          lbl.classList.remove('text-slate-800');
+        }
       });
-      showToast("ℹ️ सभी बर्तनों की संख्या 0 कर दी गई!");
+      showToast("ℹ️ सभी बर्तन सूची से हटा दिए गए!");
     }
 
     // -------------------------------------------------------------
@@ -5308,9 +5359,11 @@
 
       const chosenUtensils = [];
       hallConfig.utensils.forEach((item, idx) => {
+        const chk = document.getElementById('bk_utensil_chk_' + idx);
+        const isChecked = chk ? chk.checked : true;
         const inp = document.getElementById('bk_utensil_' + idx);
-        const qty = inp ? parseInt(inp.value) || 0 : item.qty;
-        if (qty > 0) {
+        const qty = inp ? parseInt(inp.value, 10) || 0 : item.qty;
+        if (isChecked && qty > 0) {
           chosenUtensils.push({ name: item.name, qty: qty, unit: item.unit });
         }
       });
@@ -5363,18 +5416,6 @@
       const currentUser = getCurrentUser();
       const operatorName = currentUser ? currentUser.name : 'वर्मा मैरिज हॉल';
 
-      // If new booking and advance paid, record as initial advance payment item
-      if (existingPayments.length === 0 && adv > 0) {
-        existingPayments.push({
-          id: 'PAY-1',
-          date: `${bookingDateStr} (बुकिंग)`,
-          amount: adv,
-          mode: currentAdvMode || 'cash',
-          note: 'शुरुआती एडवांस जमा (Initial Advance)',
-          receivedBy: operatorName
-        });
-      }
-
       let originalCreator = operatorName;
       if (editingBookingId) {
         const found = realMarriageBookings.find(b => b.id === editingBookingId);
@@ -5382,8 +5423,56 @@
       }
 
       let finalAdvance = adv;
-      if (editingBookingId && existingPayments.length > 0) {
-        finalAdvance = existingPayments.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+      if (editingBookingId) {
+        if (existingPayments.length <= 1) {
+          if (adv <= 0) {
+            // User cleared or set advance to 0: completely reset/remove accidental payment
+            existingPayments = [];
+            finalAdvance = 0;
+          } else {
+            if (existingPayments.length === 1) {
+              existingPayments[0].amount = adv;
+              if (currentAdvMode) existingPayments[0].mode = currentAdvMode;
+            } else {
+              existingPayments.push({
+                id: 'PAY-1',
+                date: `${bookingDateStr} (बुकिंग)`,
+                amount: adv,
+                mode: currentAdvMode || 'cash',
+                note: 'शुरुआती एडवांस जमा (Initial Advance)',
+                receivedBy: operatorName
+              });
+            }
+            finalAdvance = adv;
+          }
+        } else {
+          // Multiple installment payments exist
+          if (adv <= 0) {
+            // If user set initial advance to 0, remove PAY-1 if present
+            if (existingPayments[0] && existingPayments[0].id === 'PAY-1') {
+              existingPayments.shift();
+            }
+          } else if (existingPayments[0]) {
+            existingPayments[0].amount = adv;
+            if (currentAdvMode) existingPayments[0].mode = currentAdvMode;
+          }
+          finalAdvance = existingPayments.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+        }
+      } else {
+        // New booking
+        if (adv > 0) {
+          existingPayments = [{
+            id: 'PAY-1',
+            date: `${bookingDateStr} (बुकिंग)`,
+            amount: adv,
+            mode: currentAdvMode || 'cash',
+            note: 'शुरुआती एडवांस जमा (Initial Advance)',
+            receivedBy: operatorName
+          }];
+        } else {
+          existingPayments = [];
+        }
+        finalAdvance = adv;
       }
       const finalBal = Math.max(0, rent - finalAdvance);
 
@@ -5636,19 +5725,11 @@
       const topBadge = document.getElementById('slipTopBookingIdBadge');
       if (topBadge) topBadge.innerText = b.id;
 
-      // Hide Receive Payment buttons when fully paid (bal <= 0) and dynamically adjust grid columns
-      const topReceiveBtn = document.getElementById('btnSlipTopReceivePayment');
+      // Fixed 3-button top action grid
       const actionGrid = document.getElementById('slipActionButtonsGrid');
+      if (actionGrid) actionGrid.className = 'grid grid-cols-3 gap-2 text-center';
+
       const inlineReceiveWrap = document.getElementById('slipInlineReceivePaymentWrapper');
-      if (topReceiveBtn) {
-        if (bal <= 0) {
-          topReceiveBtn.classList.add('hidden');
-          if (actionGrid) actionGrid.className = 'grid grid-cols-3 gap-1.5 text-center';
-        } else {
-          topReceiveBtn.classList.remove('hidden');
-          if (actionGrid) actionGrid.className = 'grid grid-cols-4 gap-1.5 text-center';
-        }
-      }
       if (inlineReceiveWrap) {
         if (bal <= 0) {
           inlineReceiveWrap.classList.add('hidden');
@@ -5657,7 +5738,7 @@
         }
       }
 
-      // Render payment installments ledger
+      // Render payment installments ledger (shown for 1 or more payments so user can inspect, edit, or delete)
       const payHistoryContainer = document.getElementById('slipPaymentHistoryContainer');
       const tableBody = document.getElementById('slipPaymentHistoryTableBody');
       const countBadge = document.getElementById('slipTotalInstallmentsCount');
@@ -5676,10 +5757,7 @@
         }];
       }
 
-      // OPTION 3: Smart Conditional Display
-      // Show payment ledger table ONLY when there are multiple installments (2+).
-      // For single initial advance, the 3-line financial summary is shown cleanly without redundant table.
-      if (paymentsList.length > 1) {
+      if (paymentsList.length > 0) {
         if (payHistoryContainer) payHistoryContainer.classList.remove('hidden');
         if (countBadge) {
           countBadge.remove();
@@ -5688,15 +5766,15 @@
           tableBody.innerHTML = paymentsList.map((p, idx) => {
             const pAmt = parseFloat(p.amount) || 0;
             const modeBadge = p.mode === 'cash' 
-              ? `<span style="font-size: 8.5px; font-weight: 800; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 1px 4px; border-radius: 3px; display: inline-flex; align-items: center; gap: 2px;">
+              ? `<span style="font-size: 10px; font-weight: 800; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 2px;">
                    <span>नकद</span>
                  </span>` 
-              : `<span style="font-size: 8.5px; font-weight: 800; background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 1px 4px; border-radius: 3px; display: inline-flex; align-items: center; gap: 2px;">
+              : `<span style="font-size: 10px; font-weight: 800; background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 2px;">
                    <span>UPI</span>
                  </span>`;
             const label = idx === 0 ? 'प्रारंभिक बयाना / अग्रिम' : `भुगतान #${idx + 1}`;
             const noteText = p.note ? escapeHtml(p.note) : label;
-            const operatorTag = p.receivedBy ? `<span style="display: block; font-size: 8.5px; font-weight: 700; color: #92400e;">पेमेंट लिया: ${escapeHtml(p.receivedBy)}</span>` : '';
+            const operatorTag = p.receivedBy ? `<span style="display: block; font-size: 10px; font-weight: 700; color: #92400e;">पेमेंट लिया: ${escapeHtml(p.receivedBy)}</span>` : '';
 
             // Split date and time for clean vertical stacking
             const rawDateTime = p.date || '-';
@@ -5710,21 +5788,21 @@
 
             return `
               <tr class="matra-safe">
-                <td class="matra-safe" style="text-align: center; font-weight: 900; color: #111827; padding: 6px 4px !important; vertical-align: middle;">${idx + 1}</td>
-                <td class="matra-safe" style="font-family: 'Montserrat', sans-serif; padding: 6px 5px !important; line-height: 1.35; vertical-align: middle;">
-                  <span style="display: block; font-weight: 800; color: #111827; font-size: 9.5px; white-space: nowrap; padding-bottom: 2px;">${escapeHtml(dPart)}</span>
-                  ${tPart ? `<span style="display: block; font-size: 8.5px; font-weight: 700; color: #64748b; white-space: nowrap;">${escapeHtml(tPart)}</span>` : ''}
+                <td class="matra-safe" style="text-align: center; font-weight: 900; color: #111827; padding: 8px 4px !important; vertical-align: middle; font-size: 12px;">${idx + 1}</td>
+                <td class="matra-safe" style="font-family: 'Montserrat', sans-serif; padding: 8px 5px !important; line-height: 1.35; vertical-align: middle;">
+                  <span style="display: block; font-weight: 800; color: #111827; font-size: 11px; white-space: nowrap; padding-bottom: 2px;">${escapeHtml(dPart)}</span>
+                  ${tPart ? `<span style="display: block; font-size: 10px; font-weight: 700; color: #64748b; white-space: nowrap;">${escapeHtml(tPart)}</span>` : ''}
                 </td>
-                <td class="matra-safe" style="text-align: center; padding: 6px 4px !important; vertical-align: middle;">${modeBadge}</td>
-                <td class="matra-safe" style="padding: 6px 5px !important; line-height: 1.35; vertical-align: middle;">
-                  <span style="display: block; font-weight: 800; color: #111827; font-size: 10px; padding-bottom: 2px;">${noteText}</span>
+                <td class="matra-safe" style="text-align: center; padding: 8px 4px !important; vertical-align: middle;">${modeBadge}</td>
+                <td class="matra-safe" style="padding: 8px 5px !important; line-height: 1.35; vertical-align: middle;">
+                  <span style="display: block; font-weight: 800; color: #111827; font-size: 11.5px; padding-bottom: 2px;">${noteText}</span>
                   ${operatorTag}
                 </td>
-                <td class="matra-safe" style="text-align: right; font-weight: 900; font-family: 'Montserrat', sans-serif; color: #059669; white-space: nowrap; font-size: 11px; padding: 6px 5px !important; vertical-align: middle;">
+                <td class="matra-safe" style="text-align: right; font-weight: 900; font-family: 'Montserrat', sans-serif; color: #059669; white-space: nowrap; font-size: 12.5px; padding: 8px 5px !important; vertical-align: middle;">
                   + ₹${pAmt.toLocaleString('en-IN')}
                 </td>
-                <td class="matra-safe no-print" style="text-align: center; padding: 4px 2px !important; white-space: nowrap; vertical-align: middle;">
-                  <button type="button" onclick="showPaymentRowMenu('${b.id}', ${idx}, event)" title="विकल्प (Options)" style="background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 4px; padding: 2px 6px; font-size: 13px; font-weight: 900; line-height: 1; cursor: pointer; color: #374151;" class="btn-tactile">⋮</button>
+                <td class="matra-safe no-print" style="text-align: center; padding: 6px 4px !important; white-space: nowrap; vertical-align: middle;">
+                  <button type="button" onclick="showPaymentRowMenu('${b.id}', ${idx}, event)" title="विकल्प (Options)" style="background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; padding: 4px 8px; font-size: 15px; font-weight: 900; line-height: 1; cursor: pointer; color: #374151;" class="btn-tactile">⋮</button>
                 </td>
               </tr>
             `;
@@ -8510,11 +8588,7 @@
 
         const fcmPayload = {
           message: {
-            topic: FCM_ACTIVE_TOPIC,
-            notification: {
-              title: title || "🏛️ वर्मा मैरिज हॉल",
-              body: message || "नया अपडेट"
-            },
+            condition: "'all_devices' in topics || 'beta_all_devices' in topics",
             data: {
               title: title || "🏛️ वर्मा मैरिज हॉल",
               body: message || "नया अपडेट",
@@ -8537,7 +8611,7 @@
           },
           body: JSON.stringify(fcmPayload)
         });
-        console.log("FCM push dispatched successfully to " + FCM_ACTIVE_TOPIC + " (Booking ID: " + bookingId + ")");
+        console.log("FCM cross-environment data push dispatched successfully (Booking ID: " + bookingId + ")");
       } catch (err) {
         console.warn("FCM dispatch note:", err);
       }
@@ -9640,13 +9714,13 @@
         if (natVer && natVer.trim().length > 0) return natVer.trim();
       }
       // 3. Fallback based on environment
-      return IS_BETA_APP ? "2.5.2-beta" : "2.1.2";
+      return IS_BETA_APP ? "2.5.3-beta" : "2.1.2";
     }
 
     const APP_VERSION = getCurrentAppVersion();
     window.APP_VERSION = APP_VERSION;
     let otaReleaseState = {
-      betaVersion: "2.5.2-beta",
+      betaVersion: "2.5.3-beta",
       productionVersion: "2.1.2",
       updatedAt: Date.now(),
       releaseNotes: ""
@@ -9655,6 +9729,43 @@
 
     // RELEASE NOTES DATA REPOSITORY
     const VMH_RELEASE_NOTES = {
+      "2.5.3-beta": {
+        title: "वर्जन 2.5.3-beta — भुगतान संपादन, डायरेक्ट शेयर, बर्तन चेकबॉक्स एवं फॉन्ट लॉक",
+        date: "27 नवम्बर 2026",
+        tag: "नवीनतम बीटा",
+        items: [
+          {
+            icon: "💳",
+            title: "एडवांस व भुगतान रीसेट समाधान (Payment Zero Reset & Ledger)",
+            badge: "महत्वपूर्ण सुधार",
+            desc: "बुकिंग एडिट करते समय एडवांस 0 करने पर पुराना पेमेंट तुरंत शून्य हो जाता है। रसीद पर एकल भुगतान के लिए भी लेजर दिखेगा और ⋮ बटन से पेमेंट बदलने या हटाने का पूरा विकल्प उपलब्ध है।"
+          },
+          {
+            icon: "🚀",
+            title: "रसीद टॉप-बार सरलीकरण एवं डायरेक्ट शेयर (1-Step Share)",
+            badge: "यूआई सुधार",
+            desc: "ऊपर के अतिरिक्त बटन हटाकर केवल 3 स्पष्ट बटन ([शेयर], [एडिट], [डिलीट]) रखे गए। शेयर बटन दबाते ही बिना किसी पॉपअप के सीधे WhatsApp / सिस्टम में रसीद की फोटो खुलती है।"
+          },
+          {
+            icon: "🍽️",
+            title: "बर्तन व सामान सूची में चेकबॉक्स नियंत्रण",
+            badge: "नया फ़ीचर",
+            desc: "प्रत्येक बर्तन के आगे चेकबॉक्स जोड़ा गया। किसी बुकिंग में कोई सामान न देना हो तो उसे आसानी से अनचेक कर सकते हैं, जिससे वह बिल से स्वतः बाहर हो जाता है।"
+          },
+          {
+            icon: "📱",
+            title: "सिस्टम फॉन्ट साइज़ लॉक (Motorola व सभी डिवाइस अनुकूलन)",
+            badge: "एक्सेसिबिलिटी",
+            desc: "फ़ोन की सिस्टम सेटिंग्स में फॉन्ट साइज़ बड़ा या छोटा होने पर भी ऐप के अक्षरों और लेआउट पर कोई दुष्प्रभाव नहीं पड़ेगा। 100% टेक्स्ट ज़ूम लॉक।"
+          },
+          {
+            icon: "🔔",
+            title: "स्मार्ट क्रॉस-एनवायरनमेंट पुश नोटिफिकेशन",
+            badge: "सिंक",
+            desc: "बुकिंग करने वाले फ़ोन पर रिंग नहीं बजेगी, जबकि दूसरे सभी फ़ोनों पर बिना चूके हाई-प्रायोरिटी नोटिफिकेशन बजेगा।"
+          }
+        ]
+      },
       "2.5.2-beta": {
         title: "वर्जन 2.5.2-beta — रॉयल थीम कैलेंडर एवं सम्पूर्ण डायलॉग नवीनीकरण",
         date: "26 नवम्बर 2026",
